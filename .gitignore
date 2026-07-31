@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Generated application data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/samples/*
+!data/samples/.gitkeep
+!data/samples/plugin-email-batch.example.json
+# Generated hash manifest is local because raw sources are regenerated.
+data/expected/dataset_manifest.json
+
+# Local databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
