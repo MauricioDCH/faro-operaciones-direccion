@@ -1,0 +1,96 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 4 0 R /F2 5 0 R /F3 6 0 R >> >> /Contents 7 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Length 2746 >>
+stream
+0.12 0.31 0.47 rg
+0 736.89 595.28 105 re f
+1 1 1 rg
+BT /F2 20 Tf 1 0 0 1 42.00 794.00 Tm (FARO) Tj ET
+BT /F1 10 Tf 1 0 0 1 42.00 774.00 Tm (Factura sintetica para demostracion) Tj ET
+BT /F2 14 Tf 1 0 0 1 470.00 794.00 Tm (FV-1002) Tj ET
+BT /F1 9 Tf 1 0 0 1 445.00 774.00 Tm (Fecha: 2026-07-29) Tj ET
+BT /F1 9 Tf 1 0 0 1 435.00 758.00 Tm (Pedido: ORD-000004) Tj ET
+0.1 0.1 0.1 rg
+BT /F2 10 Tf 1 0 0 1 42.00 700.00 Tm (Proveedor) Tj ET
+BT /F1 9 Tf 1 0 0 1 42.00 681.00 Tm (Distribuciones Andinas SAS) Tj ET
+BT /F1 9 Tf 1 0 0 1 42.00 664.00 Tm (ID sintetico: SUP-0001) Tj ET
+BT /F1 9 Tf 1 0 0 1 42.00 647.00 Tm (Moneda: COP) Tj ET
+BT /F2 9 Tf 1 0 0 1 420.00 700.00 Tm (Factura interna: INV-000004) Tj ET
+BT /F1 8 Tf 1 0 0 1 320.00 679.00 Tm (DOCUMENTO DE DEMOSTRACION - SIN VALIDEZ TRIBUTARIA) Tj ET
+0.88 0.93 0.97 rg
+42 570 511.28 24 re f
+0.1 0.1 0.1 rg
+BT /F2 8 Tf 1 0 0 1 46.00 578.00 Tm (Producto) Tj ET
+BT /F2 8 Tf 1 0 0 1 270.00 578.00 Tm (ID) Tj ET
+BT /F2 8 Tf 1 0 0 1 350.00 578.00 Tm (Cant.) Tj ET
+BT /F2 8 Tf 1 0 0 1 402.00 578.00 Tm (Precio unit.) Tj ET
+BT /F2 8 Tf 1 0 0 1 500.00 578.00 Tm (Total) Tj ET
+BT /F1 8 Tf 1 0 0 1 46.00 548.00 Tm (Leche UHT 1 L) Tj ET
+BT /F1 8 Tf 1 0 0 1 270.00 548.00 Tm (PRD-0009) Tj ET
+BT /F1 8 Tf 1 0 0 1 365.00 548.00 Tm (60) Tj ET
+BT /F1 8 Tf 1 0 0 1 430.00 548.00 Tm (3,600.00) Tj ET
+BT /F1 8 Tf 1 0 0 1 505.00 548.00 Tm (216,000.00) Tj ET
+0.78 0.82 0.86 RG
+42 538 m 553.28 538 l S
+BT /F1 9 Tf 1 0 0 1 380.00 510.00 Tm (Subtotal) Tj ET
+BT /F1 9 Tf 1 0 0 1 465.00 510.00 Tm (COP 216,000.00) Tj ET
+BT /F1 9 Tf 1 0 0 1 380.00 492.00 Tm (IVA 19%) Tj ET
+BT /F1 9 Tf 1 0 0 1 465.00 492.00 Tm (COP 41,040.00) Tj ET
+BT /F2 9 Tf 1 0 0 1 380.00 474.00 Tm (Total) Tj ET
+BT /F2 9 Tf 1 0 0 1 465.00 474.00 Tm (COP 257,040.00) Tj ET
+0.12 0.31 0.47 RG
+380 466 m 553.28 466 l S
+0.45 0.45 0.45 rg
+BT /F1 5.5 Tf 1 0 0 1 42.00 125.00 Tm (invoice_id: INV-000004) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 117.00 Tm (invoice_number: FV-1002) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 109.00 Tm (supplier_name_raw: Distribuciones Andinas SAS) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 101.00 Tm (supplier_id: SUP-0001) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 93.00 Tm (issue_date: 2026-07-29) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 85.00 Tm (related_order_id: ORD-000004) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 77.00 Tm (currency: COP) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 69.00 Tm (subtotal_cop: 216000.00) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 61.00 Tm (tax_cop: 41040.00) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 53.00 Tm (total_cop: 257040.00) Tj ET
+BT /F1 5.5 Tf 1 0 0 1 42.00 45.00 Tm (LINE|INVL-000004|Leche UHT 1 L|PRD-0009|60|3600.00|216000.00) Tj ET
+0.2 0.2 0.2 rg
+BT /F3 7 Tf 1 0 0 1 42.00 35.00 Tm (Todos los nombres, correos e identificadores son sinteticos.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Title (Synthetic invoice) /Author (Faro Project) /Creator (Faro deterministic generator) /CreationDate (D:20260731090000Z) /ModDate (D:20260731090000Z) >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000273 00000 n 
+0000000370 00000 n 
+0000000472 00000 n 
+0000000577 00000 n 
+0000003374 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R /Info 8 0 R >>
+startxref
+3548
+%%EOF

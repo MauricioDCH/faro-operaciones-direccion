@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "batch_id": "PLGMAIL-20260731-001",
+  "platform": "chatgpt",
+  "plugin_name": "gmail",
+  "source_app": "gmail",
+  "account_label": "faro-demo-synthetic",
+  "query": "after:2026/07/01 before:2026/08/01 label:faro-demo",
+  "prompt_version": "1.0.0",
+  "generated_at": "2026-07-31T04:00:00-05:00",
+  "messages": [
+    {
+      "provider_message_id": "synthetic-message-001",
+      "thread_id": "synthetic-thread-001",
+      "source_reference": "gmail-citation:synthetic-message-001",
+      "source_url": null,
+      "from_address": "ventas2@proveedor.example",
+      "to_addresses": [
+        "compras@faro-demo.example"
+      ],
+      "subject": "Cambio pedido ORD-000002",
+      "sent_at": "2026-07-26T10:30:00-05:00",
+      "body_excerpt": "Del pedido ORD-000002 envíen solamente 20 unidades del producto PRD-0005.",
+      "event_type": "quantity_change",
+      "extractions": [
+        {
+          "field": "order_id",
+          "raw_value": "ORD-000002",
+          "proposed_value": "ORD-000002",
+          "confidence": 1.0,
+          "evidence_excerpt": "pedido ORD-000002",
+          "review_status": "accepted"
+        },
+        {
+          "field": "product_id",
+          "raw_value": "PRD-0005",
+          "proposed_value": "PRD-0005",
+          "confidence": 1.0,
+          "evidence_excerpt": "producto PRD-0005",
+          "review_status": "accepted"
+        },
+        {
+          "field": "new_quantity",
+          "raw_value": 20,
+          "proposed_value": 20,
+          "confidence": 0.99,
+          "evidence_excerpt": "solamente 20 unidades",
+          "review_status": "accepted"
+        }
+      ]
+    },
+    {
+      "provider_message_id": "synthetic-message-002",
+      "thread_id": "synthetic-thread-002",
+      "source_reference": "gmail-citation:synthetic-message-002",
+      "source_url": null,
+      "from_address": "ventas4@proveedor.example",
+      "to_addresses": [
+        "compras@faro-demo.example"
+      ],
+      "subject": "Novedad de entrega ORD-000005",
+      "sent_at": "2026-07-29T15:00:00-05:00",
+      "body_excerpt": "La entrega del pedido ORD-000005 se mantiene para el 30 de julio de 2026.",
+      "event_type": "delivery_update",
+      "extractions": [
+        {
+          "field": "order_id",
+          "raw_value": "ORD-000005",
+          "proposed_value": "ORD-000005",
+          "confidence": 1.0,
+          "evidence_excerpt": "pedido ORD-000005",
+          "review_status": "accepted"
+        },
+        {
+          "field": "expected_delivery_date",
+          "raw_value": "30 de julio de 2026",
+          "proposed_value": "2026-07-30",
+          "confidence": 0.97,
+          "evidence_excerpt": "30 de julio de 2026",
+          "review_status": "accepted"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Fixture reproducible; no representa una conexión activa durante esta ejecución."
+  ]
+}

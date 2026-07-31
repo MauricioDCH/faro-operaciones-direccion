@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_version": "0.1.0",
+  "contract_version": "1.3.0",
+  "seed": 20260731,
+  "status": "implemented",
+  "anomalies": [
+    {
+      "anomaly_id": "ANOM-001",
+      "type": "duplicate_sale_line",
+      "severity": "error",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "rows": [
+          32,
+          44
+        ]
+      },
+      "source_record_ids": [
+        "SALL-000031",
+        "SALL-000043"
+      ],
+      "expected_rule_id": "RULE-DUP-SALE-001",
+      "expected_detected": true,
+      "description": "Dos líneas representan la misma venta con identificadores de línea diferentes."
+    },
+    {
+      "anomaly_id": "ANOM-002",
+      "type": "missing_required_field",
+      "severity": "error",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "row": 45,
+        "column": "customer_id"
+      },
+      "source_record_ids": [
+        "SALL-000044"
+      ],
+      "expected_rule_id": "RULE-REQUIRED-001",
+      "expected_detected": true,
+      "description": "La línea de venta no contiene customer_id."
+    },
+    {
+      "anomaly_id": "ANOM-003",
+      "type": "invalid_date",
+      "severity": "error",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "row": 46,
+        "column": "sale_date"
+      },
+      "source_record_ids": [
+        "SALL-000045"
+      ],
+      "expected_rule_id": "RULE-DATE-001",
+      "expected_detected": true,
+      "description": "La fecha 2026-02-30 no existe."
+    },
+    {
+      "anomaly_id": "ANOM-004",
+      "type": "negative_quantity",
+      "severity": "error",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "row": 47,
+        "column": "quantity"
+      },
+      "source_record_ids": [
+        "SALL-000046"
+      ],
+      "expected_rule_id": "RULE-QUANTITY-001",
+      "expected_detected": true,
+      "description": "La cantidad vendida es negativa."
+    },
+    {
+      "anomaly_id": "ANOM-005",
+      "type": "unknown_product",
+      "severity": "error",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "row": 48,
+        "column": "product_id"
+      },
+      "source_record_ids": [
+        "SALL-000047"
+      ],
+      "expected_rule_id": "RULE-FK-PRODUCT-001",
+      "expected_detected": true,
+      "description": "La venta referencia PRD-9999, que no existe en el catálogo."
+    },
+    {
+      "anomaly_id": "ANOM-006",
+      "type": "inconsistent_supplier_name",
+      "severity": "warning",
+      "source_file": "data/raw/facturas/factura_003.pdf",
+      "source_location": {
+        "page": 1,
+        "field": "supplier_name_raw"
+      },
+      "source_record_ids": [
+        "INV-000003",
+        "SUP-0003"
+      ],
+      "expected_rule_id": "RULE-SUPPLIER-NAME-001",
+      "expected_detected": true,
+      "description": "El nombre del proveedor en la factura no coincide con el catálogo."
+    },
+    {
+      "anomaly_id": "ANOM-007",
+      "type": "low_inventory",
+      "severity": "warning",
+      "source_file": "data/raw/inventario.xlsx",
+      "source_location": {
+        "sheet": "inventario",
+        "row": 6,
+        "column": "stock_on_hand"
+      },
+      "source_record_ids": [
+        "PRD-0005"
+      ],
+      "expected_rule_id": "RULE-LOW-STOCK-001",
+      "expected_detected": true,
+      "description": "La cantidad disponible está por debajo del punto de reposición."
+    },
+    {
+      "anomaly_id": "ANOM-008",
+      "type": "order_invoice_mismatch",
+      "severity": "warning",
+      "source_file": "data/raw/facturas/factura_003.pdf",
+      "source_location": {
+        "page": 1,
+        "field": "quantity"
+      },
+      "source_record_ids": [
+        "ORDL-000003",
+        "INVL-000003"
+      ],
+      "expected_rule_id": "RULE-ORDER-INVOICE-001",
+      "expected_detected": true,
+      "description": "El pedido solicita 40 unidades y la factura registra 35."
+    },
+    {
+      "anomaly_id": "ANOM-009",
+      "type": "duplicate_invoice",
+      "severity": "error",
+      "source_file": "data/raw/facturas/factura_006.pdf",
+      "source_location": {
+        "page": 1,
+        "field": "invoice_number"
+      },
+      "source_record_ids": [
+        "INV-000004",
+        "INV-000006"
+      ],
+      "expected_rule_id": "RULE-DUP-INVOICE-001",
+      "expected_detected": true,
+      "description": "Dos documentos comparten proveedor, número y fecha de factura."
+    },
+    {
+      "anomaly_id": "ANOM-010",
+      "type": "email_order_conflict",
+      "severity": "warning",
+      "source_file": "data/samples/plugin-email-batch.example.json",
+      "source_location": {
+        "source_reference": "gmail-citation:synthetic-message-001",
+        "field": "new_quantity"
+      },
+      "source_record_ids": [
+        "ORDL-000002",
+        "MSG-000001"
+      ],
+      "expected_rule_id": "RULE-EMAIL-ORDER-001",
+      "expected_detected": true,
+      "description": "El correo solicita 20 unidades y el pedido conserva 30."
+    },
+    {
+      "anomaly_id": "ANOM-011",
+      "type": "abnormal_sales_decline",
+      "severity": "warning",
+      "source_file": "data/raw/ventas.xlsx",
+      "source_location": {
+        "sheet": "ventas",
+        "column": "line_total_cop"
+      },
+      "source_record_ids": [
+        "PERIOD-2026-06",
+        "PERIOD-2026-07"
+      ],
+      "expected_rule_id": "RULE-SALES-DECLINE-001",
+      "expected_detected": true,
+      "description": "Las ventas válidas de julio caen más del 30 % frente a junio.",
+      "expected_details": {
+        "previous_period": "2026-06",
+        "current_period": "2026-07",
+        "previous_total_cop": "3117500.00",
+        "current_total_cop": "411900.00",
+        "decline_pct": "-86.79"
+      }
+    }
+  ]
+}
