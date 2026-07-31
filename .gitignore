@@ -40,3 +40,6 @@ data/expected/dataset_manifest.json
 *.sqlite
 *.sqlite3
 *.log
+
+# Synthetic data
+faro_synthetic_baseline_patch.zip
