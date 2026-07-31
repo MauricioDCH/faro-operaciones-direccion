@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data demo clean
+.PHONY: setup lock test lint check run generate-data validate-data check-ocr-runtime extract-pdf demo clean
 
 setup:
 	$(UV) sync --locked
@@ -25,6 +25,13 @@ generate-data:
 
 validate-data:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/validate_dataset.py
+
+check-ocr-runtime:
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/check_ocr_runtime.py
+
+extract-pdf:
+	@test -n "$(PDF)" || (echo "Usage: make extract-pdf PDF=path/to/document.pdf" && exit 2)
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/extract_pdf.py "$(PDF)"
 
 demo:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/run_demo.py

@@ -5,7 +5,7 @@
 > **Evento:** Maratón de IA — Ruta N  
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Datos:** 100 % sintéticos  
-> **Estado:** definición del MVP y preparación de la implementación  
+> **Estado:** línea base sintética y recuperación PDF/OCR implementadas; consolidación operativa pendiente
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -187,13 +187,14 @@ Este segmento maneja productos, ventas, inventarios, compras, pedidos y proveedo
 - `ventas.xlsx`;
 - `inventario.xlsx`;
 - `pedidos.xlsx`;
-- facturas PDF con texto extraíble;
+- facturas y cotizaciones PDF con texto nativo, escaneado o mixto;
 - lote JSON producido por un plugin de Gmail en ChatGPT o Claude.
 
 ### Capacidades incluidas
 
 - cargar libros de Excel;
-- extraer campos básicos de facturas PDF;
+- recuperar texto por página mediante extracción nativa u OCR y clasificar facturas y cotizaciones;
+- extraer campos estructurados de facturas y cotizaciones —pendiente en la siguiente iteración—;
 - importar y validar el lote estructurado producido por el plugin de correo;
 - validar esquemas, tipos, fechas y campos obligatorios;
 - detectar duplicados e inconsistencias conocidas;
@@ -243,7 +244,7 @@ Estos valores son objetivos; no representan resultados obtenidos todavía.
 
 ## 5. Flujo funcional
 
-1. El usuario carga los libros de Excel y las facturas PDF sintéticas.
+1. El usuario carga los libros de Excel y las facturas o cotizaciones PDF sintéticas.
 2. ChatGPT o Claude consulta Gmail mediante un plugin y produce un lote JSON versionado.
 3. Faro registra los metadatos y conserva las fuentes y artefactos sin modificarlos.
 4. Los módulos de ingesta, extracción y validación convierten las fuentes a estructuras normalizadas.
@@ -256,7 +257,7 @@ Estos valores son objetivos; no representan resultados obtenidos todavía.
 ```mermaid
 flowchart LR
     A[Libros de Excel] --> I[Ingesta]
-    B[Facturas PDF] --> X[Extracción documental]
+    B[Facturas y cotizaciones PDF] --> X[Texto nativo u OCR por página]
     C[Gmail sintético] --> G[Plugin de ChatGPT o Claude]
     G --> J[Lote JSON versionado]
 
@@ -296,7 +297,7 @@ flowchart LR
 | Módulo | Responsabilidad |
 |---|---|
 | `ingestion` | Recibir archivos y registrar metadatos |
-| `extraction` | Extraer campos de PDF e interpretar lotes producidos por plugins |
+| `extraction` | Inspeccionar PDF, recuperar texto nativo u OCR, clasificar documentos y preservar evidencia |
 | `synthetic` | Generar y validar la línea base sintética determinística |
 | `quality` | Validar esquemas, tipos, rangos y duplicados |
 | `normalization` | Unificar formatos, nombres e identificadores |
@@ -381,6 +382,11 @@ R4-FARO-OPERACIONES_DIRECCION/
 │       ├── domain/
 │       ├── ingestion/
 │       ├── extraction/
+│       │   ├── classifier.py
+│       │   ├── errors.py
+│       │   ├── ocr.py
+│       │   ├── pdf.py
+│       │   └── service.py
 │       ├── quality/
 │       ├── normalization/
 │       ├── persistence/
@@ -416,6 +422,8 @@ R4-FARO-OPERACIONES_DIRECCION/
 │       └── plugin-email-batch.example.json
 │
 ├── scripts/
+│   ├── check_ocr_runtime.py
+│   ├── extract_pdf.py
 │   ├── generate_synthetic_data.py
 │   ├── validate_dataset.py
 │   └── run_demo.py
@@ -439,7 +447,9 @@ R4-FARO-OPERACIONES_DIRECCION/
 │   │   ├── data-contracts.md
 │   │   └── data-dictionary.md
 │   ├── decisions/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── 0001-support-scanned-pdf-ocr.md
+│   │   └── 0002-select-local-pdf-ocr-stack.md
 │   ├── evaluation/
 │   │   ├── validation-plan.md
 │   │   ├── smart-ranks.md
@@ -514,22 +524,33 @@ No se duplicarán especificaciones completas entre README, instrucciones del Pro
 
 ## 10. Instalación, ejecución y pruebas
 
-La interfaz final de operación del repositorio será:
+Dependencias del sistema para PDF y OCR en Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install -y poppler-utils tesseract-ocr tesseract-ocr-spa
+```
+
+Interfaz actual de operación:
 
 ```bash
 make setup
+make check-ocr-runtime
 make generate-data
 make validate-data
 make check
+make extract-pdf PDF=data/raw/facturas/factura_001.pdf
 make run
 ```
 
 | Comando | Propósito |
 |---|---|
 | `make setup` | Crear el entorno e instalar dependencias bloqueadas |
+| `make check-ocr-runtime` | Verificar Poppler, Tesseract y el idioma español |
 | `make generate-data` | Generar o reutilizar la línea base sintética con semilla fija |
 | `make validate-data` | Comparar los 11 hallazgos sembrados con la verdad de referencia |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
+| `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make run` | Iniciar la aplicación local |
 
 Los comandos solo se considerarán disponibles cuando sus objetivos existan, hayan sido ejecutados y estén documentados con sus resultados reales.
@@ -576,7 +597,9 @@ La compatibilidad directa de Smart Ranks con ChatGPT o Codex se tratará como **
 | Estructura final del repositorio | `implemented` |
 | Reglas oficiales de Smart Ranks para ChatGPT/Codex | `planned` |
 | Datos sintéticos y verdad de referencia | `implemented` |
-| Ingesta y validación | `planned` |
+| Recuperación de texto PDF/OCR y clasificación documental | `implemented` |
+| Extracción estructurada de campos de factura y cotización | `planned` |
+| Ingesta y validación tabular | `planned` |
 | Consolidación y proveniencia | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |

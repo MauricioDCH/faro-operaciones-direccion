@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.0  
+**Versión:** 1.4.1
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -145,6 +145,7 @@ Todos los datos del MVP son sintéticos.
 - `processed`
 - `pending_review`
 - `rejected`
+- `error`
 
 ---
 

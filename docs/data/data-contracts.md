@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.0  
+**Versión:** 1.4.1
 **Producto:** Faro  
 **Alcance:** datos 100 % sintéticos
 
@@ -271,6 +271,8 @@ Proveedor y producto deben existir. La fecha esperada no puede ser anterior a la
 
 **Directorio canónico:** `data/raw/documentos/`  
 **Compatibilidad temporal:** `data/raw/facturas/` se acepta mientras se migra el generador sintético.
+
+**Implementación actual:** Poppler y Tesseract según `docs/decisions/0002-select-local-pdf-ocr-stack.md`; el contrato permanece independiente de esas herramientas.
 
 ### Tipos documentales
 

@@ -1,6 +1,6 @@
 # Plan de validación
 
-**Estado:** línea base sintética validada; alcance OCR aprobado y validación integral pendiente.
+**Estado:** línea base sintética y primera ruta PDF/OCR validadas; validación integral del MVP pendiente.
 
 ## Categorías de evidencia
 
@@ -93,3 +93,32 @@ Estos valores son objetivos, no resultados:
 - preservación de hashes raw.
 
 Los resultados deberán registrarse después de ejecutar la implementación. No deben presentarse como cumplidos durante esta rama documental.
+
+## Evidencia ejecutada — recuperación PDF/OCR
+
+**Fecha:** 2026-07-31
+**Entorno observado:** Python 3.13.5 para validación del parche; objetivo del repositorio Python 3.12 o superior.
+
+Runtimes observados:
+
+- Poppler `25.06.0`;
+- Tesseract `5.5.0`;
+- idioma `spa` disponible.
+
+Resultados ejecutados:
+
+- compilación de `src`, `tests` y `scripts`: aprobada;
+- suite completa disponible en el paquete de trabajo: 25 pruebas aprobadas;
+- factura con texto nativo: ruta `native_text`;
+- cotización escaneada: ruta `ocr`;
+- PDF mixto: selección independiente por página;
+- Tesseract inexistente: error estructurado sin texto inventado;
+- hash del PDF raw antes y después: sin cambios;
+- procedencia OCR: archivo, página, motor, versión, idioma, confianza y regiones presentes;
+- inspección visual del fixture escaneado: sin recortes ni solapamientos.
+
+Limitaciones:
+
+- FR-002 permanece `planned`: todavía no se materializan entidades completas de factura, cotización y líneas;
+- QR-018 permanece `planned`: las versiones de Poppler y Tesseract se observan, pero aún no están fijadas mediante una imagen reproducible;
+- la exactitud del 90 % debe medirse sobre un corpus ampliado, no sobre los fixtures mínimos de esta iteración.

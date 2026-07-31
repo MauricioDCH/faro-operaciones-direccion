@@ -48,6 +48,7 @@ Debe crearse un ADR cuando un cambio afecte:
 | ADR | Decisión | Estado |
 |---|---|---|
 | [`0001-support-scanned-pdf-ocr.md`](0001-support-scanned-pdf-ocr.md) | Soporte OCR para documentos PDF escaneados | `accepted` |
+| [`0002-select-local-pdf-ocr-stack.md`](0002-select-local-pdf-ocr-stack.md) | Selección de la pila local para PDF y OCR | `accepted` |
 
 ## Reglas de mantenimiento
 

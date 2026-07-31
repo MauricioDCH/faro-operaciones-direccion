@@ -4,7 +4,7 @@
 **Producto:** Faro  
 **Reto:** R4 — Operaciones / Dirección  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.4
+**Versión:** 1.5
 
 ---
 
@@ -44,9 +44,9 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-017 | Producir un lote de correo conforme al esquema canónico. | La IA genera JSON válido sin texto adicional y cada mensaje conserva referencia, evidencia, extracción y confianza. | `planned` |
 | FR-018 | Importar y validar el lote del plugin. | Faro valida el JSON Schema, rechaza lotes incompatibles, detecta duplicados y preserva el artefacto original. | `planned` |
 | FR-019 | Proporcionar contingencia mediante un fixture del mismo contrato. | El fixture pasa el mismo validador y permite ejecutar la demostración sin plugin ni internet. | `planned` |
-| FR-020 | Seleccionar por página entre extracción de texto nativo y OCR. | La ruta queda registrada y las páginas escaneadas no se procesan como texto vacío. | `planned` |
-| FR-021 | Clasificar documentos PDF como factura, cotización o no soportado. | Los documentos soportados siguen su contrato y los no soportados se rechazan sin inventar campos. | `planned` |
-| FR-022 | Registrar metadatos y procedencia del OCR. | Cada resultado OCR conserva archivo, página, motor, versión, idioma, confianza y evidencia. | `planned` |
+| FR-020 | Seleccionar por página entre extracción de texto nativo y OCR. | La ruta queda registrada y las páginas escaneadas no se procesan como texto vacío. | `implemented` |
+| FR-021 | Clasificar documentos PDF como factura, cotización o no soportado. | Los documentos soportados siguen su contrato y los no soportados se rechazan sin inventar campos. | `implemented` |
+| FR-022 | Registrar metadatos y procedencia del OCR. | Cada resultado OCR conserva archivo, página, motor, versión, idioma, confianza y evidencia. | `implemented` |
 
 ---
 
@@ -70,7 +70,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | QR-014 | Validar toda salida del plugin mediante un JSON Schema versionado. | Los lotes inválidos se rechazan con errores localizables. | `planned` |
 | QR-015 | No inventar referencias de correo. | Una extracción sin referencia verificable queda observada y requiere revisión. | `planned` |
 | QR-016 | Mantener portabilidad entre ChatGPT y Claude. | Ambos producen el mismo contrato sin cambiar el núcleo de Faro. | `planned` |
-| QR-017 | Degradar de forma segura ante OCR ilegible o insuficiente. | El documento queda `pending_review` o `unsupported`; no se generan campos sin evidencia. | `planned` |
+| QR-017 | Degradar de forma segura ante OCR ilegible o insuficiente. | El documento queda `pending_review` o `unsupported`; no se generan campos sin evidencia. | `implemented` |
 | QR-018 | Mantener reproducible la ruta OCR. | El motor, idioma y versiones están fijados y los fixtures producen resultados verificables en el entorno documentado. | `planned` |
 
 ---
@@ -122,6 +122,7 @@ Las decisiones se documentan en `docs/decisions/`.
 | Casos de uso | `docs/product/use-cases.md` |
 | Flujo del plugin de correo | `docs/integrations/plugin-email-workflow.md` |
 | Decisión de OCR | `docs/decisions/0001-support-scanned-pdf-ocr.md` |
+| Selección de pila PDF/OCR | `docs/decisions/0002-select-local-pdf-ocr-stack.md` |
 | Contratos | `docs/data/data-contracts.md` |
 | Campos canónicos | `docs/data/data-dictionary.md` |
 | Esquema del lote | `schemas/plugin-email-batch.schema.json` |
