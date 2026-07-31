@@ -1,7 +1,7 @@
 # Diseño del sistema
 
-**Estado:** arquitectura lógica aprobada; selección e implementación del motor OCR pendientes.  
-**Versión:** 1.0
+**Estado:** pila local PDF/OCR seleccionada e implementada para recuperación de texto y clasificación; extracción estructurada de campos pendiente.
+**Versión:** 1.1
 
 ## Regla arquitectónica
 
@@ -42,8 +42,8 @@ Cada página se inspecciona antes de extraer campos. La decisión entre texto na
 
 ### Recuperación de texto
 
-- `native_text`: utiliza el texto embebido en el PDF;
-- `ocr`: renderiza la página y aplica un motor OCR con versiones fijadas;
+- `native_text`: Poppler `pdftotext` recupera el texto embebido por página;
+- `ocr`: Poppler `pdftoppm` renderiza la página y Tesseract recupera texto, confianza y regiones;
 - `unsupported`: registra por qué no puede procesarse.
 
 ### Clasificación e interpretación
@@ -95,7 +95,7 @@ OCR_RENDER_DPI=300
 OCR_MIN_CONFIDENCE=<configured-threshold>
 ```
 
-Los valores finales y la tecnología elegida deben quedar versionados antes de implementar.
+Los valores iniciales están versionados en `.env.example`. `make check-ocr-runtime` verifica comandos, idioma y versiones observadas.
 
 ## Reproducibilidad
 
@@ -109,6 +109,6 @@ Durante la Maratón se procesan únicamente documentos sintéticos. Los archivos
 
 ## Decisiones pendientes
 
-Antes de implementar deben cerrarse criterios para motor OCR, renderizado PDF, umbral de texto suficiente, umbral de confianza, almacenamiento físico, framework web, UI y proveedor local de IA.
+Permanecen pendientes decisiones para almacenamiento físico, framework web, UI, proveedor local de IA y una imagen de ejecución que fije las versiones del sistema.
 
-La decisión de incluir OCR está registrada en `docs/decisions/0001-support-scanned-pdf-ocr.md`.
+La inclusión de OCR está registrada en `docs/decisions/0001-support-scanned-pdf-ocr.md`. La pila Poppler/Tesseract está registrada en `docs/decisions/0002-select-local-pdf-ocr-stack.md`.

@@ -19,6 +19,11 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+      - name: Install PDF and OCR runtimes
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils tesseract-ocr tesseract-ocr-spa
       - run: uv sync --locked
+      - run: PYTHONPATH=src uv run python scripts/check_ocr_runtime.py
       - run: uv run python -m compileall -q src tests scripts
       - run: PYTHONPATH=src uv run python -m unittest discover -s tests -p 'test_*.py' -v
