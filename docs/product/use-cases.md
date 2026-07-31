@@ -2,7 +2,7 @@
 
 **Estado:** línea base aprobada para implementación  
 **Producto:** Faro  
-**Versión:** 1.3
+**Versión:** 1.4
 
 Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
@@ -11,7 +11,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 ## UC-001 — Procesar fuentes operativas
 
 **Actor:** administrador.  
-**Objetivo:** incorporar libros de Excel, facturas PDF y lotes estructurados producidos por plugins.
+**Objetivo:** incorporar libros de Excel, facturas y cotizaciones PDF, y lotes estructurados producidos por plugins.
 
 **Flujo:**
 
@@ -238,3 +238,41 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 **Resultado:** los eventos de correo quedan disponibles para reglas e indicadores sin confiar ciegamente en la IA.
 
 **Requisitos:** FR-018, FR-011, FR-012, QR-014.
+
+---
+
+## UC-012 — Procesar un documento PDF escaneado
+
+**Actor:** administrador o auxiliar administrativo.  
+**Objetivo:** extraer información verificable de una factura o cotización escaneada.
+
+**Precondiciones:**
+
+- el documento es sintético;
+- corresponde a una factura o cotización;
+- contiene entre una y tres páginas;
+- el texto impreso es razonablemente legible.
+
+**Flujo:**
+
+1. El usuario carga el PDF.
+2. Faro calcula el hash y registra el archivo sin modificarlo.
+3. Faro inspecciona cada página.
+4. Las páginas con texto suficiente usan extracción directa.
+5. Las páginas sin texto suficiente se renderizan y procesan mediante OCR.
+6. Faro registra método, motor, versión, idioma, confianza y evidencia por página.
+7. La IA clasifica el documento y propone campos estructurados.
+8. Faro valida fechas, cantidades, subtotales, impuestos, totales y relaciones.
+9. Los campos inciertos pasan a revisión humana.
+10. El usuario consulta el PDF y la página que sustentan cada campo.
+
+**Flujos alternativos:**
+
+- un documento no soportado se rechaza de forma estructurada;
+- una página ilegible queda `pending_review`;
+- un campo sin evidencia no se consolida;
+- un total inconsistente genera un hallazgo de calidad.
+
+**Resultado:** la factura o cotización queda estructurada con procedencia verificable, o se informa por qué no pudo aceptarse.
+
+**Requisitos:** FR-002, FR-020, FR-021, FR-022, QR-017, QR-018.

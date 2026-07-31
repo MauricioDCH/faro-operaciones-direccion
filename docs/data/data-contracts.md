@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.3.0  
+**Versión:** 1.4.0  
 **Producto:** Faro  
 **Alcance:** datos 100 % sintéticos
 
@@ -101,7 +101,7 @@ Las tablas deben comenzar en `A1`, tener una sola fila de encabezados y no conte
 | DC-004 | Ventas | `ventas.xlsx` | `ventas` | `sale_line` |
 | DC-005 | Inventario | `inventario.xlsx` | `inventario` | `inventory_snapshot` |
 | DC-006 | Pedidos | `pedidos.xlsx` | `pedidos` | `purchase_order_line` |
-| DC-007 | Facturas | `facturas/*.pdf` | no aplica | `invoice`, `invoice_line` |
+| DC-007 | Facturas y cotizaciones PDF | `documentos/*.pdf` | no aplica | `document`, `document_page`, `invoice`, `invoice_line`, `quotation`, `quotation_line`, `extraction_result` |
 | DC-008 | Lote de correo producido por plugin | `plugin-email-batch.json` | no aplica | `plugin_run`, `email_message`, `extraction_result` |
 | DC-009 | Verdad de referencia | `expected_anomalies.json` | no aplica | `expected_anomaly` |
 
@@ -267,17 +267,66 @@ Proveedor y producto deben existir. La fecha esperada no puede ser anterior a la
 
 ---
 
-## 13. DC-007 — Facturas PDF
+## 13. DC-007 — Facturas y cotizaciones PDF
 
-**Directorio:** `data/raw/facturas/`
+**Directorio canónico:** `data/raw/documentos/`  
+**Compatibilidad temporal:** `data/raw/facturas/` se acepta mientras se migra el generador sintético.
 
-Restricciones:
+### Tipos documentales
 
-- PDF sintético;
-- texto extraíble;
-- una factura por archivo;
-- moneda COP;
-- OCR general fuera de alcance.
+- `invoice`;
+- `quotation`;
+- `unsupported`.
+
+### Variantes de entrada
+
+- PDF con texto nativo;
+- PDF completamente escaneado;
+- PDF mixto con páginas nativas y escaneadas.
+
+### Límites del MVP
+
+- documentos sintéticos;
+- idioma español;
+- una a tres páginas;
+- texto impreso legible;
+- plantillas conocidas o variaciones controladas;
+- sin contraseña;
+- sin manuscritos complejos.
+
+### Selección de método por página
+
+Cada página debe registrar una de estas rutas:
+
+- `native_text`;
+- `ocr`;
+- `unsupported`.
+
+La extracción nativa tiene prioridad cuando produce texto suficiente. El umbral de suficiencia debe ser determinístico y configurable.
+
+Cuando se utilice OCR deben registrarse:
+
+- `ocr_engine`;
+- `ocr_engine_version`;
+- `ocr_language`;
+- `ocr_confidence` cuando esté disponible;
+- `render_dpi`;
+- `page_text`;
+- región o fragmento de evidencia;
+- estado de revisión.
+
+### Campos comunes del documento
+
+- `document_id`;
+- `document_type`;
+- `source_file_id`;
+- `page_count`;
+- `processing_status`;
+- `classification_method`;
+- `classification_confidence`;
+- `record_status`.
+
+### Factura
 
 Campos de cabecera:
 
@@ -301,7 +350,56 @@ Campos por línea:
 - `unit_price_cop`;
 - `line_total_cop`.
 
-Cada campo conserva página, evidencia, método, confianza y revisión cuando corresponda.
+Reglas:
+
+- `total_cop` debe coincidir con `subtotal_cop + tax_cop` dentro de la tolerancia;
+- cada línea debe conservar página y evidencia;
+- las correspondencias inciertas requieren revisión;
+- el duplicado se evalúa, como mínimo, con proveedor, número y fecha.
+
+### Cotización
+
+Campos de cabecera:
+
+- `quotation_id`;
+- `quotation_number`;
+- `supplier_name_raw`;
+- `supplier_id`;
+- `issue_date`;
+- `valid_until`;
+- `currency`;
+- `subtotal_cop`;
+- `tax_cop`;
+- `total_cop`.
+
+Campos por línea:
+
+- `quotation_line_id`;
+- `product_name_raw`;
+- `product_id`;
+- `quantity`;
+- `unit_price_cop`;
+- `line_total_cop`.
+
+Reglas:
+
+- `valid_until`, cuando exista, no puede ser anterior a `issue_date`;
+- los totales deben validarse determinísticamente;
+- una cotización no se trata como factura ni modifica inventario o cuentas;
+- toda correspondencia incierta requiere revisión.
+
+### Manejo de fallos
+
+- documento no soportado: `rejected`;
+- página ilegible: `pending_review`;
+- clasificación incierta: `pending_review`;
+- campo sin evidencia: no se consolida;
+- OCR sin versión identificable: `error`;
+- fuente original: inmutable.
+
+### Salida
+
+Entidades lógicas `document`, `document_page`, `invoice`, `invoice_line`, `quotation`, `quotation_line` y `extraction_result`.
 
 ---
 
@@ -446,13 +544,16 @@ Estructura mínima:
 }
 ```
 
-### PDF
+### PDF nativo u OCR
 
 ```json
 {
   "source_type": "pdf",
   "file_path": "data/raw/facturas/factura_008.pdf",
   "page": 1,
+  "extraction_method": "ocr",
+  "ocr_engine": "configured-engine",
+  "ocr_engine_version": "pinned-version",
   "field": "invoice_number",
   "text_excerpt": "Factura No. FV-1008"
 }
@@ -505,4 +606,7 @@ Los contratos quedan listos cuando:
 7. pueden construirse fixtures válidos e inválidos;
 8. no existen contradicciones con alcance, requisitos o casos de uso;
 9. el lote del plugin valida contra el JSON Schema;
-10. la salida real y el fixture usan exactamente el mismo contrato.
+10. la salida real y el fixture usan exactamente el mismo contrato;
+11. los documentos nativos, escaneados y mixtos pueden representarse por página;
+12. factura y cotización tienen contratos separados;
+13. los metadatos OCR permiten reproducir y auditar la extracción.

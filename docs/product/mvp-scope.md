@@ -3,13 +3,13 @@
 **Estado:** línea base aprobada para implementación  
 **Producto:** Faro  
 **Reto:** R4 — Operaciones / Dirección  
-**Versión del alcance:** 1.3
+**Versión del alcance:** 1.4
 
 ---
 
 ## 1. Objetivo
 
-Construir un MVP local y reproducible que permita a una micro o pequeña empresa comercializadora o distribuidora consolidar información operativa sintética proveniente de libros de Excel, facturas PDF y correos consultados mediante plugins o integraciones de IA; validar su calidad; calcular indicadores; detectar anomalías; generar alertas trazables; y responder preguntas empresariales mediante evidencia verificable.
+Construir un MVP local y reproducible que permita a una micro o pequeña empresa comercializadora o distribuidora consolidar información operativa sintética proveniente de libros de Excel, facturas y cotizaciones PDF —incluidos documentos escaneados— y correos consultados mediante plugins o integraciones de IA; validar su calidad; calcular indicadores; detectar anomalías; generar alertas trazables; y responder preguntas empresariales mediante evidencia verificable.
 
 ---
 
@@ -31,7 +31,7 @@ El escenario de demostración representará una sola empresa sintética y utiliz
 | Ventas | `ventas.xlsx` | Transacciones y líneas de venta |
 | Inventario | `inventario.xlsx` | Existencias y puntos de reposición |
 | Pedidos | `pedidos.xlsx` | Pedidos realizados a proveedores |
-| Facturas | `*.pdf` | Facturas sintéticas de proveedores |
+| Documentos de proveedores | `*.pdf` | Facturas y cotizaciones, con texto nativo o escaneadas |
 | Correo | plugin o integración de Gmail | Pedidos, cambios, cancelaciones y novedades |
 | Transferencia plugin → Faro | `plugin-email-batch.json` | Lote estructurado producido por la IA |
 | Verdad de referencia | `expected_anomalies.json` | Evaluación automatizada interna |
@@ -78,22 +78,52 @@ La ingesta debe:
 
 ---
 
-### MUST-002 — Procesamiento de facturas PDF
+### MUST-002 — Procesamiento de facturas y cotizaciones PDF
 
-Faro debe extraer de facturas PDF sintéticas:
+Faro debe aceptar documentos PDF sintéticos con texto nativo, páginas escaneadas o contenido mixto.
+
+Para cada página debe:
+
+- detectar si existe texto nativo suficiente;
+- usar extracción directa cuando sea posible;
+- ejecutar OCR cuando la página sea escaneada o el texto sea insuficiente;
+- registrar la ruta utilizada, el motor, la versión, el idioma y la confianza disponible;
+- conservar evidencia por archivo y página;
+- rechazar o enviar a revisión documentos ilegibles.
+
+Los tipos garantizados son:
+
+- factura de proveedor;
+- cotización de proveedor.
+
+De las facturas debe extraer, como mínimo:
 
 - número de factura;
 - proveedor;
 - fecha de emisión;
+- pedido relacionado cuando exista;
 - productos;
 - cantidades;
 - subtotal;
 - impuestos;
 - total.
 
-Cada campo extraído debe conservar archivo, página, evidencia, método, confianza cuando intervenga IA y estado de revisión humana.
+De las cotizaciones debe extraer, como mínimo:
 
-Las facturas sintéticas deben contener texto extraíble. OCR general queda fuera del MVP.
+- número de cotización;
+- proveedor;
+- fecha de emisión;
+- fecha de vigencia cuando exista;
+- productos;
+- cantidades;
+- precios unitarios;
+- subtotal;
+- impuestos;
+- total.
+
+Cada campo conserva archivo, página, evidencia, método, confianza cuando corresponda y estado de revisión humana.
+
+El soporte no es universal: se limita a documentos sintéticos en español, entre una y tres páginas, texto impreso legible y plantillas controladas.
 
 ---
 
@@ -284,7 +314,7 @@ El proyecto debe ejecutarse en Ubuntu con dependencias versionadas, `.env.exampl
 | Empresas sintéticas | 1 |
 | Cuentas de correo sintéticas | 1 |
 | Libros de Excel | 4 |
-| Facturas PDF | conjunto reducido |
+| Facturas y cotizaciones PDF | conjunto reducido; 1 a 3 páginas |
 | Plataformas de plugin obligatorias | 1 |
 | Aplicaciones fuente de correo | Gmail |
 | Esquemas de transferencia | 1 |
@@ -313,7 +343,8 @@ El proyecto debe ejecutarse en Ubuntu con dependencias versionadas, `.env.exampl
 - pronósticos avanzados;
 - aplicación móvil;
 - arquitectura multiempresa de producción;
-- entrenamiento de modelos propios.
+- entrenamiento de modelos propios;
+- OCR universal, manuscritos complejos y documentos fuera de los tipos aprobados.
 
 ---
 
@@ -326,6 +357,8 @@ El proyecto debe ejecutarse en Ubuntu con dependencias versionadas, `.env.exampl
 | `simulated` | Representada únicamente para la demostración |
 | `out of scope` | Excluida explícitamente del MVP |
 
+El soporte OCR solo puede marcarse como `implemented` después de validar los fixtures nativos, escaneados y mixtos definidos en el plan de validación.
+
 La conexión ChatGPT/Claude–Gmail solo puede marcarse como `implemented` después de verificarla en la cuenta utilizada durante la Maratón.
 
 ---
@@ -335,7 +368,7 @@ La conexión ChatGPT/Claude–Gmail solo puede marcarse como `implemented` despu
 El MVP se considera terminado cuando:
 
 1. los cuatro libros de Excel pueden procesarse;
-2. las facturas PDF pueden procesarse;
+2. las facturas y cotizaciones PDF con texto nativo, escaneado o mixto pueden procesarse;
 3. un plugin o integración consulta Gmail sintético y genera un lote válido;
 4. Faro valida e importa el lote sin modificarlo;
 5. la contingencia reproduce el mismo contrato sin conexión externa;
