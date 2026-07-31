@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data check-ocr-runtime extract-pdf demo clean
+.PHONY: setup lock test lint check run generate-data validate-data ingest-excel check-ocr-runtime extract-pdf demo clean
 
 setup:
 	$(UV) sync --locked
@@ -25,6 +25,9 @@ generate-data:
 
 validate-data:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/validate_dataset.py
+
+ingest-excel:
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/ingest_excel.py
 
 check-ocr-runtime:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/check_ocr_runtime.py

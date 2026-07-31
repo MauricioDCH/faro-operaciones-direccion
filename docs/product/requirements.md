@@ -4,7 +4,7 @@
 **Producto:** Faro  
 **Reto:** R4 — Operaciones / Dirección  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.5
+**Versión:** 1.6
 
 ---
 
@@ -25,9 +25,9 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 
 | ID | Requisito | Evidencia de aceptación | Estado |
 |---|---|---|---|
-| FR-001 | Ingerir los libros de Excel sintéticos aprobados. | Los libros y hojas válidos se procesan, sus metadatos quedan registrados y los originales permanecen sin cambios. | `planned` |
+| FR-001 | Ingerir los libros de Excel sintéticos aprobados. | Los cuatro libros y seis hojas válidos se procesan, sus metadatos quedan registrados y los originales conservan sus hashes. | `implemented` |
 | FR-002 | Extraer los campos aprobados de facturas y cotizaciones PDF sintéticas. | Los documentos nativos, escaneados y mixtos producen campos con archivo, página, método, evidencia y confianza cuando corresponda. | `implemented` |
-| FR-003 | Validar hojas, esquemas, campos obligatorios, tipos, fechas, rangos, duplicados e integridad referencial. | Las anomalías detectadas se comparan con la verdad de referencia. | `planned` |
+| FR-003 | Validar hojas, esquemas, campos obligatorios, tipos, fechas, rangos, duplicados e integridad referencial. | La ingesta tabular detecta las anomalías Excel sembradas y las pruebas verifican estructura, tipos, reglas y relaciones. | `implemented` |
 | FR-004 | Normalizar identificadores, fechas, unidades y nombres mediante reglas aprobadas. | Cada correspondencia conserva trazabilidad y las asociaciones inciertas requieren revisión humana. | `planned` |
 | FR-005 | Consolidar los registros válidos en un modelo operativo común. | Cada registro puede rastrearse hasta el archivo o referencia de origen. | `planned` |
 | FR-006 | Calcular indicadores operativos mediante lógica determinística. | Fórmulas, casos límite y resultados esperados están cubiertos por pruebas. | `planned` |
@@ -56,10 +56,10 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 |---|---|---|---|
 | QR-001 | Ejecutarse localmente en Ubuntu con dependencias versionadas. | El proyecto se instala y ejecuta con los comandos documentados. | `implemented` |
 | QR-002 | Usar únicamente datos sintéticos determinísticos con semilla fija. | Dos ejecuciones con la misma semilla producen los mismos archivos y anomalías. | `implemented` |
-| QR-003 | No sobrescribir fuentes ni artefactos importados. | Los archivos de entrada mantienen su hash después del procesamiento. | `planned` |
+| QR-003 | No sobrescribir fuentes ni artefactos importados. | Los archivos Excel mantienen su hash antes y después de la ingesta; los PDF se leen sin sobrescritura. | `implemented` |
 | QR-004 | Mantener secretos fuera del control de versiones. | Existe `.env.example`, `.env` está excluido y no hay credenciales conocidas. | `implemented` |
 | QR-005 | Proporcionar comandos reproducibles de instalación, prueba y ejecución. | Funcionan desde un clon limpio. | `implemented` |
-| QR-006 | Incorporar pruebas de éxito, error y regresión. | Cada requisito implementado cuenta con pruebas pertinentes. | `planned` |
+| QR-006 | Incorporar pruebas de éxito, error y regresión. | Las rutas sintética, PDF/OCR y Excel cuentan con pruebas unitarias e integración. | `implemented` |
 | QR-007 | Mantener trazabilidad completa. | El 100 % de alertas y respuestas numéricas apunta a fuentes identificables. | `planned` |
 | QR-008 | Producir resultados determinísticos para cálculos y reglas. | Las mismas entradas y configuración producen los mismos resultados. | `planned` |
 | QR-009 | Informar errores de forma estructurada. | Cada error incluye código, fuente, ubicación, descripción y severidad. | `planned` |

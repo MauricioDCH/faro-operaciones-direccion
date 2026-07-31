@@ -134,3 +134,46 @@ rules:
       previous_period: 2026-06
       current_period: 2026-07
       threshold_pct: -30
+
+
+  - id: RULE-XLSX-HEADER-001
+    type: required_and_unique_headers
+    category: structure
+    severity: error
+    enabled: true
+    description: Validate required and duplicate headers in approved Excel sheets.
+    source: data/raw/*.xlsx
+
+  - id: RULE-XLSX-TYPE-001
+    type: tabular_type_conversion
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Convert and validate string, boolean, decimal, and date values.
+    source: data/raw/*.xlsx
+
+  - id: RULE-FK-CUSTOMER-001
+    type: unknown_customer
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect sale references that do not exist in the customer catalog.
+    source: data/raw/ventas.xlsx
+
+  - id: RULE-SALE-TOTAL-001
+    type: sale_line_total_mismatch
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Validate quantity times unit price minus discount against the line total.
+    source: data/raw/ventas.xlsx
+    parameters:
+      tolerance_cop: 0.01
+
+  - id: RULE-RAW-IMMUTABLE-001
+    type: raw_source_hash_change
+    category: integrity
+    severity: error
+    enabled: true
+    description: Verify that source hashes do not change during ingestion.
+    source: data/raw/*.xlsx
