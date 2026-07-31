@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://faro.local/schemas/plugin-email-batch.schema.json",
+  "title": "Faro plugin email batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batch_id",
+    "platform",
+    "plugin_name",
+    "source_app",
+    "account_label",
+    "query",
+    "prompt_version",
+    "generated_at",
+    "messages",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "batch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "platform": {
+      "enum": [
+        "chatgpt",
+        "claude"
+      ]
+    },
+    "plugin_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_app": {
+      "const": "gmail"
+    },
+    "account_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompt_version": {
+      "const": "1.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/message"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_reference",
+        "from_address",
+        "to_addresses",
+        "subject",
+        "sent_at",
+        "body_excerpt",
+        "event_type",
+        "extractions"
+      ],
+      "properties": {
+        "provider_message_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "thread_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "from_address": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to_addresses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "subject": {
+          "type": "string"
+        },
+        "sent_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "body_excerpt": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "event_type": {
+          "enum": [
+            "new_order",
+            "quantity_change",
+            "cancellation",
+            "delivery_update",
+            "supplier_notice",
+            "unknown"
+          ]
+        },
+        "extractions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/extraction"
+          }
+        }
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field",
+        "raw_value",
+        "proposed_value",
+        "confidence",
+        "evidence_excerpt",
+        "review_status"
+      ],
+      "properties": {
+        "field": {
+          "enum": [
+            "order_id",
+            "supplier_id",
+            "product_id",
+            "quantity",
+            "previous_quantity",
+            "new_quantity",
+            "expected_delivery_date"
+          ]
+        },
+        "raw_value": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "proposed_value": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_excerpt": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "review_status": {
+          "enum": [
+            "pending",
+            "accepted",
+            "corrected",
+            "rejected"
+          ]
+        }
+      }
+    }
+  }
+}

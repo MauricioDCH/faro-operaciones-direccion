@@ -1,0 +1,14 @@
+app:
+  name: Faro
+  environment: development
+  log_level: INFO
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  expected_dir: data/expected
+  samples_dir: data/samples
+
+runtime:
+  synthetic_seed: 20260731
+  timezone: America/Bogota

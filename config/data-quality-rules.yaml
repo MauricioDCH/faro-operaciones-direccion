@@ -1,0 +1,136 @@
+version: 1
+status: implemented
+dataset_version: 0.1.0
+seed: 20260731
+rules:
+  - id: RULE-DUP-SALE-001
+    type: duplicate_sale_line
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect identical business sale lines with different line identifiers.
+    source: data/raw/ventas.xlsx
+    parameters:
+      key_fields:
+        - sale_id
+        - sale_date
+        - customer_id
+        - product_id
+        - quantity
+        - unit_price_cop
+        - discount_cop
+        - line_total_cop
+        - channel
+
+  - id: RULE-REQUIRED-001
+    type: missing_required_field
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect missing required values in sale lines.
+    source: data/raw/ventas.xlsx
+    parameters:
+      required_fields:
+        - sale_id
+        - sale_line_id
+        - sale_date
+        - customer_id
+        - product_id
+        - quantity
+
+  - id: RULE-DATE-001
+    type: invalid_date
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect dates that are not valid ISO calendar dates.
+    source: data/raw/ventas.xlsx
+    parameters:
+      format: YYYY-MM-DD
+
+  - id: RULE-QUANTITY-001
+    type: negative_quantity
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect negative sale quantities.
+    source: data/raw/ventas.xlsx
+    parameters:
+      minimum: 0
+      exclusive: true
+
+  - id: RULE-FK-PRODUCT-001
+    type: unknown_product
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect product references that do not exist in the product catalog.
+    source: data/raw/ventas.xlsx
+    parameters:
+      reference: data/raw/catalogos.xlsx#productos.product_id
+
+  - id: RULE-SUPPLIER-NAME-001
+    type: inconsistent_supplier_name
+    category: data_quality
+    severity: warning
+    enabled: true
+    description: Compare the extracted supplier name with the canonical supplier record.
+    source: data/raw/facturas/*.pdf
+    parameters:
+      canonical_field: supplier_name
+      observed_field: supplier_name_raw
+
+  - id: RULE-LOW-STOCK-001
+    type: low_inventory
+    category: operational
+    severity: warning
+    enabled: true
+    description: Detect available inventory below the configured reorder point.
+    source: data/raw/inventario.xlsx
+    parameters:
+      formula: stock_on_hand - committed_quantity < reorder_point
+
+  - id: RULE-ORDER-INVOICE-001
+    type: order_invoice_mismatch
+    category: operational
+    severity: warning
+    enabled: true
+    description: Compare ordered and invoiced quantities for the same order and product.
+    source: data/raw/facturas/*.pdf
+    parameters:
+      tolerance_quantity: 0
+
+  - id: RULE-DUP-INVOICE-001
+    type: duplicate_invoice
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Detect invoices sharing supplier, invoice number, and issue date.
+    source: data/raw/facturas/*.pdf
+    parameters:
+      key_fields:
+        - supplier_id
+        - invoice_number
+        - issue_date
+
+  - id: RULE-EMAIL-ORDER-001
+    type: email_order_conflict
+    category: operational
+    severity: warning
+    enabled: true
+    description: Detect a plugin-extracted quantity change that differs from the order workbook.
+    source: data/samples/plugin-email-batch.example.json
+    parameters:
+      event_type: quantity_change
+
+  - id: RULE-SALES-DECLINE-001
+    type: abnormal_sales_decline
+    category: operational
+    severity: warning
+    enabled: true
+    description: Detect a material decline in valid sales versus the previous month.
+    source: data/raw/ventas.xlsx
+    parameters:
+      previous_period: 2026-06
+      current_period: 2026-07
+      threshold_pct: -30
