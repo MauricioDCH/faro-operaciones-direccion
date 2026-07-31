@@ -272,7 +272,7 @@ Proveedor y producto deben existir. La fecha esperada no puede ser anterior a la
 **Directorio canónico:** `data/raw/documentos/`  
 **Compatibilidad temporal:** `data/raw/facturas/` se acepta mientras se migra el generador sintético.
 
-**Implementación actual:** Poppler y Tesseract según `docs/decisions/0002-select-local-pdf-ocr-stack.md`; el contrato permanece independiente de esas herramientas.
+**Implementación actual:** Poppler y Tesseract recuperan texto; un parser determinístico versionado extrae los campos aprobados y valida líneas y totales. El contrato permanece independiente de esas herramientas.
 
 ### Tipos documentales
 

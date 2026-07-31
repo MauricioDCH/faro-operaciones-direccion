@@ -5,7 +5,7 @@
 > **Evento:** Maratón de IA — Ruta N  
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Datos:** 100 % sintéticos  
-> **Estado:** línea base sintética y recuperación PDF/OCR implementadas; consolidación operativa pendiente
+> **Estado:** línea base sintética, recuperación PDF/OCR y extracción estructurada documental implementadas; consolidación operativa pendiente
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -194,7 +194,7 @@ Este segmento maneja productos, ventas, inventarios, compras, pedidos y proveedo
 
 - cargar libros de Excel;
 - recuperar texto por página mediante extracción nativa u OCR y clasificar facturas y cotizaciones;
-- extraer campos estructurados de facturas y cotizaciones —pendiente en la siguiente iteración—;
+- extraer campos estructurados y validar líneas y totales de facturas y cotizaciones;
 - importar y validar el lote estructurado producido por el plugin de correo;
 - validar esquemas, tipos, fechas y campos obligatorios;
 - detectar duplicados e inconsistencias conocidas;

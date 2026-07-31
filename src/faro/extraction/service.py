@@ -20,6 +20,7 @@ from faro.extraction.errors import (
 )
 from faro.extraction.ocr import OcrEngine
 from faro.extraction.pdf import NativeTextPolicy, PdfInspector, PdfPageReader
+from faro.extraction.structured import StructuredDocumentExtractor
 from faro.provenance.models import (
     EvidenceFragment,
     SourceFile,
@@ -47,6 +48,7 @@ class PdfExtractionService:
         classifier: DocumentClassifier | None = None,
         inspector: PdfInspector | None = None,
         page_reader: PdfPageReader | None = None,
+        structured_extractor: StructuredDocumentExtractor | None = None,
     ) -> None:
         if extraction_mode not in {"auto", "native_only", "ocr_only"}:
             raise ValueError("Unsupported PDF extraction mode.")
@@ -58,6 +60,7 @@ class PdfExtractionService:
         self.inspector = inspector or PdfInspector(max_pages=max_pages)
         self.native_text_policy = native_text_policy or NativeTextPolicy()
         self.classifier = classifier or DocumentClassifier()
+        self.structured_extractor = structured_extractor or StructuredDocumentExtractor()
 
     def extract(self, path: Path) -> DocumentExtraction:
         source_path = path.resolve()
@@ -84,9 +87,18 @@ class PdfExtractionService:
 
         combined_text = "\n".join(page.page_text for page in pages if page.page_text)
         classification = self.classifier.classify(combined_text)
+        structured = self.structured_extractor.extract(
+            document_id=document_id,
+            document_type=classification.document_type,
+            pages=tuple(pages),
+            created_at=source_file.ingested_at,
+        )
         processing_status, record_status = _aggregate_status(
             pages=pages,
             document_type=classification.document_type,
+            structured_status=(
+                structured.document.record_status if structured.document else None
+            ),
         )
         return DocumentExtraction(
             document_id=document_id,
@@ -98,6 +110,8 @@ class PdfExtractionService:
             processing_status=processing_status,
             record_status=record_status,
             pages=tuple(pages),
+            structured_document=structured.document,
+            quality_findings=structured.findings,
         )
 
     def _extract_page(
@@ -275,9 +289,12 @@ def _aggregate_status(
     *,
     pages: list[DocumentPage],
     document_type: DocumentType,
+    structured_status: RecordStatus | None = None,
 ) -> tuple[ProcessingStatus, RecordStatus]:
     if document_type is DocumentType.UNSUPPORTED:
         return ProcessingStatus.REJECTED, RecordStatus.REJECTED
     if any(page.processing_status is not ProcessingStatus.PROCESSED for page in pages):
+        return ProcessingStatus.PENDING_REVIEW, RecordStatus.PENDING_REVIEW
+    if structured_status is RecordStatus.PENDING_REVIEW:
         return ProcessingStatus.PENDING_REVIEW, RecordStatus.PENDING_REVIEW
     return ProcessingStatus.PROCESSED, RecordStatus.ACCEPTED
