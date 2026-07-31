@@ -1,18 +1,46 @@
 """Excel ingestion public interface."""
 
-from faro.ingestion.excel import ExcelIngestionService
-from faro.ingestion.models import (
-    ExcelIngestionBatch,
-    IngestionFinding,
-    TabularRecord,
-)
-from faro.ingestion.xlsx import XlsxFormatError, XlsxWorkbook
+from __future__ import annotations
 
-__all__ = [
-    "ExcelIngestionBatch",
-    "ExcelIngestionService",
-    "IngestionFinding",
-    "TabularRecord",
-    "XlsxFormatError",
-    "XlsxWorkbook",
-]
+from importlib import import_module
+from typing import Any
+
+_EXPORTS = {
+    "ExcelIngestionService": (
+        "faro.ingestion.excel",
+        "ExcelIngestionService",
+    ),
+    "ExcelIngestionBatch": (
+        "faro.ingestion.models",
+        "ExcelIngestionBatch",
+    ),
+    "IngestionFinding": (
+        "faro.ingestion.models",
+        "IngestionFinding",
+    ),
+    "TabularRecord": (
+        "faro.ingestion.models",
+        "TabularRecord",
+    ),
+    "XlsxFormatError": (
+        "faro.ingestion.xlsx",
+        "XlsxFormatError",
+    ),
+    "XlsxWorkbook": (
+        "faro.ingestion.xlsx",
+        "XlsxWorkbook",
+    ),
+}
+
+__all__ = list(_EXPORTS)
+
+
+def __getattr__(name: str) -> Any:
+    try:
+        module_name, attribute_name = _EXPORTS[name]
+    except KeyError as error:
+        raise AttributeError(name) from error
+
+    value = getattr(import_module(module_name), attribute_name)
+    globals()[name] = value
+    return value
