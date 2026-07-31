@@ -4,7 +4,7 @@
 **Producto:** Faro  
 **Reto:** R4 — Operaciones / Dirección  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.3
+**Versión:** 1.4
 
 ---
 
@@ -26,7 +26,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | ID | Requisito | Evidencia de aceptación | Estado |
 |---|---|---|---|
 | FR-001 | Ingerir los libros de Excel sintéticos aprobados. | Los libros y hojas válidos se procesan, sus metadatos quedan registrados y los originales permanecen sin cambios. | `planned` |
-| FR-002 | Extraer los campos aprobados de facturas PDF sintéticas. | Cada campo conserva archivo, página, método, evidencia y confianza cuando corresponda. | `planned` |
+| FR-002 | Extraer los campos aprobados de facturas y cotizaciones PDF sintéticas. | Los documentos nativos, escaneados y mixtos producen campos con archivo, página, método, evidencia y confianza cuando corresponda. | `planned` |
 | FR-003 | Validar hojas, esquemas, campos obligatorios, tipos, fechas, rangos, duplicados e integridad referencial. | Las anomalías detectadas se comparan con la verdad de referencia. | `planned` |
 | FR-004 | Normalizar identificadores, fechas, unidades y nombres mediante reglas aprobadas. | Cada correspondencia conserva trazabilidad y las asociaciones inciertas requieren revisión humana. | `planned` |
 | FR-005 | Consolidar los registros válidos en un modelo operativo común. | Cada registro puede rastrearse hasta el archivo o referencia de origen. | `planned` |
@@ -44,6 +44,9 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-017 | Producir un lote de correo conforme al esquema canónico. | La IA genera JSON válido sin texto adicional y cada mensaje conserva referencia, evidencia, extracción y confianza. | `planned` |
 | FR-018 | Importar y validar el lote del plugin. | Faro valida el JSON Schema, rechaza lotes incompatibles, detecta duplicados y preserva el artefacto original. | `planned` |
 | FR-019 | Proporcionar contingencia mediante un fixture del mismo contrato. | El fixture pasa el mismo validador y permite ejecutar la demostración sin plugin ni internet. | `planned` |
+| FR-020 | Seleccionar por página entre extracción de texto nativo y OCR. | La ruta queda registrada y las páginas escaneadas no se procesan como texto vacío. | `planned` |
+| FR-021 | Clasificar documentos PDF como factura, cotización o no soportado. | Los documentos soportados siguen su contrato y los no soportados se rechazan sin inventar campos. | `planned` |
+| FR-022 | Registrar metadatos y procedencia del OCR. | Cada resultado OCR conserva archivo, página, motor, versión, idioma, confianza y evidencia. | `planned` |
 
 ---
 
@@ -67,6 +70,8 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | QR-014 | Validar toda salida del plugin mediante un JSON Schema versionado. | Los lotes inválidos se rechazan con errores localizables. | `planned` |
 | QR-015 | No inventar referencias de correo. | Una extracción sin referencia verificable queda observada y requiere revisión. | `planned` |
 | QR-016 | Mantener portabilidad entre ChatGPT y Claude. | Ambos producen el mismo contrato sin cambiar el núcleo de Faro. | `planned` |
+| QR-017 | Degradar de forma segura ante OCR ilegible o insuficiente. | El documento queda `pending_review` o `unsupported`; no se generan campos sin evidencia. | `planned` |
+| QR-018 | Mantener reproducible la ruta OCR. | El motor, idioma y versiones están fijados y los fixtures producen resultados verificables en el entorno documentado. | `planned` |
 
 ---
 
@@ -86,7 +91,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | Capacidad | Requisitos |
 |---|---|
 | Libros de Excel | FR-001, FR-003, QR-003, QR-009 |
-| Facturas PDF | FR-002, FR-011, FR-012 |
+| Facturas y cotizaciones PDF | FR-002, FR-020, FR-021, FR-022, QR-017, QR-018 |
 | Plugin de correo | FR-016, FR-017, QR-013, QR-015, QR-016 |
 | Importación del lote | FR-018, QR-014 |
 | Contingencia | FR-019, QR-011 |
@@ -116,6 +121,7 @@ Las decisiones se documentan en `docs/decisions/`.
 | Alcance | `docs/product/mvp-scope.md` |
 | Casos de uso | `docs/product/use-cases.md` |
 | Flujo del plugin de correo | `docs/integrations/plugin-email-workflow.md` |
+| Decisión de OCR | `docs/decisions/0001-support-scanned-pdf-ocr.md` |
 | Contratos | `docs/data/data-contracts.md` |
 | Campos canónicos | `docs/data/data-dictionary.md` |
 | Esquema del lote | `schemas/plugin-email-batch.schema.json` |

@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.3.0  
+**Versión:** 1.4.0  
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -127,6 +127,25 @@ Todos los datos del MVP son sintéticos.
 
 - `gmail`
 
+### 3.10 `document_type`
+
+- `invoice`
+- `quotation`
+- `unsupported`
+
+### 3.11 `page_extraction_method`
+
+- `native_text`
+- `ocr`
+- `unsupported`
+
+### 3.12 `document_processing_status`
+
+- `pending`
+- `processed`
+- `pending_review`
+- `rejected`
+
 ---
 
 ## 4. Entidad `source_file`
@@ -170,6 +189,7 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 | `line` | `integer` | Sí | Línea dentro de texto | `technical_metadata` | `3` |
 | `field` | `string` | Sí | Campo documental asociado | `technical_metadata` | `invoice_number` |
 | `text_excerpt` | `string` | Sí | Fragmento breve de evidencia | `synthetic_non_sensitive` | `Factura No. FV-1008` |
+| `bounding_box` | `json` | Sí | Región de evidencia en coordenadas de página | `technical_metadata` | `{"x":120,"y":80,"w":240,"h":40}` |
 
 **Regla:** debe informarse únicamente la ubicación que la fuente permita determinar.
 
@@ -314,13 +334,65 @@ Representa una línea de pedido a proveedor.
 
 ---
 
-## 12. Entidad `invoice`
+## 12. Entidad `document`
+
+Representa un PDF de proveedor antes de materializarlo como factura o cotización.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `document_id` | `string` | No | Identificador interno único | `DOC-000001` |
+| `source_file_id` | `string` | No | FK al PDF original | `SRC-000400` |
+| `document_type` | `enum` | No | `invoice`, `quotation` o `unsupported` | `invoice` |
+| `page_count` | `integer` | No | Número de páginas, entre 1 y 3 para el MVP | `2` |
+| `classification_method` | `string` | No | Regla, heurística o IA | `llm_classification` |
+| `classification_confidence` | `decimal(5,4)` | Sí | Confianza entre 0 y 1 | `0.9600` |
+| `processing_status` | `enum` | No | Estado del procesamiento documental | `processed` |
+| `record_status` | `enum` | No | Estado de validación | `accepted` |
+
+**Consumidores:** extracción, revisión humana, procedencia y dashboard.
+
+---
+
+## 13. Entidad `document_page`
+
+Representa el resultado de inspección y recuperación de texto de una página.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `document_page_id` | `string` | No | Identificador único | `DOCP-000001` |
+| `document_id` | `string` | No | FK a `document` | `DOC-000001` |
+| `page_number` | `integer` | No | Página base 1 | `1` |
+| `extraction_method` | `enum` | No | `native_text`, `ocr` o `unsupported` | `ocr` |
+| `native_text_length` | `integer` | No | Longitud detectada antes del OCR | `0` |
+| `render_dpi` | `integer` | Sí | Resolución utilizada para OCR | `300` |
+| `ocr_engine` | `string` | Sí | Motor de OCR | `configured-engine` |
+| `ocr_engine_version` | `string` | Sí | Versión fijada | `pinned-version` |
+| `ocr_language` | `string` | Sí | Idioma configurado | `spa` |
+| `ocr_confidence` | `decimal(5,4)` | Sí | Confianza agregada cuando esté disponible | `0.9100` |
+| `page_text` | `string` | Sí | Texto recuperado | `Factura No. FV-1001...` |
+| `processing_status` | `enum` | No | Estado de la página | `processed` |
+| `source_location_id` | `string` | No | Procedencia de la página | `LOC-000400` |
+
+**Reglas:**
+
+- el OCR solo se ejecuta cuando el texto nativo es insuficiente;
+- motor y versión son obligatorios cuando `extraction_method=ocr`;
+- una página ilegible queda `pending_review`;
+- el texto recuperado no reemplaza el PDF original.
+
+**Consumidores:** clasificación, extracción, auditoría y revisión humana.
+
+---
+
+## 14. Entidad `invoice`
+
 
 Representa la cabecera de una factura de proveedor.
 
 | Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
 |---|---|---:|---|---|
 | `invoice_id` | `string` | No | Identificador interno único | `INV-000001` |
+| `document_id` | `string` | No | FK a `document` | `DOC-000001` |
 | `invoice_number` | `string` | No | Número visible en el documento | `FV-1001` |
 | `supplier_name_raw` | `string` | No | Nombre exacto extraído | `Distribuciones Andinas S.A.S.` |
 | `supplier_id` | `string` | Sí | FK resuelta a proveedor | `SUP-0001` |
@@ -339,7 +411,7 @@ Representa la cabecera de una factura de proveedor.
 
 ---
 
-## 13. Entidad `invoice_line`
+## 15. Entidad `invoice_line`
 
 Representa una línea de factura.
 
@@ -360,7 +432,53 @@ Representa una línea de factura.
 
 ---
 
-## 14. Entidad `plugin_run`
+## 16. Entidad `quotation`
+
+Representa la cabecera de una cotización de proveedor.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `quotation_id` | `string` | No | Identificador interno único | `QUO-000001` |
+| `document_id` | `string` | No | FK a `document` | `DOC-000002` |
+| `quotation_number` | `string` | No | Número visible del documento | `COT-2026-041` |
+| `supplier_name_raw` | `string` | No | Nombre exacto extraído | `Distribuciones Andinas S.A.S.` |
+| `supplier_id` | `string` | Sí | FK resuelta a proveedor | `SUP-0001` |
+| `issue_date` | `date` | No | Fecha de emisión | `2026-07-25` |
+| `valid_until` | `date` | Sí | Fecha límite de vigencia | `2026-08-08` |
+| `currency` | `enum` | No | `COP` para el MVP | `COP` |
+| `subtotal_cop` | `decimal(18,2)` | No | Subtotal | `625000.00` |
+| `tax_cop` | `decimal(18,2)` | No | Impuestos | `118750.00` |
+| `total_cop` | `decimal(18,2)` | No | Total cotizado | `743750.00` |
+| `record_status` | `enum` | No | Estado de validación | `pending_review` |
+| `source_location_id` | `string` | No | Evidencia de cabecera | `LOC-000420` |
+
+**Regla:** una cotización informa condiciones propuestas; no se trata como factura ni como movimiento confirmado.
+
+**Consumidores:** comparación de ofertas, revisión humana y trazabilidad.
+
+---
+
+## 17. Entidad `quotation_line`
+
+Representa una línea de cotización.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `quotation_line_id` | `string` | No | Identificador único | `QUOL-000001` |
+| `quotation_id` | `string` | No | FK a cotización | `QUO-000001` |
+| `product_name_raw` | `string` | No | Nombre exacto extraído | `Cafe molido x500` |
+| `product_id` | `string` | Sí | FK resuelta a producto | `PRD-0001` |
+| `quantity` | `decimal(18,3)` | No | Cantidad cotizada | `50.000` |
+| `unit_price_cop` | `decimal(18,2)` | No | Precio unitario cotizado | `12500.00` |
+| `line_total_cop` | `decimal(18,2)` | No | Total de línea | `625000.00` |
+| `record_status` | `enum` | No | Estado de validación | `pending_review` |
+| `source_location_id` | `string` | No | Página y evidencia | `LOC-000421` |
+
+**Consumidores:** normalización, comparación de ofertas, revisión humana y trazabilidad.
+
+---
+
+## 18. Entidad `plugin_run`
 
 Representa una ejecución delimitada de un plugin o integración de IA sobre Gmail.
 
@@ -386,7 +504,7 @@ Representa una ejecución delimitada de un plugin o integración de IA sobre Gma
 
 ---
 
-## 16. Entidad `email_message`
+## 19. Entidad `email_message`
 
 Representa un mensaje sintético consultado mediante un plugin o integración de IA.
 
@@ -418,7 +536,7 @@ Representa un mensaje sintético consultado mediante un plugin o integración de
 
 ---
 
-## 16. Entidad `extraction_result`
+## 20. Entidad `extraction_result`
 
 Representa un campo propuesto por parser, heurística o IA.
 
@@ -431,7 +549,11 @@ Representa un campo propuesto por parser, heurística o IA.
 | `target_field` | `string` | No | Campo destino | `product_id` |
 | `raw_value` | `string` | Sí | Valor original | `Cafe molido x500` |
 | `proposed_value` | `string` | Sí | Valor propuesto | `PRD-0001` |
-| `method` | `string` | No | Parser, regla, heurística o IA | `llm_mapping` |
+| `method` | `string` | No | Parser, OCR, regla, heurística o IA | `llm_mapping` |
+| `document_page_id` | `string` | Sí | Página documental cuando corresponda | `DOCP-000001` |
+| `ocr_engine` | `string` | Sí | Motor usado para recuperar el texto | `configured-engine` |
+| `ocr_engine_version` | `string` | Sí | Versión fijada del motor | `pinned-version` |
+| `ocr_confidence` | `decimal(5,4)` | Sí | Confianza OCR del campo o región | `0.9100` |
 | `provider` | `string` | Sí | Proveedor de IA | `gemini` |
 | `model` | `string` | Sí | Modelo utilizado | `model-name` |
 | `confidence` | `decimal(5,4)` | Sí | Valor entre 0 y 1 | `0.8200` |
@@ -441,6 +563,7 @@ Representa un campo propuesto por parser, heurística o IA.
 **Reglas:**
 
 - `confidence` es nulo para reglas determinísticas.
+- `ocr_engine`, `ocr_engine_version` y `document_page_id` son obligatorios cuando el valor depende de OCR.
 - Un resultado pendiente no reemplaza el valor original.
 - El modelo real solo se registra después de ejecutar la integración.
 
@@ -448,7 +571,7 @@ Representa un campo propuesto por parser, heurística o IA.
 
 ---
 
-## 17. Entidad `review_decision`
+## 21. Entidad `review_decision`
 
 Registra la decisión humana sobre una propuesta.
 
@@ -467,7 +590,7 @@ Registra la decisión humana sobre una propuesta.
 
 ---
 
-## 18. Entidad `quality_finding`
+## 22. Entidad `quality_finding`
 
 Representa un hallazgo de calidad.
 
@@ -490,7 +613,7 @@ Representa un hallazgo de calidad.
 
 ---
 
-## 19. Entidad `transformation_event`
+## 23. Entidad `transformation_event`
 
 Registra una transformación aplicada.
 
@@ -511,7 +634,7 @@ Registra una transformación aplicada.
 
 ---
 
-## 20. Entidad `indicator_result`
+## 24. Entidad `indicator_result`
 
 Representa un resultado determinístico de indicador.
 
@@ -534,7 +657,7 @@ Representa un resultado determinístico de indicador.
 
 ---
 
-## 21. Entidad `alert`
+## 25. Entidad `alert`
 
 Representa una condición operativa detectada por una regla.
 
@@ -558,7 +681,7 @@ Representa una condición operativa detectada por una regla.
 
 ---
 
-## 22. Entidad `business_answer`
+## 26. Entidad `business_answer`
 
 Representa una respuesta a una pregunta priorizada.
 
@@ -579,7 +702,7 @@ Representa una respuesta a una pregunta priorizada.
 
 ---
 
-## 23. Entidad `expected_anomaly`
+## 27. Entidad `expected_anomaly`
 
 Representa una anomalía sembrada en la verdad de referencia.
 
@@ -597,14 +720,17 @@ Representa una anomalía sembrada en la verdad de referencia.
 
 ---
 
-## 24. Relaciones principales
+## 28. Relaciones principales
 
 ```text
 customer 1 ─── * sale_line * ─── 1 product
 product  1 ─── * inventory_snapshot
 supplier 1 ─── * purchase_order_line * ─── 1 product
+source_file 1 ─── * document 1 ─── * document_page
 supplier 1 ─── * invoice 1 ─── * invoice_line
+supplier 1 ─── * quotation 1 ─── * quotation_line
 product  1 ─── * invoice_line
+product  1 ─── * quotation_line
 plugin_run 1 ─── * email_message
 plugin_run 1 ─── * extraction_result
 email_message 1 ─── * extraction_result
@@ -619,7 +745,7 @@ business_answer * ─── * indicator_result
 
 ---
 
-## 25. Reglas transversales
+## 29. Reglas transversales
 
 1. Todo registro procesado conserva `source_location_id` o una colección equivalente.
 2. Los valores monetarios no utilizan punto flotante binario.
@@ -631,10 +757,13 @@ business_answer * ─── * indicator_result
 8. Los campos de contacto son sintéticos.
 9. Los campos no disponibles se representan con `null`.
 10. Los consumidores no deben depender de alias de las fuentes.
+11. Una página OCR debe registrar motor y versión.
+12. Una cotización no se convierte en factura sin una fuente posterior que lo demuestre.
+13. Ningún campo documental se consolida sin evidencia de página.
 
 ---
 
-## 26. Criterios de aceptación del diccionario
+## 30. Criterios de aceptación del diccionario
 
 El diccionario se considera listo para implementación cuando:
 
@@ -647,4 +776,7 @@ El diccionario se considera listo para implementación cuando:
 7. no existen campos ambiguos o con semántica duplicada;
 8. los cambios posteriores siguen el control de versiones;
 9. `plugin_run`, `email_message` y `extraction_result` permiten reconstruir la ejecución;
-10. el fixture y una ejecución real comparten el mismo modelo.
+10. el fixture y una ejecución real comparten el mismo modelo;
+11. `document` y `document_page` representan PDF nativos, escaneados y mixtos;
+12. facturas y cotizaciones tienen entidades separadas;
+13. los campos OCR conservan motor, versión, confianza y procedencia.
