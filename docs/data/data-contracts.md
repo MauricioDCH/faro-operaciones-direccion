@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.1
+**Versión:** 1.4.2
 **Producto:** Faro  
 **Alcance:** datos 100 % sintéticos
 
@@ -104,6 +104,25 @@ Las tablas deben comenzar en `A1`, tener una sola fila de encabezados y no conte
 | DC-007 | Facturas y cotizaciones PDF | `documentos/*.pdf` | no aplica | `document`, `document_page`, `invoice`, `invoice_line`, `quotation`, `quotation_line`, `extraction_result` |
 | DC-008 | Lote de correo producido por plugin | `plugin-email-batch.json` | no aplica | `plugin_run`, `email_message`, `extraction_result` |
 | DC-009 | Verdad de referencia | `expected_anomalies.json` | no aplica | `expected_anomaly` |
+
+---
+
+## 6.1 Implementación tabular actual
+
+La ingesta Excel está implementada mediante un lector determinístico de archivos `.xlsx` basado en la biblioteca estándar. No ejecuta macros ni fórmulas y no modifica las fuentes.
+
+Garantías de la implementación:
+
+- valida la presencia de los cuatro libros y seis hojas aprobadas;
+- valida encabezados obligatorios y duplicados;
+- convierte cadenas, booleanos, decimales y fechas de Excel;
+- registra archivo, hoja, fila, columna y referencia de celda;
+- valida claves únicas, rangos, fórmulas de línea e integridad referencial;
+- conserva el valor raw junto al valor tipado;
+- compara el hash SHA-256 antes y después de la ingesta;
+- produce hallazgos estructurados con código, regla, severidad y ubicación.
+
+La salida técnica de esta etapa es `ExcelIngestionBatch`, compuesto por `TabularRecord`, `SpreadsheetSourceLocation` e `IngestionFinding`. La consolidación persistente continúa en `planned`.
 
 ---
 
@@ -542,7 +561,9 @@ Estructura mínima:
   "file_path": "data/raw/ventas.xlsx",
   "sheet": "ventas",
   "row": 12,
-  "column": "product_id"
+  "column": "product_id",
+  "cell_reference": "E12",
+  "raw_value": "PRD-0008"
 }
 ```
 
@@ -611,4 +632,7 @@ Los contratos quedan listos cuando:
 10. la salida real y el fixture usan exactamente el mismo contrato;
 11. los documentos nativos, escaneados y mixtos pueden representarse por página;
 12. factura y cotización tienen contratos separados;
-13. los metadatos OCR permiten reproducir y auditar la extracción.
+13. los metadatos OCR permiten reproducir y auditar la extracción;
+14. los cuatro libros y seis hojas Excel se validan con tipos y reglas determinísticas;
+15. cada campo tabular conserva archivo, hoja, fila, columna, celda y valor raw;
+16. los hashes de los archivos Excel permanecen sin cambios durante la ingesta.

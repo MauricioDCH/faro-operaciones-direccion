@@ -38,9 +38,24 @@ def stable_page_id(file_hash: str, page_number: int) -> str:
 
 
 def stable_location_id(file_hash: str, page_number: int) -> str:
-    """Build a deterministic source-location identifier."""
+    """Build a deterministic PDF source-location identifier."""
 
     return f"LOC-{file_hash[:12].upper()}-{page_number:03d}"
+
+
+def stable_spreadsheet_location_id(
+    file_hash: str,
+    sheet: str,
+    row: int,
+    column: str | None,
+) -> str:
+    """Build a deterministic Excel row or cell location identifier."""
+
+    material = "|".join(
+        (file_hash, sheet, str(row), column or "")
+    )
+    digest = sha256(material.encode("utf-8")).hexdigest()
+    return f"LOC-{digest[:16].upper()}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,6 +115,12 @@ class SourceFile:
         path: Path,
         file_hash: str | None = None,
         ingested_at: datetime | None = None,
+        *,
+        source_type: str = "pdf",
+        contract_id: str = "DC-007",
+        contract_version: str = "1.4.2",
+        dataset_version: str = "0.1.0",
+        seed: int | None = 20260731,
     ) -> "SourceFile":
         resolved = path.resolve()
         digest = file_hash or sha256_file(resolved)
@@ -112,11 +133,11 @@ class SourceFile:
             source_file_id=stable_source_id(digest),
             file_path=file_path,
             file_name=resolved.name,
-            source_type="pdf",
-            contract_id="DC-007",
-            contract_version="1.4.1",
-            dataset_version="0.1.0",
-            seed=20260731,
+            source_type=source_type,
+            contract_id=contract_id,
+            contract_version=contract_version,
+            dataset_version=dataset_version,
+            seed=seed,
             file_hash=f"sha256:{digest}",
             ingested_at=timestamp.isoformat(),
             record_status="accepted",
@@ -144,3 +165,19 @@ class SourceLocation:
             "text_excerpt": self.text_excerpt,
             "evidence": [item.to_dict() for item in self.evidence],
         }
+
+
+@dataclass(frozen=True, slots=True)
+class SpreadsheetSourceLocation:
+    """Workbook, sheet, row, and optional cell provenance."""
+
+    source_location_id: str
+    source_file_id: str
+    sheet: str
+    row: int
+    column: str | None
+    cell_reference: str | None
+    raw_value: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)

@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.1
+**Versión:** 1.4.2
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -184,7 +184,9 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 | `source_url` | `string` | Sí | Enlace expuesto por la integración | `technical_metadata` | `null` |
 | `sheet` | `string` | Sí | Hoja de Excel | `technical_metadata` | `sales` |
 | `row` | `integer` | Sí | Número de fila visible | `technical_metadata` | `12` |
-| `column` | `string` | Sí | Nombre de columna | `technical_metadata` | `product_id` |
+| `column` | `string` | Sí | Nombre canónico de columna | `technical_metadata` | `product_id` |
+| `cell_reference` | `string` | Sí | Referencia visible de celda | `technical_metadata` | `E12` |
+| `raw_value` | `string` | Sí | Valor original antes de conversión | `synthetic_non_sensitive` | `PRD-0008` |
 | `page` | `integer` | Sí | Página PDF, base 1 | `technical_metadata` | `1` |
 | `section` | `string` | Sí | Encabezado, cuerpo u otra sección | `technical_metadata` | `body` |
 | `line` | `integer` | Sí | Línea dentro de texto | `technical_metadata` | `3` |
@@ -195,6 +197,27 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 **Regla:** debe informarse únicamente la ubicación que la fuente permita determinar.
 
 **Consumidores:** validación, extracción, alertas, respuestas y auditoría.
+
+---
+
+## 5.1 Resultado técnico de ingesta Excel
+
+`TabularRecord` representa una fila tipada antes de la persistencia consolidada. Conserva:
+
+- `contract_id`;
+- `entity_type`;
+- `record_id`;
+- `source_file_id`;
+- `source_location_id` de fila;
+- `row_number`;
+- `values` tipados;
+- `raw_values`;
+- `field_locations` por celda;
+- `record_status`: `accepted` o `rejected`.
+
+`IngestionFinding` conserva `finding_id`, `rule_id`, `code`, `category`, `severity`, `message`, ubicación, entidad, registro, campo, valor observado y valor esperado.
+
+Estas estructuras son salidas técnicas de la ingesta y no reemplazan las entidades canónicas de las secciones siguientes.
 
 ---
 

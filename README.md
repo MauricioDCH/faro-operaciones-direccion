@@ -5,7 +5,7 @@
 > **Evento:** Maratón de IA — Ruta N  
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Datos:** 100 % sintéticos  
-> **Estado:** línea base sintética, recuperación PDF/OCR y extracción estructurada documental implementadas; consolidación operativa pendiente
+> **Estado:** línea base sintética, PDF/OCR, extracción documental e ingesta Excel implementadas; consolidación operativa pendiente
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -538,6 +538,7 @@ make setup
 make check-ocr-runtime
 make generate-data
 make validate-data
+make ingest-excel
 make check
 make extract-pdf PDF=data/raw/facturas/factura_001.pdf
 make run
@@ -549,6 +550,7 @@ make run
 | `make check-ocr-runtime` | Verificar Poppler, Tesseract y el idioma español |
 | `make generate-data` | Generar o reutilizar la línea base sintética con semilla fija |
 | `make validate-data` | Comparar los 11 hallazgos sembrados con la verdad de referencia |
+| `make ingest-excel` | Ingerir y validar los cuatro libros Excel con procedencia por celda |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make run` | Iniciar la aplicación local |
@@ -587,6 +589,19 @@ La compatibilidad directa de Smart Ranks con ChatGPT o Codex se tratará como **
 
 ---
 
+### Resultado actual de la ingesta Excel
+
+```text
+4 libros → 6 hojas → 86 registros tipados
+                    ├── 81 aceptados
+                    ├── 5 rechazados
+                    └── 6 hallazgos trazables
+```
+
+La ingesta detecta las anomalías Excel sembradas: venta duplicada, campo obligatorio vacío, fecha inválida, cantidad negativa, producto inexistente e inventario bajo. Cada registro conserva hash de archivo y procedencia por hoja, fila, columna y celda.
+
+---
+
 ## 12. Estado del proyecto
 
 | Componente | Estado |
@@ -598,8 +613,8 @@ La compatibilidad directa de Smart Ranks con ChatGPT o Codex se tratará como **
 | Reglas oficiales de Smart Ranks para ChatGPT/Codex | `planned` |
 | Datos sintéticos y verdad de referencia | `implemented` |
 | Recuperación de texto PDF/OCR y clasificación documental | `implemented` |
-| Extracción estructurada de campos de factura y cotización | `planned` |
-| Ingesta y validación tabular | `planned` |
+| Extracción estructurada de campos de factura y cotización | `implemented` |
+| Ingesta y validación tabular | `implemented` |
 | Consolidación y proveniencia | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |
