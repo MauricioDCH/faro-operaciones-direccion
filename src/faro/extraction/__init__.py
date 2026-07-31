@@ -23,6 +23,7 @@ from faro.extraction.pdf import (
     PopplerRuntimeInfo,
 )
 from faro.extraction.service import PdfExtractionService
+from faro.extraction.structured import StructuredDocumentExtractor, StructuredExtractionOutput
 
 __all__ = [
     "ClassificationResult",
@@ -42,5 +43,7 @@ __all__ = [
     "PopplerRuntimeInfo",
     "RawSourceModifiedError",
     "TesseractOcrEngine",
+    "StructuredDocumentExtractor",
+    "StructuredExtractionOutput",
     "UnsupportedPdfError",
 ]

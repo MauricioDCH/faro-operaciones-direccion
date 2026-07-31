@@ -26,7 +26,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | ID | Requisito | Evidencia de aceptación | Estado |
 |---|---|---|---|
 | FR-001 | Ingerir los libros de Excel sintéticos aprobados. | Los libros y hojas válidos se procesan, sus metadatos quedan registrados y los originales permanecen sin cambios. | `planned` |
-| FR-002 | Extraer los campos aprobados de facturas y cotizaciones PDF sintéticas. | Los documentos nativos, escaneados y mixtos producen campos con archivo, página, método, evidencia y confianza cuando corresponda. | `planned` |
+| FR-002 | Extraer los campos aprobados de facturas y cotizaciones PDF sintéticas. | Los documentos nativos, escaneados y mixtos producen campos con archivo, página, método, evidencia y confianza cuando corresponda. | `implemented` |
 | FR-003 | Validar hojas, esquemas, campos obligatorios, tipos, fechas, rangos, duplicados e integridad referencial. | Las anomalías detectadas se comparan con la verdad de referencia. | `planned` |
 | FR-004 | Normalizar identificadores, fechas, unidades y nombres mediante reglas aprobadas. | Cada correspondencia conserva trazabilidad y las asociaciones inciertas requieren revisión humana. | `planned` |
 | FR-005 | Consolidar los registros válidos en un modelo operativo común. | Cada registro puede rastrearse hasta el archivo o referencia de origen. | `planned` |

@@ -193,7 +193,9 @@ def parse_tesseract_tsv(
     """Parse Tesseract TSV into normalized text and word-level evidence."""
 
     reader = DictReader(StringIO(tsv), delimiter="\t")
-    words: list[str] = []
+    lines: list[list[str]] = []
+    current_line_key: tuple[str, str, str, str] | None = None
+    current_words: list[str] = []
     confidences: list[float] = []
     evidence: list[EvidenceFragment] = []
 
@@ -220,7 +222,17 @@ def parse_tesseract_tsv(
         except ValueError:
             box = None
 
-        words.append(text)
+        line_key = (
+            row.get("page_num") or "",
+            row.get("block_num") or "",
+            row.get("par_num") or "",
+            row.get("line_num") or "",
+        )
+        if current_line_key is not None and line_key != current_line_key:
+            lines.append(current_words)
+            current_words = []
+        current_line_key = line_key
+        current_words.append(text)
         evidence.append(
             EvidenceFragment(
                 text=text,
@@ -229,5 +241,7 @@ def parse_tesseract_tsv(
             )
         )
 
+    if current_words:
+        lines.append(current_words)
     average = sum(confidences) / len(confidences) if confidences else None
-    return " ".join(words), average, tuple(evidence)
+    return "\n".join(" ".join(words) for words in lines), average, tuple(evidence)

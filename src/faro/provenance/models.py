@@ -114,7 +114,7 @@ class SourceFile:
             file_name=resolved.name,
             source_type="pdf",
             contract_id="DC-007",
-            contract_version="1.4.0",
+            contract_version="1.4.1",
             dataset_version="0.1.0",
             seed=20260731,
             file_hash=f"sha256:{digest}",

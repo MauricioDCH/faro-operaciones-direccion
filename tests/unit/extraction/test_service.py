@@ -76,7 +76,8 @@ class PdfExtractionServiceTests(unittest.TestCase):
             result = PdfExtractionService(ocr_engine=FakeOcrEngine()).extract(path)
 
             self.assertEqual(result.document_type, DocumentType.QUOTATION)
-            self.assertEqual(result.processing_status, ProcessingStatus.PROCESSED)
+            self.assertEqual(result.processing_status, ProcessingStatus.PENDING_REVIEW)
+            self.assertIsNotNone(result.structured_document)
             self.assertEqual(result.pages[0].extraction_method, PageExtractionMethod.OCR)
             self.assertEqual(result.pages[0].ocr_engine_version, "1.0")
             self.assertTrue(result.pages[0].source_location.evidence)
