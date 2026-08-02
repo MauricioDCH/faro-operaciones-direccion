@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.2
+**Versión:** 1.5.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -20,7 +20,7 @@ Los formatos de archivo, rutas, granularidad y políticas de compatibilidad se e
 ### 2.1 Nombres
 
 - Los nombres técnicos de entidades y campos se escriben en inglés.
-- Las fuentes tabulares visibles para el usuario utilizan exclusivamente Excel `.xlsx`.
+- Las fuentes tabulares implementadas utilizan Excel `.xlsx`; CSV y TSV están aprobados como formatos planificados.
 - Se utiliza `snake_case`.
 - Los identificadores terminan en `_id`.
 - Los importes en pesos terminan en `_cop`.
@@ -114,9 +114,19 @@ Todos los datos del MVP son sintéticos.
 ### 3.7 `source_type`
 
 - `xlsx`
+- `csv`
+- `tsv`
 - `pdf`
-- `ai_plugin`
+- `image`
+- `xml_ubl`
 - `json`
+- `ndjson`
+- `ai_plugin`
+- `email_archive`
+- `archive`
+- `office_document`
+- `bank_statement`
+- `parquet`
 
 ### 3.8 `ai_platform`
 
@@ -158,6 +168,13 @@ Representa un archivo o artefacto de entrada registrado por Faro.
 | `source_file_id` | `string` | No | Identificador interno único | `technical_metadata` | `SRC-000001` |
 | `file_path` | `string` | No | Ruta relativa del libro, PDF, artefacto de plugin o JSON | `technical_metadata` | `data/raw/sales.xlsx` |
 | `file_name` | `string` | No | Nombre base del archivo | `technical_metadata` | `sales.xlsx` |
+| `media_type_declared` | `string` | Sí | Tipo MIME informado por la fuente | `technical_metadata` | `text/csv` |
+| `media_type_detected` | `string` | Sí | Tipo MIME detectado o validado | `technical_metadata` | `text/csv` |
+| `detected_format` | `string` | Sí | Identificador estable del registro de formatos | `technical_metadata` | `csv` |
+| `format_version` | `string` | Sí | Versión del estándar o perfil | `technical_metadata` | `UBL-2.1` |
+| `ingestion_adapter` | `string` | Sí | Adaptador responsable | `technical_metadata` | `delimited` |
+| `file_size_bytes` | `integer` | Sí | Tamaño raw para límites y auditoría | `technical_metadata` | `18420` |
+| `format_metadata` | `json` | Sí | Metadatos específicos del formato | `technical_metadata` | `{"encoding":"utf-8"}` |
 | `source_type` | `enum` | No | Tipo de fuente aprobado | `technical_metadata` | `xlsx` |
 | `contract_id` | `string` | No | Contrato aplicado | `technical_metadata` | `DC-004` |
 | `contract_version` | `string` | No | Versión semántica del contrato | `technical_metadata` | `1.0.0` |
@@ -193,6 +210,12 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 | `field` | `string` | Sí | Campo documental asociado | `technical_metadata` | `invoice_number` |
 | `text_excerpt` | `string` | Sí | Fragmento breve de evidencia | `synthetic_non_sensitive` | `Factura No. FV-1008` |
 | `bounding_box` | `json` | Sí | Región de evidencia en coordenadas de página | `technical_metadata` | `{"x":120,"y":80,"w":240,"h":40}` |
+| `record_number` | `integer` | Sí | Número de registro en CSV, TSV o NDJSON | `technical_metadata` | `18` |
+| `json_pointer` | `string` | Sí | Ubicación RFC 6901 dentro de JSON | `technical_metadata` | `/records/17/amount` |
+| `xml_xpath` | `string` | Sí | Ruta lógica dentro de XML | `technical_metadata` | `/Invoice/LegalMonetaryTotal/PayableAmount` |
+| `message_id` | `string` | Sí | Identificador del mensaje EML/MBOX | `technical_metadata` | `<msg-001@example.test>` |
+| `archive_member` | `string` | Sí | Ruta relativa dentro de ZIP | `technical_metadata` | `invoices/fv-1001.xml` |
+| `paragraph` | `integer` | Sí | Párrafo en documento ofimático | `technical_metadata` | `7` |
 
 **Regla:** debe informarse únicamente la ubicación que la fuente permita determinar.
 
