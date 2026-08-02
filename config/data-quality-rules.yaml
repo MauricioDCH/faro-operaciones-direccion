@@ -176,4 +176,37 @@ rules:
     severity: error
     enabled: true
     description: Verify that source hashes do not change during ingestion.
-    source: data/raw/*.xlsx
+    source: data/raw/**/*.{xlsx,csv,tsv}
+
+
+  - id: RULE-DELIMITED-SOURCE-001
+    type: delimited_source_validation
+    category: structure
+    severity: error
+    enabled: true
+    description: Validate UTF-8 content, extension/profile agreement and configured resource limits.
+    source: data/raw/tabular/*.{csv,tsv}
+
+  - id: RULE-DELIMITED-HEADER-001
+    type: required_and_unique_headers
+    category: structure
+    severity: error
+    enabled: true
+    description: Validate required, non-empty and unique headers for the selected profile.
+    source: data/raw/tabular/*.{csv,tsv}
+
+  - id: RULE-DELIMITED-ROW-001
+    type: delimited_row_width
+    category: structure
+    severity: error
+    enabled: true
+    description: Reject records whose number of fields differs from the header.
+    source: data/raw/tabular/*.{csv,tsv}
+
+  - id: RULE-DELIMITED-TYPE-001
+    type: tabular_type_conversion
+    category: data_quality
+    severity: error
+    enabled: true
+    description: Convert and validate string, boolean, decimal and date values using the explicit profile.
+    source: data/raw/tabular/*.{csv,tsv}

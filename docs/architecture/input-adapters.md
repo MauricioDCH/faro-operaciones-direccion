@@ -57,3 +57,10 @@ class InputAdapter(Protocol):
 - JSON y NDJSON deben exigir versión de contrato cuando alimenten entidades operativas.
 - Toda salida debe conservar ubicación específica de la fuente.
 - Los adaptadores deben ser independientes del sistema operativo.
+
+
+## Adaptador `delimited` implementado
+
+`src/faro/ingestion/delimited.py` implementa CSV y TSV mediante perfiles explícitos. El adaptador valida extensión y contenido, decodifica únicamente UTF-8, detecta o aplica un delimitador aprobado, convierte valores con reglas determinísticas y entrega `TabularRecord`, `IngestionFinding`, `SourceFile` y ubicaciones por registro/campo.
+
+La detección automática solo se permite cuando el encabezado produce un único delimitador plausible. Los límites de archivo, registros, columnas y campo se cargan desde `Settings`. La misma implementación usa `pathlib`, `csv` y APIs estándar de Python, sin rutas específicas de Linux. La ejecución real en Windows seguirá sin marcarse como validada hasta que la matriz de CI correspondiente apruebe.

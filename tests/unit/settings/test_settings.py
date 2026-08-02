@@ -28,6 +28,30 @@ class SettingsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 Settings.from_environment()
 
+    def test_loads_delimited_limits(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "DELIMITED_MAX_FILE_SIZE_MB": "10",
+                "DELIMITED_MAX_RECORDS": "500",
+                "DELIMITED_MAX_COLUMNS": "20",
+                "DELIMITED_MAX_FIELD_CHARACTERS": "2000",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(10, settings.delimited_max_file_size_mb)
+        self.assertEqual(500, settings.delimited_max_records)
+        self.assertEqual(20, settings.delimited_max_columns)
+        self.assertEqual(2000, settings.delimited_max_field_characters)
+
+    def test_rejects_invalid_delimited_limit(self) -> None:
+        with patch.dict(
+            "os.environ", {"DELIMITED_MAX_RECORDS": "0"}, clear=True
+        ):
+            with self.assertRaisesRegex(ValueError, "must be positive"):
+                Settings.from_environment()
+
 
 if __name__ == "__main__":
     unittest.main()

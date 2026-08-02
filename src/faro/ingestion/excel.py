@@ -95,7 +95,7 @@ def _record_id(spec: SheetSpec, values: dict[str, Scalar], row: int) -> str:
     parts = [values.get(name) for name in spec.record_id_fields]
     if all(part is not None for part in parts):
         return "|".join(_display(part) or "" for part in parts)
-    return f"{spec.entity_type.upper()}-ROW-{row_number}"
+    return f"{spec.entity_type.upper()}-ROW-{row}"
 
 
 def _row_location(

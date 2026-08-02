@@ -1,4 +1,4 @@
-"""Excel ingestion public interface."""
+"""Public ingestion interfaces."""
 
 from __future__ import annotations
 
@@ -33,6 +33,34 @@ _EXPORTS = {
     "require_implemented_format": (
         "faro.ingestion.formats",
         "require_implemented_format",
+    ),
+    "DelimitedFormatError": (
+        "faro.ingestion.delimited",
+        "DelimitedFormatError",
+    ),
+    "DelimitedIngestionService": (
+        "faro.ingestion.delimited",
+        "DelimitedIngestionService",
+    ),
+    "DelimitedInput": (
+        "faro.ingestion.delimited",
+        "DelimitedInput",
+    ),
+    "DelimitedProfile": (
+        "faro.ingestion.delimited",
+        "DelimitedProfile",
+    ),
+    "build_profile": (
+        "faro.ingestion.delimited",
+        "build_profile",
+    ),
+    "detect_delimiter": (
+        "faro.ingestion.delimited",
+        "detect_delimiter",
+    ),
+    "DelimitedIngestionBatch": (
+        "faro.ingestion.models",
+        "DelimitedIngestionBatch",
     ),
     "ExcelIngestionService": (
         "faro.ingestion.excel",

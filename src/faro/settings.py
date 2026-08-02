@@ -31,6 +31,10 @@ class Settings:
     pdf_native_text_min_characters: int = 40
     pdf_native_text_min_words: int = 5
     pdf_max_pages: int = 3
+    delimited_max_file_size_mb: int = 25
+    delimited_max_records: int = 100_000
+    delimited_max_columns: int = 100
+    delimited_max_field_characters: int = 100_000
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -54,6 +58,18 @@ class Settings:
                 os.getenv("PDF_NATIVE_TEXT_MIN_WORDS", "5")
             ),
             pdf_max_pages=int(os.getenv("PDF_MAX_PAGES", "3")),
+            delimited_max_file_size_mb=int(
+                os.getenv("DELIMITED_MAX_FILE_SIZE_MB", "25")
+            ),
+            delimited_max_records=int(
+                os.getenv("DELIMITED_MAX_RECORDS", "100000")
+            ),
+            delimited_max_columns=int(
+                os.getenv("DELIMITED_MAX_COLUMNS", "100")
+            ),
+            delimited_max_field_characters=int(
+                os.getenv("DELIMITED_MAX_FIELD_CHARACTERS", "100000")
+            ),
         )
         settings.validate()
         return settings
@@ -73,3 +89,15 @@ class Settings:
             raise ValueError("PDF_NATIVE_TEXT_MIN_WORDS must be positive.")
         if not 1 <= self.pdf_max_pages <= 20:
             raise ValueError("PDF_MAX_PAGES must be between 1 and 20.")
+        if not 1 <= self.delimited_max_file_size_mb <= 1024:
+            raise ValueError(
+                "DELIMITED_MAX_FILE_SIZE_MB must be between 1 and 1024."
+            )
+        if self.delimited_max_records < 1:
+            raise ValueError("DELIMITED_MAX_RECORDS must be positive.")
+        if self.delimited_max_columns < 1:
+            raise ValueError("DELIMITED_MAX_COLUMNS must be positive.")
+        if self.delimited_max_field_characters < 1:
+            raise ValueError(
+                "DELIMITED_MAX_FIELD_CHARACTERS must be positive."
+            )

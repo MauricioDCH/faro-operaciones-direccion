@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.5.0
+**Versión:** 1.6.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -20,7 +20,7 @@ Los formatos de archivo, rutas, granularidad y políticas de compatibilidad se e
 ### 2.1 Nombres
 
 - Los nombres técnicos de entidades y campos se escriben en inglés.
-- Las fuentes tabulares implementadas utilizan Excel `.xlsx`; CSV y TSV están aprobados como formatos planificados.
+- Las fuentes tabulares implementadas utilizan Excel `.xlsx`, CSV `.csv` y TSV `.tsv`.
 - Se utiliza `snake_case`.
 - Los identificadores terminan en `_id`.
 - Los importes en pesos terminan en `_cop`.
@@ -241,6 +241,10 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 `IngestionFinding` conserva `finding_id`, `rule_id`, `code`, `category`, `severity`, `message`, ubicación, entidad, registro, campo, valor observado y valor esperado.
 
 Estas estructuras son salidas técnicas de la ingesta y no reemplazan las entidades canónicas de las secciones siguientes.
+
+### 5.2 Resultado técnico de ingesta CSV/TSV
+
+`DelimitedIngestionBatch` reutiliza `TabularRecord` e `IngestionFinding` y agrega los perfiles efectivos por fuente. En ubicaciones delimitadas, `record_number` identifica el registro lógico, `row` la fila física observada, `column` el encabezado canónico y `raw_value` el texto previo a conversión. `source_file.format_metadata` conserva perfil, codificación, BOM, delimitador, separadores numéricos y formato de fecha.
 
 ---
 

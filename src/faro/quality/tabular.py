@@ -88,7 +88,9 @@ def _validate_logical_unique(
     return findings
 
 
-def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFinding]:
+def validate_tabular_records(
+    records: list[TabularRecord], *, validate_references: bool = True
+) -> list[IngestionFinding]:
     findings: list[IngestionFinding] = []
     by_entity = {
         entity: [item for item in records if item.entity_type == entity]
@@ -214,7 +216,7 @@ def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFind
         unit_price = sale.values.get("unit_price_cop")
         discount = sale.values.get("discount_cop")
         line_total = sale.values.get("line_total_cop")
-        if customer_id is not None and customer_id not in customer_ids:
+        if validate_references and customer_id is not None and customer_id not in customer_ids:
             findings.append(
                 make_finding(
                     rule_id="RULE-FK-CUSTOMER-001",
@@ -230,7 +232,7 @@ def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFind
                     expected_value="existing customer_id",
                 )
             )
-        if product_id is not None and product_id not in product_ids:
+        if validate_references and product_id is not None and product_id not in product_ids:
             findings.append(
                 make_finding(
                     rule_id="RULE-FK-PRODUCT-001",
@@ -286,7 +288,7 @@ def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFind
 
     for inventory in by_entity.get("inventory_snapshot", []):
         product_id = inventory.values.get("product_id")
-        if product_id is not None and product_id not in product_ids:
+        if validate_references and product_id is not None and product_id not in product_ids:
             findings.append(
                 make_finding(
                     rule_id="RULE-FK-PRODUCT-001",
@@ -329,7 +331,7 @@ def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFind
         quantity = order.values.get("ordered_quantity")
         order_date = order.values.get("order_date")
         delivery_date = order.values.get("expected_delivery_date")
-        if supplier_id is not None and supplier_id not in supplier_ids:
+        if validate_references and supplier_id is not None and supplier_id not in supplier_ids:
             findings.append(
                 make_finding(
                     rule_id="RULE-FK-SUPPLIER-001",
@@ -345,7 +347,7 @@ def validate_tabular_records(records: list[TabularRecord]) -> list[IngestionFind
                     expected_value="existing supplier_id",
                 )
             )
-        if product_id is not None and product_id not in product_ids:
+        if validate_references and product_id is not None and product_id not in product_ids:
             findings.append(
                 make_finding(
                     rule_id="RULE-FK-PRODUCT-001",

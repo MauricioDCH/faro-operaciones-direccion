@@ -160,3 +160,29 @@ SPECS_BY_FILE: dict[str, tuple[SheetSpec, ...]] = {}
 for _spec in SHEET_SPECS:
     SPECS_BY_FILE.setdefault(_spec.file_name, tuple())
     SPECS_BY_FILE[_spec.file_name] += (_spec,)
+
+
+DELIMITED_PROFILE_SPECS: dict[str, SheetSpec] = {
+    "products": next(item for item in SHEET_SPECS if item.entity_type == "product"),
+    "customers": next(item for item in SHEET_SPECS if item.entity_type == "customer"),
+    "suppliers": next(item for item in SHEET_SPECS if item.entity_type == "supplier"),
+    "sales": next(item for item in SHEET_SPECS if item.entity_type == "sale_line"),
+    "inventory": next(
+        item for item in SHEET_SPECS if item.entity_type == "inventory_snapshot"
+    ),
+    "orders": next(
+        item for item in SHEET_SPECS if item.entity_type == "purchase_order_line"
+    ),
+}
+
+
+def spec_for_profile(profile_id: str) -> SheetSpec:
+    """Return the approved tabular contract selected by an explicit profile."""
+
+    try:
+        return DELIMITED_PROFILE_SPECS[profile_id]
+    except KeyError as exc:
+        allowed = ", ".join(sorted(DELIMITED_PROFILE_SPECS))
+        raise ValueError(
+            f"Unknown delimited profile {profile_id!r}. Allowed profiles: {allowed}."
+        ) from exc
