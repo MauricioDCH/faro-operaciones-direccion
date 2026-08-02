@@ -38,11 +38,23 @@ class FormatRegistryTests(unittest.TestCase):
                 self.assertEqual(expected, capability.format_id)
                 self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
 
+    def test_json_and_ndjson_are_implemented(self) -> None:
+        for path, expected in (
+            ("records.json", InputFormat.JSON),
+            ("events.ndjson", InputFormat.NDJSON),
+            ("events.jsonl", InputFormat.NDJSON),
+        ):
+            with self.subTest(path=path):
+                capability = detect_input_format(path)
+                self.assertIsNotNone(capability)
+                assert capability is not None
+                self.assertEqual(expected, capability.format_id)
+                self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
+
     def test_remaining_phase_one_formats_are_planned(self) -> None:
         for path, expected in (
             ("factura.xml", InputFormat.UBL_XML),
             ("factura.JPG", InputFormat.JPEG),
-            ("events.ndjson", InputFormat.NDJSON),
         ):
             with self.subTest(path=path):
                 capability = detect_input_format(path)
@@ -68,10 +80,14 @@ class FormatRegistryTests(unittest.TestCase):
     def test_unknown_extension_returns_none(self) -> None:
         self.assertIsNone(detect_input_format("source.exe"))
 
-    def test_require_implemented_format_accepts_csv(self) -> None:
+    def test_require_implemented_format_accepts_csv_and_json(self) -> None:
         self.assertEqual(
             InputFormat.CSV,
             require_implemented_format("ventas.csv").format_id,
+        )
+        self.assertEqual(
+            InputFormat.JSON,
+            require_implemented_format("productos.json").format_id,
         )
 
     def test_require_implemented_format_rejects_planned_format(self) -> None:

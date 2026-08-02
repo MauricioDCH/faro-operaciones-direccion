@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.6.0
+**Versión:** 1.7.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -211,6 +211,7 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 | `text_excerpt` | `string` | Sí | Fragmento breve de evidencia | `synthetic_non_sensitive` | `Factura No. FV-1008` |
 | `bounding_box` | `json` | Sí | Región de evidencia en coordenadas de página | `technical_metadata` | `{"x":120,"y":80,"w":240,"h":40}` |
 | `record_number` | `integer` | Sí | Número de registro en CSV, TSV o NDJSON | `technical_metadata` | `18` |
+| `line` | `integer` | Sí | Línea física para fuentes NDJSON | `technical_metadata` | `21` |
 | `json_pointer` | `string` | Sí | Ubicación RFC 6901 dentro de JSON | `technical_metadata` | `/records/17/amount` |
 | `xml_xpath` | `string` | Sí | Ruta lógica dentro de XML | `technical_metadata` | `/Invoice/LegalMonetaryTotal/PayableAmount` |
 | `message_id` | `string` | Sí | Identificador del mensaje EML/MBOX | `technical_metadata` | `<msg-001@example.test>` |
@@ -814,7 +815,13 @@ business_answer * ─── * indicator_result
 
 ---
 
-## 30. Criterios de aceptación del diccionario
+## 30. Ubicación JSON/NDJSON
+
+La ubicación `JsonSourceLocation` especializa `source_location` con `record_number`, `line`, `json_pointer`, `field` y `raw_value`. `line` es obligatorio para NDJSON y nulo para JSON convencional. `json_pointer` siempre comienza con `/` y permite ubicar el valor dentro del documento o registro.
+
+---
+
+## 31. Criterios de aceptación del diccionario
 
 El diccionario se considera listo para implementación cuando:
 
@@ -830,4 +837,6 @@ El diccionario se considera listo para implementación cuando:
 10. el fixture y una ejecución real comparten el mismo modelo;
 11. `document` y `document_page` representan PDF nativos, escaneados y mixtos;
 12. facturas y cotizaciones tienen entidades separadas;
-13. los campos OCR conservan motor, versión, confianza y procedencia.
+13. los campos OCR conservan motor, versión, confianza y procedencia;
+14. JSON y NDJSON conservan perfil, versión, registro y JSON Pointer;
+15. NDJSON conserva número de línea para cada registro procesado.

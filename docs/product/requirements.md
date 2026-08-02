@@ -5,7 +5,7 @@
 **Origen:** R4 — Operaciones / Dirección, conservado como referencia histórica  
 **Dirección actual:** producto independiente para uso local en pymes  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.8
+**Versión:** 1.9
 
 ---
 
@@ -51,7 +51,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-023 | Ingerir archivos CSV y TSV mediante perfiles explícitos. | Se validan codificación, delimitador, encabezados, separador decimal, tipos, límites, referencias y procedencia por registro y campo. | `implemented` |
 | FR-024 | Ingerir documentos electrónicos XML UBL. | El XML se valida de forma segura, conserva versión y XPath, y produce entidades documentales canónicas sin depender de OCR. | `planned` |
 | FR-025 | Ingerir imágenes de facturas y cotizaciones. | JPG, JPEG, PNG, TIFF y WebP reutilizan OCR, clasificación, extracción, confianza y evidencia. | `planned` |
-| FR-026 | Ingerir JSON y NDJSON versionados. | Los documentos y registros validan esquema, versión, límites y procedencia mediante JSON Pointer o número de registro. | `planned` |
+| FR-026 | Ingerir JSON y NDJSON versionados. | Los documentos y registros validan perfil, versión, tipos, límites y procedencia mediante JSON Pointer, número de registro y línea cuando aplica. | `implemented` |
 | FR-027 | Importar mensajes exportados en EML y MBOX. | Se conservan cabeceras, cuerpo, adjuntos, Message-ID y ubicación dentro del buzón sin modificar la fuente. | `planned` |
 | FR-028 | Procesar lotes ZIP controlados. | Solo se aceptan miembros permitidos, con límites, manifiesto, hashes y protección contra rutas inseguras y expansión excesiva. | `planned` |
 | FR-029 | Ingerir documentos administrativos DOCX y ODT controlados. | El contenido se extrae sin ejecutar macros y conserva sección, párrafo y evidencia. | `planned` |

@@ -26,6 +26,9 @@ ingestion:
     - .pdf
     - .csv
     - .tsv
+    - .json
+    - .ndjson
+    - .jsonl
   phase_1_extensions:
     - .xml
     - .jpg
@@ -34,9 +37,6 @@ ingestion:
     - .tif
     - .tiff
     - .webp
-    - .json
-    - .ndjson
-    - .jsonl
   limits:
     max_file_size_mb: 25
     max_archive_members: 100
@@ -44,6 +44,10 @@ ingestion:
     max_delimited_records: 100000
     max_delimited_columns: 100
     max_delimited_field_characters: 100000
+    max_json_records: 100000
+    max_json_depth: 20
+    max_json_fields: 200
+    max_json_field_characters: 100000
 
   delimited:
     encoding: utf-8-sig
@@ -58,3 +62,13 @@ ingestion:
       - inventory
       - orders
 
+  json_records:
+    schema_version: "1.0.0"
+    date_format: "%Y-%m-%d"
+    profiles:
+      - products
+      - customers
+      - suppliers
+      - sales
+      - inventory
+      - orders

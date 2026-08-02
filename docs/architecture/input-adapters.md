@@ -54,7 +54,7 @@ class InputAdapter(Protocol):
 - No ejecutar macros, scripts ni contenido activo.
 - XML debe procesarse con configuración segura.
 - ZIP debe prevenir traversal, bombas de compresión y anidamiento ilimitado.
-- JSON y NDJSON deben exigir versión de contrato cuando alimenten entidades operativas.
+- JSON y NDJSON exigen un perfil y versión de contrato explícitos cuando alimentan entidades operativas.
 - Toda salida debe conservar ubicación específica de la fuente.
 - Los adaptadores deben ser independientes del sistema operativo.
 
@@ -64,3 +64,11 @@ class InputAdapter(Protocol):
 `src/faro/ingestion/delimited.py` implementa CSV y TSV mediante perfiles explícitos. El adaptador valida extensión y contenido, decodifica únicamente UTF-8, detecta o aplica un delimitador aprobado, convierte valores con reglas determinísticas y entrega `TabularRecord`, `IngestionFinding`, `SourceFile` y ubicaciones por registro/campo.
 
 La detección automática solo se permite cuando el encabezado produce un único delimitador plausible. Los límites de archivo, registros, columnas y campo se cargan desde `Settings`. La misma implementación usa `pathlib`, `csv` y APIs estándar de Python, sin rutas específicas de Linux. La ejecución real en Windows seguirá sin marcarse como validada hasta que la matriz de CI correspondiente apruebe.
+
+## Adaptador `json_records` implementado
+
+`src/faro/ingestion/json_records.py` procesa JSON y NDJSON mediante los mismos perfiles canónicos usados por Excel y CSV/TSV. JSON acepta un objeto, un arreglo o un lote con `schema_version`, `profile_id` y `records`. NDJSON procesa un objeto por línea y puede continuar después de una línea inválida.
+
+El adaptador rechaza claves duplicadas, números no finitos, estructuras demasiado profundas, campos inesperados, valores anidados en campos operativos, versiones incompatibles y límites excedidos. Cada campo conserva archivo, número de registro, línea cuando aplica, JSON Pointer, valor original y valor tipado. Los archivos raw se verifican mediante SHA-256 antes y después de la ingesta.
+
+La implementación utiliza únicamente `json`, `pathlib` y otras APIs estándar de Python, por lo que no contiene rutas específicas de Linux o Windows. La compatibilidad oficial de Windows permanece pendiente de la matriz de CI.

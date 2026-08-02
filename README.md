@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** Excel, PDF/OCR y CSV/TSV implementados; expansión multiplataforma y demás adaptadores aprobados
+> **Estado:** Excel, PDF/OCR, CSV/TSV y JSON/NDJSON implementados; expansión multiplataforma y demás adaptadores aprobados
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -205,6 +205,7 @@ Formatos aprobados para implementación por fases:
 
 - cargar libros de Excel;
 - ingerir CSV y TSV mediante perfiles explícitos, con delimitador, codificación, fechas y separador decimal controlados;
+- ingerir JSON y NDJSON versionados con límites, validación tipada y procedencia JSON Pointer;
 - recuperar texto por página mediante extracción nativa u OCR y clasificar facturas y cotizaciones;
 - extraer campos estructurados y validar líneas y totales de facturas y cotizaciones;
 - importar y validar el lote estructurado producido por el plugin de correo;
@@ -553,6 +554,7 @@ make generate-data
 make validate-data
 make ingest-excel
 make ingest-delimited SOURCES="--source products=data/raw/tabular/productos.csv"
+make ingest-json SOURCES="--source products=data/raw/imports/structured/productos.json"
 make check
 make extract-pdf PDF=data/raw/facturas/factura_001.pdf
 make run
@@ -566,6 +568,7 @@ make run
 | `make validate-data` | Comparar los 11 hallazgos sembrados con la verdad de referencia |
 | `make ingest-excel` | Ingerir y validar los cuatro libros Excel con procedencia por celda |
 | `make ingest-delimited SOURCES="..."` | Ingerir uno o varios CSV/TSV mediante perfiles explícitos y procedencia por registro/campo |
+| `make ingest-json SOURCES="..."` | Ingerir JSON/NDJSON versionados con perfiles explícitos, límites y JSON Pointer |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make run` | Iniciar la aplicación local |
@@ -657,7 +660,8 @@ uv run python scripts/ingest_delimited.py `
 | Detección y ejecución multiplataforma Linux/Windows | `planned` |
 | Registro central de formatos | `implemented` |
 | CSV y TSV con perfiles explícitos | `implemented` |
-| XML UBL, imágenes y JSON/NDJSON | `planned` |
+| JSON y NDJSON versionados | `implemented` |
+| XML UBL e imágenes | `planned` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |

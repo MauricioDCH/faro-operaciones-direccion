@@ -16,7 +16,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 | Delimitados | `.csv`, `.tsv` | fase 1 | `implemented` | `delimited` |
 | XML UBL | `.xml` | fase 1 | `planned` | `ubl_xml` |
 | Imágenes | `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.webp` | fase 1 | `planned` | `image_document` |
-| JSON | `.json`, `.ndjson`, `.jsonl` | fase 1 | `planned` | `json_records` |
+| JSON | `.json`, `.ndjson`, `.jsonl` | fase 1 | `implemented` | `json_records` |
 | Correo exportado | `.eml`, `.mbox` | fase 2 | `planned` | `email_archive` |
 | Lotes comprimidos | `.zip` | fase 2 | `planned` | `archive` |
 | Documentos ofimáticos | `.docx`, `.odt` | fase 2 | `planned` | `office_document` |
@@ -26,7 +26,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 ## Orden de implementación
 
 1. CSV y TSV — implementado.
-2. JSON y NDJSON.
+2. JSON y NDJSON — implementado.
 3. Imágenes documentales reutilizando OCR.
 4. XML UBL.
 5. EML y MBOX.
@@ -41,3 +41,7 @@ Un formato solo pasa a `implemented` cuando cuenta con contrato, fixtures, valid
 ## CSV y TSV implementados
 
 El adaptador exige un perfil explícito de entidad y registra la configuración efectiva. Soporta UTF-8 y UTF-8 con BOM, delimitadores coma, punto y coma, tabulador y barra vertical, fechas configurables, separador decimal configurable, límites de tamaño/filas/columnas/campo y procedencia por registro y columna. No intenta aceptar codificaciones heredadas ni configuraciones ambiguas de manera silenciosa.
+
+## JSON y NDJSON implementados
+
+El adaptador `json_records` exige un perfil de entidad y una versión compatible. JSON admite objeto único, arreglo y lote versionado. NDJSON procesa un objeto por línea, conserva el número de línea y permite aislar registros inválidos. Se rechazan claves duplicadas, números no finitos, estructuras profundas, campos inesperados y límites excedidos. La procedencia usa JSON Pointer, número de registro, línea cuando corresponde, valor raw, hash y metadatos del perfil.

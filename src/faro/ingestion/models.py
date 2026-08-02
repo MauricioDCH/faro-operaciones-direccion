@@ -10,6 +10,7 @@ from typing import Any
 
 from faro.provenance.models import (
     DelimitedSourceLocation,
+    JsonSourceLocation,
     SourceFile,
     SpreadsheetSourceLocation,
 )
@@ -112,7 +113,9 @@ class TabularRecord:
     row_number: int
     values: dict[str, Scalar]
     raw_values: dict[str, str | None]
-    field_locations: tuple[SpreadsheetSourceLocation | DelimitedSourceLocation, ...]
+    field_locations: tuple[
+        SpreadsheetSourceLocation | DelimitedSourceLocation | JsonSourceLocation, ...
+    ]
     record_status: str = "accepted"
 
     def with_status(self, status: str) -> "TabularRecord":
@@ -120,7 +123,7 @@ class TabularRecord:
 
     def location_for(
         self, field: str
-    ) -> SpreadsheetSourceLocation | DelimitedSourceLocation:
+    ) -> SpreadsheetSourceLocation | DelimitedSourceLocation | JsonSourceLocation:
         for location in self.field_locations:
             if location.column == field:
                 return location
@@ -199,6 +202,59 @@ class ExcelIngestionBatch:
 @dataclass(frozen=True, slots=True)
 class DelimitedIngestionBatch:
     """Complete deterministic result for profiled CSV/TSV sources."""
+
+    source_files: tuple[SourceFile, ...]
+    records: tuple[TabularRecord, ...]
+    findings: tuple[IngestionFinding, ...]
+    source_hashes_before: dict[str, str]
+    source_hashes_after: dict[str, str]
+    raw_files_unchanged: bool
+    status: str
+    profiles: dict[str, dict[str, object]]
+
+    @property
+    def accepted_records(self) -> tuple[TabularRecord, ...]:
+        return tuple(item for item in self.records if item.record_status == "accepted")
+
+    @property
+    def rejected_records(self) -> tuple[TabularRecord, ...]:
+        return tuple(item for item in self.records if item.record_status == "rejected")
+
+    def records_for(self, entity_type: str) -> tuple[TabularRecord, ...]:
+        return tuple(item for item in self.records if item.entity_type == entity_type)
+
+    def to_dict(self, include_records: bool = True) -> dict[str, Any]:
+        counts_by_entity: dict[str, int] = {}
+        for record in self.records:
+            counts_by_entity[record.entity_type] = (
+                counts_by_entity.get(record.entity_type, 0) + 1
+            )
+        payload: dict[str, Any] = {
+            "status": self.status,
+            "raw_files_unchanged": self.raw_files_unchanged,
+            "counts": {
+                "source_files": len(self.source_files),
+                "records": len(self.records),
+                "accepted_records": len(self.accepted_records),
+                "rejected_records": len(self.rejected_records),
+                "findings": len(self.findings),
+                "errors": sum(item.severity == "error" for item in self.findings),
+                "warnings": sum(item.severity == "warning" for item in self.findings),
+                "by_entity": counts_by_entity,
+            },
+            "source_files": [item.to_dict() for item in self.source_files],
+            "profiles": self.profiles,
+            "source_hashes_before": self.source_hashes_before,
+            "source_hashes_after": self.source_hashes_after,
+            "findings": [item.to_dict() for item in self.findings],
+        }
+        if include_records:
+            payload["records"] = [item.to_dict() for item in self.records]
+        return payload
+
+@dataclass(frozen=True, slots=True)
+class JsonIngestionBatch:
+    """Complete deterministic result for profiled JSON/NDJSON sources."""
 
     source_files: tuple[SourceFile, ...]
     records: tuple[TabularRecord, ...]
