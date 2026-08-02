@@ -6,6 +6,34 @@ from importlib import import_module
 from typing import Any
 
 _EXPORTS = {
+    "CapabilityStatus": (
+        "faro.ingestion.formats",
+        "CapabilityStatus",
+    ),
+    "FormatCapability": (
+        "faro.ingestion.formats",
+        "FormatCapability",
+    ),
+    "InputFormat": (
+        "faro.ingestion.formats",
+        "InputFormat",
+    ),
+    "all_capabilities": (
+        "faro.ingestion.formats",
+        "all_capabilities",
+    ),
+    "capability_for": (
+        "faro.ingestion.formats",
+        "capability_for",
+    ),
+    "detect_input_format": (
+        "faro.ingestion.formats",
+        "detect_input_format",
+    ),
+    "require_implemented_format": (
+        "faro.ingestion.formats",
+        "require_implemented_format",
+    ),
     "ExcelIngestionService": (
         "faro.ingestion.excel",
         "ExcelIngestionService",

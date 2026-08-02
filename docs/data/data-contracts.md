@@ -1,9 +1,9 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.4.2
+**Versión:** 1.5.0
 **Producto:** Faro  
-**Alcance:** datos 100 % sintéticos
+**Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
 ---
 
@@ -11,7 +11,7 @@
 
 Este documento define los contratos de entrada y las garantías mínimas de salida de Faro.
 
-El MVP utiliza libros de Excel como formato tabular visible. El correo se consulta mediante plugins o integraciones de IA y se transfiere a Faro mediante un artefacto JSON versionado.
+La versión actual implementa Excel y PDF. La expansión aprobada incorpora adaptadores planificados para CSV/TSV, XML UBL, imágenes, JSON/NDJSON, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
 
 ---
 
@@ -56,7 +56,9 @@ data/
 
 | Elemento | Convención |
 |---|---|
-| Formato tabular | Excel `.xlsx` |
+| Formato tabular implementado | Excel `.xlsx` |
+| Formatos tabulares planificados | CSV `.csv` y TSV `.tsv` |
+| Codificación preferida | UTF-8; otras codificaciones requieren perfil explícito |
 | Encabezados | obligatorios en la primera fila |
 | Fecha | `YYYY-MM-DD` |
 | Fecha y hora | ISO 8601 con zona |
@@ -104,6 +106,13 @@ Las tablas deben comenzar en `A1`, tener una sola fila de encabezados y no conte
 | DC-007 | Facturas y cotizaciones PDF | `documentos/*.pdf` | no aplica | `document`, `document_page`, `invoice`, `invoice_line`, `quotation`, `quotation_line`, `extraction_result` |
 | DC-008 | Lote de correo producido por plugin | `plugin-email-batch.json` | no aplica | `plugin_run`, `email_message`, `extraction_result` |
 | DC-009 | Verdad de referencia | `expected_anomalies.json` | no aplica | `expected_anomaly` |
+| DC-010 | Archivos delimitados | `tabular/*.{csv,tsv}` | perfil declarado | entidades tabulares aprobadas |
+| DC-011 | Documentos electrónicos UBL | `electronic_documents/*.xml` | no aplica | `document`, `invoice`, `invoice_line`, `extraction_result` |
+| DC-012 | Imágenes documentales | `document_images/*.{jpg,jpeg,png,tif,tiff,webp}` | no aplica | `document`, `document_page`, `invoice`, `quotation`, `extraction_result` |
+| DC-013 | JSON y NDJSON versionados | `imports/structured/*.{json,ndjson,jsonl}` | no aplica | lote o evento según esquema |
+| DC-014 | Correo exportado | `imports/email/*.{eml,mbox}` | no aplica | `email_message`, `extraction_result` |
+| DC-015 | Lote comprimido | `imports/batches/*.zip` | manifiesto | fuentes contenidas permitidas |
+| DC-016 | Documento administrativo | `documents/*.{docx,odt}` | no aplica | `document`, `document_page`, `extraction_result` |
 
 ---
 
@@ -636,3 +645,57 @@ Los contratos quedan listos cuando:
 14. los cuatro libros y seis hojas Excel se validan con tipos y reglas determinísticas;
 15. cada campo tabular conserva archivo, hoja, fila, columna, celda y valor raw;
 16. los hashes de los archivos Excel permanecen sin cambios durante la ingesta.
+---
+
+## 19. DC-010 — CSV y TSV
+
+**Estado:** `planned`
+
+El perfil de importación debe declarar codificación, delimitador, encabezado, formato de fecha, separador decimal y entidad objetivo. Cada campo conserva número de registro, nombre de columna, valor raw y valor tipado. No se infiere silenciosamente una configuración ambigua.
+
+## 20. DC-011 — XML UBL
+
+**Estado:** `planned`
+
+El adaptador valida XML de manera segura, identifica versión y tipo documental, y conserva XPath para cada campo. No ejecuta DTD externas ni entidades externas. La validación de totales y relaciones permanece determinística.
+
+## 21. DC-012 — Imágenes documentales
+
+**Estado:** `planned`
+
+Las imágenes reutilizan inspección, OCR, clasificación y extracción documental. Deben registrar dimensiones, tipo MIME, orientación aplicada, motor OCR, confianza y región de evidencia. No sustituyen el archivo original.
+
+## 22. DC-013 — JSON y NDJSON
+
+**Estado:** `planned`
+
+Los lotes JSON requieren `schema_version` y contrato identificable. NDJSON procesa una entidad por línea y conserva número de registro y JSON Pointer. Los documentos inválidos se rechazan de forma localizable.
+
+## 23. DC-014 — EML y MBOX
+
+**Estado:** `planned`
+
+Se conservan `Message-ID`, remitente, destinatarios, asunto, fecha, cuerpo, adjuntos y ubicación dentro del buzón. Los adjuntos siguen su propio contrato y hash.
+
+## 24. DC-015 — ZIP controlado
+
+**Estado:** `planned`
+
+El lote requiere límites de miembros, profundidad y tamaño expandido. Se rechazan rutas absolutas, traversal, enlaces y formatos no permitidos. Cada miembro conserva hash y ruta relativa dentro del archivo.
+
+## 25. DC-016 — DOCX y ODT
+
+**Estado:** `planned`
+
+Solo se extrae contenido textual y estructural controlado. No se ejecutan macros, scripts, enlaces externos ni contenido activo. La procedencia usa sección, párrafo, tabla y celda cuando estén disponibles.
+
+## 26. Garantías comunes para nuevos adaptadores
+
+1. La extensión no es prueba suficiente del formato.
+2. El archivo raw permanece inmutable.
+3. El adaptador y su versión quedan registrados.
+4. La procedencia debe ser específica al formato.
+5. Los límites de tamaño y recursos son obligatorios.
+6. Los errores son estructurados y localizables.
+7. Las capacidades `planned` no se aceptan como implementadas.
+

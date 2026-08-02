@@ -12,3 +12,33 @@ data:
 runtime:
   synthetic_seed: 20260731
   timezone: America/Bogota
+
+platform:
+  detection: auto
+  supported:
+    - Linux
+    - Windows
+
+ingestion:
+  format_registry: src/faro/ingestion/formats.py
+  implemented_extensions:
+    - .xlsx
+    - .pdf
+  phase_1_extensions:
+    - .csv
+    - .tsv
+    - .xml
+    - .jpg
+    - .jpeg
+    - .png
+    - .tif
+    - .tiff
+    - .webp
+    - .json
+    - .ndjson
+    - .jsonl
+  limits:
+    max_file_size_mb: 25
+    max_archive_members: 100
+    max_archive_depth: 1
+

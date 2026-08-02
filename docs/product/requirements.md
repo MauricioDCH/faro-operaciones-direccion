@@ -2,9 +2,10 @@
 
 **Estado del documento:** línea base aprobada para implementación  
 **Producto:** Faro  
-**Reto:** R4 — Operaciones / Dirección  
+**Origen:** R4 — Operaciones / Dirección, conservado como referencia histórica  
+**Dirección actual:** producto independiente para uso local en pymes  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.6
+**Versión:** 1.7
 
 ---
 
@@ -47,6 +48,13 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-020 | Seleccionar por página entre extracción de texto nativo y OCR. | La ruta queda registrada y las páginas escaneadas no se procesan como texto vacío. | `implemented` |
 | FR-021 | Clasificar documentos PDF como factura, cotización o no soportado. | Los documentos soportados siguen su contrato y los no soportados se rechazan sin inventar campos. | `implemented` |
 | FR-022 | Registrar metadatos y procedencia del OCR. | Cada resultado OCR conserva archivo, página, motor, versión, idioma, confianza y evidencia. | `implemented` |
+| FR-023 | Ingerir archivos CSV y TSV mediante perfiles explícitos. | Se validan codificación, delimitador, encabezados, separador decimal, tipos y procedencia por fila y campo. | `planned` |
+| FR-024 | Ingerir documentos electrónicos XML UBL. | El XML se valida de forma segura, conserva versión y XPath, y produce entidades documentales canónicas sin depender de OCR. | `planned` |
+| FR-025 | Ingerir imágenes de facturas y cotizaciones. | JPG, JPEG, PNG, TIFF y WebP reutilizan OCR, clasificación, extracción, confianza y evidencia. | `planned` |
+| FR-026 | Ingerir JSON y NDJSON versionados. | Los documentos y registros validan esquema, versión, límites y procedencia mediante JSON Pointer o número de registro. | `planned` |
+| FR-027 | Importar mensajes exportados en EML y MBOX. | Se conservan cabeceras, cuerpo, adjuntos, Message-ID y ubicación dentro del buzón sin modificar la fuente. | `planned` |
+| FR-028 | Procesar lotes ZIP controlados. | Solo se aceptan miembros permitidos, con límites, manifiesto, hashes y protección contra rutas inseguras y expansión excesiva. | `planned` |
+| FR-029 | Ingerir documentos administrativos DOCX y ODT controlados. | El contenido se extrae sin ejecutar macros y conserva sección, párrafo y evidencia. | `planned` |
 
 ---
 
@@ -72,6 +80,12 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | QR-016 | Mantener portabilidad entre ChatGPT y Claude. | Ambos producen el mismo contrato sin cambiar el núcleo de Faro. | `planned` |
 | QR-017 | Degradar de forma segura ante OCR ilegible o insuficiente. | El documento queda `pending_review` o `unsupported`; no se generan campos sin evidencia. | `implemented` |
 | QR-018 | Mantener reproducible la ruta OCR. | El motor, idioma y versiones están fijados y los fixtures producen resultados verificables en el entorno documentado. | `planned` |
+| QR-019 | Ejecutarse oficialmente en Windows 10/11 de 64 bits. | Un clon limpio instala, diagnostica y ejecuta las pruebas aprobadas en Windows. | `planned` |
+| QR-020 | Detectar sistema operativo y ejecutables externos de forma centralizada. | La lógica de negocio no contiene rutas ni condiciones de plataforma dispersas. | `planned` |
+| QR-021 | Mantener rutas y operaciones de archivos portables. | Las pruebas cubren rutas Linux y Windows, nombres Unicode y separadores distintos. | `planned` |
+| QR-022 | Ejecutar CI en Linux y Windows. | La matriz de CI aprueba las pruebas que no requieren dependencias opcionales y diagnostica OCR por plataforma. | `planned` |
+| QR-023 | Validar el contenido real y no solo la extensión. | Cada adaptador verifica firma, estructura o esquema antes de aceptar la fuente. | `planned` |
+| QR-024 | Aplicar límites de seguridad a archivos y lotes. | Tamaño, filas, páginas, registros, miembros, profundidad y recursos están acotados y probados. | `planned` |
 
 ---
 
@@ -91,6 +105,13 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | Capacidad | Requisitos |
 |---|---|
 | Libros de Excel | FR-001, FR-003, QR-003, QR-009 |
+| CSV y TSV | FR-023, QR-021, QR-023, QR-024 |
+| XML UBL | FR-024, QR-021, QR-023, QR-024 |
+| Imágenes documentales | FR-025, FR-020, FR-021, FR-022, QR-017, QR-018 |
+| JSON y NDJSON | FR-026, QR-014, QR-021, QR-023, QR-024 |
+| EML y MBOX | FR-027, QR-021, QR-023, QR-024 |
+| ZIP controlado | FR-028, QR-023, QR-024 |
+| DOCX y ODT | FR-029, QR-021, QR-023, QR-024 |
 | Facturas y cotizaciones PDF | FR-002, FR-020, FR-021, FR-022, QR-017, QR-018 |
 | Plugin de correo | FR-016, FR-017, QR-013, QR-015, QR-016 |
 | Importación del lote | FR-018, QR-014 |
@@ -103,6 +124,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | Núcleo sin servicios externos | FR-014, QR-011 |
 | IA local desacoplada | FR-015 |
 | Reproducibilidad | QR-001, QR-002, QR-004, QR-005, QR-006 |
+| Compatibilidad Linux/Windows | QR-019, QR-020, QR-021, QR-022 |
 
 ---
 
@@ -123,6 +145,9 @@ Las decisiones se documentan en `docs/decisions/`.
 | Flujo del plugin de correo | `docs/integrations/plugin-email-workflow.md` |
 | Decisión de OCR | `docs/decisions/0001-support-scanned-pdf-ocr.md` |
 | Selección de pila PDF/OCR | `docs/decisions/0002-select-local-pdf-ocr-stack.md` |
+| Soporte Linux y Windows | `docs/decisions/0003-support-linux-and-windows.md` |
+| Expansión de formatos | `docs/decisions/0004-expand-input-formats.md` |
+| Hoja de ruta de formatos | `docs/product/input-format-roadmap.md` |
 | Contratos | `docs/data/data-contracts.md` |
 | Campos canónicos | `docs/data/data-dictionary.md` |
 | Esquema del lote | `schemas/plugin-email-batch.schema.json` |

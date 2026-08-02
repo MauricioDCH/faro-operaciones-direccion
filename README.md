@@ -1,11 +1,12 @@
 # Faro: inteligencia operativa para pymes
 
-> **Reto:** R4 — Faro  
+> **Producto actual:** Faro, proyecto independiente  
+> **Origen:** R4 — Faro, Maratón de IA — Ruta N  
 > **Área:** Operaciones / Dirección  
-> **Evento:** Maratón de IA — Ruta N  
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
-> **Datos:** 100 % sintéticos  
-> **Estado:** línea base sintética, PDF/OCR, extracción documental e ingesta Excel implementadas; consolidación operativa pendiente
+> **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
+> **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
+> **Estado:** Excel y PDF/OCR implementados; expansión multiplataforma y nuevos adaptadores aprobados
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -13,6 +14,8 @@
 ## Resumen
 
 **Faro** es una plataforma de inteligencia operativa para micro y pequeñas empresas que consolida información dispersa —ventas, inventarios, pedidos, facturas y novedades—, valida su calidad y la transforma en indicadores y alertas trazables para apoyar decisiones oportunas.
+
+El proyecto continúa como producto independiente. Claude, ChatGPT u otros modelos pueden integrarse como proveedores opcionales, pero el núcleo no dependerá de un proveedor específico. La compatibilidad oficial se ampliará a Linux y Windows.
 
 La selección del reto se sustenta en tres hallazgos:
 
@@ -190,6 +193,14 @@ Este segmento maneja productos, ventas, inventarios, compras, pedidos y proveedo
 - facturas y cotizaciones PDF con texto nativo, escaneado o mixto;
 - lote JSON producido por un plugin de Gmail en ChatGPT o Claude.
 
+Formatos aprobados para implementación por fases:
+
+- CSV y TSV;
+- XML UBL;
+- JPG, JPEG, PNG, TIFF y WebP;
+- JSON y NDJSON versionados;
+- EML, MBOX, ZIP, DOCX y ODT en una fase posterior.
+
 ### Capacidades incluidas
 
 - cargar libros de Excel;
@@ -225,7 +236,8 @@ Este segmento maneja productos, ventas, inventarios, compras, pedidos y proveedo
 - ERP o CRM completo;
 - pronósticos avanzados;
 - operación autónoma sin revisión humana;
-- uso de información empresarial real durante la Maratón.
+- uso de información empresarial real antes de implementar copias de seguridad, privacidad, control de acceso y recuperación;
+- formatos bancarios y Parquet en el alcance inmediato.
 
 ### Objetivos de validación
 
@@ -524,7 +536,7 @@ No se duplicarán especificaciones completas entre README, instrucciones del Pro
 
 ## 10. Instalación, ejecución y pruebas
 
-Dependencias del sistema para PDF y OCR en Ubuntu:
+Dependencias del sistema para PDF y OCR en Linux Ubuntu:
 
 ```bash
 sudo apt update
@@ -557,7 +569,7 @@ make run
 
 Los comandos solo se considerarán disponibles cuando sus objetivos existan, hayan sido ejecutados y estén documentados con sus resultados reales.
 
-La configuración local utilizará `.env`; únicamente `.env.example` podrá versionarse. No se incluirán credenciales en el repositorio.
+La configuración local utilizará `.env`; únicamente `.env.example` podrá versionarse. No se incluirán credenciales en el repositorio. La instalación nativa de Windows y el comando de diagnóstico se implementarán en una rama dedicada antes de declarar compatibilidad completa.
 
 ---
 
@@ -610,12 +622,16 @@ La ingesta detecta las anomalías Excel sembradas: venta duplicada, campo obliga
 | Segmento y problema inicial | `implemented` |
 | Alcance preliminar del MVP | `implemented` |
 | Estructura final del repositorio | `implemented` |
-| Reglas oficiales de Smart Ranks para ChatGPT/Codex | `planned` |
+| Integración con reglas de retos externos | `out of scope` |
 | Datos sintéticos y verdad de referencia | `implemented` |
 | Recuperación de texto PDF/OCR y clasificación documental | `implemented` |
 | Extracción estructurada de campos de factura y cotización | `implemented` |
 | Ingesta y validación tabular | `implemented` |
 | Consolidación y proveniencia | `planned` |
+| Detección y ejecución multiplataforma Linux/Windows | `planned` |
+| Registro central de formatos | `implemented` |
+| CSV/TSV, XML UBL, imágenes y JSON/NDJSON | `planned` |
+| EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |
 | Interfaz y Demo Day | `planned` |
@@ -651,4 +667,4 @@ Una funcionalidad se considerará terminada únicamente cuando cumpla sus criter
 
 ## Licencia y uso
 
-Este repositorio se prepara como soporte de investigación, diseño, implementación y evaluación para la Maratón de IA de Ruta N. Las cifras externas pertenecen a sus respectivas fuentes. La matriz de decisión, las hipótesis, la arquitectura y el alcance representan decisiones del proyecto y deberán validarse durante el desarrollo.
+Este repositorio se originó durante la Maratón de IA de Ruta N y continúa como un producto independiente de aprendizaje y posible aplicación empresarial. Las cifras externas pertenecen a sus respectivas fuentes. La matriz de decisión, las hipótesis, la arquitectura y el alcance representan decisiones del proyecto y deberán validarse durante el desarrollo.
