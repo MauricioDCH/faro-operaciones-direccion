@@ -52,6 +52,30 @@ class SettingsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "must be positive"):
                 Settings.from_environment()
 
+    def test_loads_json_limits(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "JSON_MAX_FILE_SIZE_MB": "12",
+                "JSON_MAX_RECORDS": "700",
+                "JSON_MAX_DEPTH": "15",
+                "JSON_MAX_FIELDS": "80",
+                "JSON_MAX_FIELD_CHARACTERS": "5000",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(12, settings.json_max_file_size_mb)
+        self.assertEqual(700, settings.json_max_records)
+        self.assertEqual(15, settings.json_max_depth)
+        self.assertEqual(80, settings.json_max_fields)
+        self.assertEqual(5000, settings.json_max_field_characters)
+
+    def test_rejects_invalid_json_limit(self) -> None:
+        with patch.dict("os.environ", {"JSON_MAX_DEPTH": "0"}, clear=True):
+            with self.assertRaisesRegex(ValueError, "JSON_MAX_DEPTH"):
+                Settings.from_environment()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -34,6 +34,30 @@ _EXPORTS = {
         "faro.ingestion.formats",
         "require_implemented_format",
     ),
+    "JsonFormatError": (
+        "faro.ingestion.json_records",
+        "JsonFormatError",
+    ),
+    "JsonIngestionService": (
+        "faro.ingestion.json_records",
+        "JsonIngestionService",
+    ),
+    "JsonInput": (
+        "faro.ingestion.json_records",
+        "JsonInput",
+    ),
+    "JsonProfile": (
+        "faro.ingestion.json_records",
+        "JsonProfile",
+    ),
+    "build_json_profile": (
+        "faro.ingestion.json_records",
+        "build_json_profile",
+    ),
+    "JsonIngestionBatch": (
+        "faro.ingestion.models",
+        "JsonIngestionBatch",
+    ),
     "DelimitedFormatError": (
         "faro.ingestion.delimited",
         "DelimitedFormatError",

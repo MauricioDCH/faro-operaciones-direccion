@@ -56,6 +56,22 @@ def stable_delimited_location_id(
     digest = sha256(material.encode("utf-8")).hexdigest()
     return f"LOC-{digest[:16].upper()}"
 
+
+
+def stable_json_location_id(
+    file_hash: str,
+    record_number: int,
+    line_number: int | None,
+    json_pointer: str,
+) -> str:
+    """Build a deterministic JSON/NDJSON record or field location identifier."""
+
+    material = "|".join(
+        (file_hash, str(record_number), str(line_number or ""), json_pointer)
+    )
+    digest = sha256(material.encode("utf-8")).hexdigest()
+    return f"LOC-{digest[:16].upper()}"
+
 def stable_spreadsheet_location_id(
     file_hash: str,
     sheet: str,
@@ -226,6 +242,27 @@ class DelimitedSourceLocation:
     row: int
     column: str | None
     raw_value: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+@dataclass(frozen=True, slots=True)
+class JsonSourceLocation:
+    """JSON Pointer and optional NDJSON line provenance."""
+
+    source_location_id: str
+    source_file_id: str
+    record_number: int
+    line: int | None
+    json_pointer: str
+    field: str | None
+    raw_value: str | None
+
+    @property
+    def column(self) -> str | None:
+        """Expose the canonical field name used by tabular validators."""
+
+        return self.field
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

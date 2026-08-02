@@ -35,6 +35,11 @@ class Settings:
     delimited_max_records: int = 100_000
     delimited_max_columns: int = 100
     delimited_max_field_characters: int = 100_000
+    json_max_file_size_mb: int = 25
+    json_max_records: int = 100_000
+    json_max_depth: int = 20
+    json_max_fields: int = 200
+    json_max_field_characters: int = 100_000
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -70,6 +75,15 @@ class Settings:
             delimited_max_field_characters=int(
                 os.getenv("DELIMITED_MAX_FIELD_CHARACTERS", "100000")
             ),
+            json_max_file_size_mb=int(
+                os.getenv("JSON_MAX_FILE_SIZE_MB", "25")
+            ),
+            json_max_records=int(os.getenv("JSON_MAX_RECORDS", "100000")),
+            json_max_depth=int(os.getenv("JSON_MAX_DEPTH", "20")),
+            json_max_fields=int(os.getenv("JSON_MAX_FIELDS", "200")),
+            json_max_field_characters=int(
+                os.getenv("JSON_MAX_FIELD_CHARACTERS", "100000")
+            ),
         )
         settings.validate()
         return settings
@@ -101,3 +115,13 @@ class Settings:
             raise ValueError(
                 "DELIMITED_MAX_FIELD_CHARACTERS must be positive."
             )
+        if not 1 <= self.json_max_file_size_mb <= 1024:
+            raise ValueError("JSON_MAX_FILE_SIZE_MB must be between 1 and 1024.")
+        if self.json_max_records < 1:
+            raise ValueError("JSON_MAX_RECORDS must be positive.")
+        if not 1 <= self.json_max_depth <= 100:
+            raise ValueError("JSON_MAX_DEPTH must be between 1 and 100.")
+        if self.json_max_fields < 1:
+            raise ValueError("JSON_MAX_FIELDS must be positive.")
+        if self.json_max_field_characters < 1:
+            raise ValueError("JSON_MAX_FIELD_CHARACTERS must be positive.")

@@ -1,8 +1,8 @@
 # Contratos de datos
 
-**Estado:** línea base aprobada para implementación  
-**Versión:** 1.6.0
-**Producto:** Faro  
+**Estado:** línea base aprobada para implementación
+**Versión:** 1.7.0
+**Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
 ---
@@ -11,7 +11,7 @@
 
 Este documento define los contratos de entrada y las garantías mínimas de salida de Faro.
 
-La versión actual implementa Excel, PDF y CSV/TSV. La expansión aprobada conserva como planificados XML UBL, imágenes, JSON/NDJSON, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
+La versión actual implementa Excel, PDF, CSV/TSV y JSON/NDJSON. La expansión aprobada conserva como planificados XML UBL, imágenes, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
 
 ---
 
@@ -137,8 +137,8 @@ La salida técnica de esta etapa es `ExcelIngestionBatch`, compuesto por `Tabula
 
 ## 7. DC-001 — Productos
 
-**Libro:** `data/raw/catalogos.xlsx`  
-**Hoja:** `productos`  
+**Libro:** `data/raw/catalogos.xlsx`
+**Hoja:** `productos`
 **Granularidad:** una fila por producto.
 
 | Campo | Regla |
@@ -158,8 +158,8 @@ Un identificador duplicado genera `error`. Un precio inferior al costo genera `w
 
 ## 8. DC-002 — Clientes
 
-**Libro:** `data/raw/catalogos.xlsx`  
-**Hoja:** `clientes`  
+**Libro:** `data/raw/catalogos.xlsx`
+**Hoja:** `clientes`
 **Granularidad:** una fila por cliente.
 
 Campos obligatorios:
@@ -182,8 +182,8 @@ Un identificador duplicado genera `error`. Los contactos son sintéticos.
 
 ## 9. DC-003 — Proveedores
 
-**Libro:** `data/raw/catalogos.xlsx`  
-**Hoja:** `proveedores`  
+**Libro:** `data/raw/catalogos.xlsx`
+**Hoja:** `proveedores`
 **Granularidad:** una fila por proveedor.
 
 Campos obligatorios:
@@ -205,8 +205,8 @@ Las variantes deliberadas de nombre se conservan en raw y se registran como anom
 
 ## 10. DC-004 — Ventas
 
-**Libro:** `data/raw/ventas.xlsx`  
-**Hoja:** `ventas`  
+**Libro:** `data/raw/ventas.xlsx`
+**Hoja:** `ventas`
 **Granularidad:** una fila por línea de venta.
 
 Campos obligatorios:
@@ -240,8 +240,8 @@ Reglas:
 
 ## 11. DC-005 — Inventario
 
-**Libro:** `data/raw/inventario.xlsx`  
-**Hoja:** `inventario`  
+**Libro:** `data/raw/inventario.xlsx`
+**Hoja:** `inventario`
 **Granularidad:** una fila por producto y fecha de corte.
 
 Campos obligatorios:
@@ -270,8 +270,8 @@ El riesgo de inventario se calcula de forma determinística.
 
 ## 12. DC-006 — Pedidos
 
-**Libro:** `data/raw/pedidos.xlsx`  
-**Hoja:** `pedidos`  
+**Libro:** `data/raw/pedidos.xlsx`
+**Hoja:** `pedidos`
 **Granularidad:** una fila por línea de pedido.
 
 Campos obligatorios:
@@ -297,7 +297,7 @@ Proveedor y producto deben existir. La fecha esperada no puede ser anterior a la
 
 ## 13. DC-007 — Facturas y cotizaciones PDF
 
-**Directorio canónico:** `data/raw/documentos/`  
+**Directorio canónico:** `data/raw/documentos/`
 **Compatibilidad temporal:** `data/raw/facturas/` se acepta mientras se migra el generador sintético.
 
 **Implementación actual:** Poppler y Tesseract recuperan texto; un parser determinístico versionado extrae los campos aprobados y valida líneas y totales. El contrato permanece independiente de esas herramientas.
@@ -435,8 +435,8 @@ Entidades lógicas `document`, `document_page`, `invoice`, `invoice_line`, `quot
 
 ## 14. DC-008 — Lote de correo producido por plugin
 
-**Archivo importado:** `data/imports/plugins/email/plugin-email-batch.json`  
-**Esquema:** `schemas/plugin-email-batch.schema.json`  
+**Archivo importado:** `data/imports/plugins/email/plugin-email-batch.json`
+**Esquema:** `schemas/plugin-email-batch.schema.json`
 **Ejemplo:** `data/samples/plugin-email-batch.example.json`
 
 ### Propósito
@@ -647,7 +647,11 @@ Los contratos quedan listos cuando:
 16. los hashes de los archivos Excel permanecen sin cambios durante la ingesta;
 17. CSV y TSV validan perfil, contenido, límites y configuración efectiva;
 18. cada campo delimitado conserva registro, fila, columna, valor raw y valor tipado;
-19. los hashes de CSV y TSV permanecen sin cambios durante la ingesta.
+19. los hashes de CSV y TSV permanecen sin cambios durante la ingesta;
+20. JSON y NDJSON validan perfil, versión, límites y tipos;
+21. cada campo JSON conserva JSON Pointer y cada registro NDJSON conserva línea;
+22. los hashes JSON y NDJSON permanecen sin cambios durante la ingesta.
+
 ---
 
 ## 19. DC-010 — CSV y TSV
@@ -718,9 +722,70 @@ Las imágenes reutilizan inspección, OCR, clasificación y extracción document
 
 ## 22. DC-013 — JSON y NDJSON
 
-**Estado:** `planned`
+**Estado:** `implemented`
 
-Los lotes JSON requieren `schema_version` y contrato identificable. NDJSON procesa una entidad por línea y conserva número de registro y JSON Pointer. Los documentos inválidos se rechazan de forma localizable.
+**Ruta recomendada:** `data/raw/imports/structured/*.{json,ndjson,jsonl}`
+**Adaptador:** `json_records`
+**Versión soportada:** `1.0.0`
+
+### Perfiles aprobados
+
+- `products` → DC-001 / `product`;
+- `customers` → DC-002 / `customer`;
+- `suppliers` → DC-003 / `supplier`;
+- `sales` → DC-004 / `sale_line`;
+- `inventory` → DC-005 / `inventory_snapshot`;
+- `orders` → DC-006 / `purchase_order_line`.
+
+### Formas JSON aceptadas
+
+1. objeto único, con perfil y versión declarados por la ejecución;
+2. arreglo de objetos, con perfil y versión declarados por la ejecución;
+3. lote versionado:
+
+```json
+{
+  "schema_version": "1.0.0",
+  "profile_id": "products",
+  "records": []
+}
+```
+
+Un registro puede declarar `_schema_version` y `_profile_id`; cuando aparecen deben coincidir con el perfil de la ejecución.
+
+### NDJSON
+
+Cada línea no vacía contiene exactamente un objeto JSON. Una línea inválida produce un hallazgo localizable y no impide procesar las demás líneas. Se conservan número de registro y número de línea.
+
+### Validaciones y límites
+
+- UTF-8 o UTF-8 con BOM;
+- rechazo de claves duplicadas;
+- rechazo de `NaN`, `Infinity` y valores no finitos;
+- límite de tamaño, registros, profundidad, campos y longitud de cadenas;
+- objeto por registro;
+- campos canónicos escalares;
+- campos inesperados rechazados;
+- versión y perfil compatibles;
+- tipos, campos obligatorios, rangos, catálogos e integridad referencial;
+- hashes raw verificados antes y después.
+
+### Procedencia
+
+Cada registro y campo conserva:
+
+- `source_file_id`;
+- `record_number`;
+- `line` para NDJSON;
+- `json_pointer` conforme a RFC 6901;
+- nombre de campo;
+- valor raw estable;
+- valor tipado;
+- perfil y versión efectivos.
+
+### Comportamiento de error
+
+Un JSON sintácticamente inválido, una versión incompatible o un límite global excedido produce estado `failed`. En NDJSON, una línea inválida queda registrada como error del registro y las demás líneas pueden continuar. Ningún caso modifica el archivo de origen.
 
 ## 23. DC-014 — EML y MBOX
 
