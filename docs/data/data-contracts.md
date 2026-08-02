@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.5.0
+**Versión:** 1.6.0
 **Producto:** Faro  
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -11,7 +11,7 @@
 
 Este documento define los contratos de entrada y las garantías mínimas de salida de Faro.
 
-La versión actual implementa Excel y PDF. La expansión aprobada incorpora adaptadores planificados para CSV/TSV, XML UBL, imágenes, JSON/NDJSON, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
+La versión actual implementa Excel, PDF y CSV/TSV. La expansión aprobada conserva como planificados XML UBL, imágenes, JSON/NDJSON, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
 
 ---
 
@@ -644,14 +644,65 @@ Los contratos quedan listos cuando:
 13. los metadatos OCR permiten reproducir y auditar la extracción;
 14. los cuatro libros y seis hojas Excel se validan con tipos y reglas determinísticas;
 15. cada campo tabular conserva archivo, hoja, fila, columna, celda y valor raw;
-16. los hashes de los archivos Excel permanecen sin cambios durante la ingesta.
+16. los hashes de los archivos Excel permanecen sin cambios durante la ingesta;
+17. CSV y TSV validan perfil, contenido, límites y configuración efectiva;
+18. cada campo delimitado conserva registro, fila, columna, valor raw y valor tipado;
+19. los hashes de CSV y TSV permanecen sin cambios durante la ingesta.
 ---
 
 ## 19. DC-010 — CSV y TSV
 
-**Estado:** `planned`
+**Estado:** `implemented`
 
-El perfil de importación debe declarar codificación, delimitador, encabezado, formato de fecha, separador decimal y entidad objetivo. Cada campo conserva número de registro, nombre de columna, valor raw y valor tipado. No se infiere silenciosamente una configuración ambigua.
+**Ruta recomendada:** `data/raw/tabular/*.{csv,tsv}`
+
+**Adaptador:** `delimited`
+
+### Perfiles aprobados
+
+- `products` → DC-001 / `product`;
+- `customers` → DC-002 / `customer`;
+- `suppliers` → DC-003 / `supplier`;
+- `sales` → DC-004 / `sale_line`;
+- `inventory` → DC-005 / `inventory_snapshot`;
+- `orders` → DC-006 / `purchase_order_line`.
+
+### Configuración explícita
+
+Cada fuente declara o resuelve en un perfil materializado:
+
+- formato `csv` o `tsv`;
+- codificación `utf-8` o `utf-8-sig`;
+- delimitador `,`, `;`, tabulador o `|`;
+- modo `auto` únicamente para detectar el delimitador desde un encabezado no ambiguo;
+- separador decimal `.` o `,`;
+- separador de miles opcional;
+- formato de fecha;
+- entidad objetivo y contrato.
+
+No se aceptan silenciosamente UTF-16, codificaciones heredadas, perfiles desconocidos, encabezados ambiguos ni extensiones que contradigan el perfil.
+
+### Validación
+
+El adaptador valida:
+
+- contenido UTF-8 real y ausencia de bytes NUL;
+- tamaño máximo del archivo;
+- máximo de registros, columnas y caracteres por campo;
+- encabezados obligatorios, únicos y adicionales;
+- ancho de cada registro;
+- conversión de cadenas, booleanos, fechas y decimales;
+- mínimos y catálogos permitidos;
+- duplicados, fórmulas operativas e integridad referencial cuando el lote incluye o exige catálogos;
+- hash SHA-256 antes y después de la ingesta.
+
+### Procedencia
+
+Cada registro conserva `source_file_id`, `record_number`, fila física, `source_location_id` y estado. Cada campo conserva columna, valor raw, valor tipado y ubicación determinística. La configuración efectiva queda en `source_file.format_metadata`.
+
+### Comportamiento de error
+
+Un error de fuente produce un hallazgo estructurado y no altera el archivo raw. Un registro mal formado o con error de datos queda `rejected`; los demás registros del lote pueden continuar. La validación de referencias puede omitirse explícitamente cuando los catálogos todavía no formen parte del lote, pero nunca se omite de manera implícita en una consolidación estricta.
 
 ## 20. DC-011 — XML UBL
 
@@ -698,4 +749,3 @@ Solo se extrae contenido textual y estructural controlado. No se ejecutan macros
 5. Los límites de tamaño y recursos son obligatorios.
 6. Los errores son estructurados y localizables.
 7. Las capacidades `planned` no se aceptan como implementadas.
-

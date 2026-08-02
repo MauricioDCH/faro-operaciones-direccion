@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** Excel y PDF/OCR implementados; expansión multiplataforma y nuevos adaptadores aprobados
+> **Estado:** Excel, PDF/OCR y CSV/TSV implementados; expansión multiplataforma y demás adaptadores aprobados
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -204,6 +204,7 @@ Formatos aprobados para implementación por fases:
 ### Capacidades incluidas
 
 - cargar libros de Excel;
+- ingerir CSV y TSV mediante perfiles explícitos, con delimitador, codificación, fechas y separador decimal controlados;
 - recuperar texto por página mediante extracción nativa u OCR y clasificar facturas y cotizaciones;
 - extraer campos estructurados y validar líneas y totales de facturas y cotizaciones;
 - importar y validar el lote estructurado producido por el plugin de correo;
@@ -551,6 +552,7 @@ make check-ocr-runtime
 make generate-data
 make validate-data
 make ingest-excel
+make ingest-delimited SOURCES="--source products=data/raw/tabular/productos.csv"
 make check
 make extract-pdf PDF=data/raw/facturas/factura_001.pdf
 make run
@@ -563,6 +565,7 @@ make run
 | `make generate-data` | Generar o reutilizar la línea base sintética con semilla fija |
 | `make validate-data` | Comparar los 11 hallazgos sembrados con la verdad de referencia |
 | `make ingest-excel` | Ingerir y validar los cuatro libros Excel con procedencia por celda |
+| `make ingest-delimited SOURCES="..."` | Ingerir uno o varios CSV/TSV mediante perfiles explícitos y procedencia por registro/campo |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make run` | Iniciar la aplicación local |
@@ -612,6 +615,29 @@ La compatibilidad directa de Smart Ranks con ChatGPT o Codex se tratará como **
 
 La ingesta detecta las anomalías Excel sembradas: venta duplicada, campo obligatorio vacío, fecha inválida, cantidad negativa, producto inexistente e inventario bajo. Cada registro conserva hash de archivo y procedencia por hoja, fila, columna y celda.
 
+### Resultado actual de CSV y TSV
+
+El adaptador `delimited` acepta perfiles `products`, `customers`, `suppliers`, `sales`, `inventory` y `orders`. Valida UTF-8, delimitadores `,`, `;`, tabulador y `|`, encabezados, ancho de filas, tipos, fechas, separadores decimales, catálogos, límites, relaciones opcionales y hashes raw. Cada campo conserva archivo, número de registro, fila, columna, valor raw y valor tipado.
+
+Ejemplo directo en Linux:
+
+```bash
+PYTHONPATH=src uv run python scripts/ingest_delimited.py \
+  --source products=data/raw/tabular/productos.csv \
+  --source customers=data/raw/tabular/clientes.tsv \
+  --source sales=data/raw/tabular/ventas.csv
+```
+
+Ejemplo equivalente en Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+uv run python scripts/ingest_delimited.py `
+  --source products=data/raw/tabular/productos.csv `
+  --source customers=data/raw/tabular/clientes.tsv `
+  --source sales=data/raw/tabular/ventas.csv
+```
+
 ---
 
 ## 12. Estado del proyecto
@@ -630,7 +656,8 @@ La ingesta detecta las anomalías Excel sembradas: venta duplicada, campo obliga
 | Consolidación y proveniencia | `planned` |
 | Detección y ejecución multiplataforma Linux/Windows | `planned` |
 | Registro central de formatos | `implemented` |
-| CSV/TSV, XML UBL, imágenes y JSON/NDJSON | `planned` |
+| CSV y TSV con perfiles explícitos | `implemented` |
+| XML UBL, imágenes y JSON/NDJSON | `planned` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |

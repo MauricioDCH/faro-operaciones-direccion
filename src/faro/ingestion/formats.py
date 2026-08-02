@@ -61,8 +61,8 @@ class FormatCapability:
 _CAPABILITIES = (
     FormatCapability(InputFormat.XLSX, (".xlsx",), ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",), "current", CapabilityStatus.IMPLEMENTED, "excel", "Excel workbooks"),
     FormatCapability(InputFormat.PDF, (".pdf",), ("application/pdf",), "current", CapabilityStatus.IMPLEMENTED, "pdf", "Native or scanned PDF documents"),
-    FormatCapability(InputFormat.CSV, (".csv",), ("text/csv",), "phase_1", CapabilityStatus.PLANNED, "delimited", "Comma-delimited tabular exports"),
-    FormatCapability(InputFormat.TSV, (".tsv",), ("text/tab-separated-values",), "phase_1", CapabilityStatus.PLANNED, "delimited", "Tab-delimited tabular exports"),
+    FormatCapability(InputFormat.CSV, (".csv",), ("text/csv",), "phase_1", CapabilityStatus.IMPLEMENTED, "delimited", "Profiled delimited tabular exports"),
+    FormatCapability(InputFormat.TSV, (".tsv",), ("text/tab-separated-values",), "phase_1", CapabilityStatus.IMPLEMENTED, "delimited", "Profiled tab-delimited exports"),
     FormatCapability(InputFormat.UBL_XML, (".xml",), ("application/xml", "text/xml"), "phase_1", CapabilityStatus.PLANNED, "ubl_xml", "UBL electronic business documents"),
     FormatCapability(InputFormat.JPEG, (".jpg", ".jpeg"), ("image/jpeg",), "phase_1", CapabilityStatus.PLANNED, "image_document", "JPEG document images"),
     FormatCapability(InputFormat.PNG, (".png",), ("image/png",), "phase_1", CapabilityStatus.PLANNED, "image_document", "PNG document images"),

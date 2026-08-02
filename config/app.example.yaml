@@ -24,9 +24,9 @@ ingestion:
   implemented_extensions:
     - .xlsx
     - .pdf
-  phase_1_extensions:
     - .csv
     - .tsv
+  phase_1_extensions:
     - .xml
     - .jpg
     - .jpeg
@@ -41,4 +41,20 @@ ingestion:
     max_file_size_mb: 25
     max_archive_members: 100
     max_archive_depth: 1
+    max_delimited_records: 100000
+    max_delimited_columns: 100
+    max_delimited_field_characters: 100000
+
+  delimited:
+    encoding: utf-8-sig
+    delimiter: auto
+    decimal_separator: "."
+    date_format: "%Y-%m-%d"
+    profiles:
+      - products
+      - customers
+      - suppliers
+      - sales
+      - inventory
+      - orders
 

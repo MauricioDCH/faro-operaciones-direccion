@@ -43,6 +43,19 @@ def stable_location_id(file_hash: str, page_number: int) -> str:
     return f"LOC-{file_hash[:12].upper()}-{page_number:03d}"
 
 
+
+
+def stable_delimited_location_id(
+    file_hash: str,
+    record_number: int,
+    column: str | None,
+) -> str:
+    """Build a deterministic CSV/TSV record or field location identifier."""
+
+    material = "|".join((file_hash, str(record_number), column or ""))
+    digest = sha256(material.encode("utf-8")).hexdigest()
+    return f"LOC-{digest[:16].upper()}"
+
 def stable_spreadsheet_location_id(
     file_hash: str,
     sheet: str,
@@ -104,6 +117,13 @@ class SourceFile:
     file_hash: str
     ingested_at: str
     record_status: str
+    media_type_declared: str | None = None
+    media_type_detected: str | None = None
+    detected_format: str | None = None
+    format_version: str | None = None
+    ingestion_adapter: str | None = None
+    file_size_bytes: int | None = None
+    format_metadata: dict[str, Any] | None = None
 
     @property
     def sha256(self) -> str:
@@ -121,6 +141,13 @@ class SourceFile:
         contract_version: str = "1.4.2",
         dataset_version: str = "0.1.0",
         seed: int | None = 20260731,
+        media_type_declared: str | None = None,
+        media_type_detected: str | None = None,
+        detected_format: str | None = None,
+        format_version: str | None = None,
+        ingestion_adapter: str | None = None,
+        file_size_bytes: int | None = None,
+        format_metadata: dict[str, Any] | None = None,
     ) -> "SourceFile":
         resolved = path.resolve()
         digest = file_hash or sha256_file(resolved)
@@ -141,6 +168,13 @@ class SourceFile:
             file_hash=f"sha256:{digest}",
             ingested_at=timestamp.isoformat(),
             record_status="accepted",
+            media_type_declared=media_type_declared,
+            media_type_detected=media_type_detected,
+            detected_format=detected_format,
+            format_version=format_version,
+            ingestion_adapter=ingestion_adapter,
+            file_size_bytes=(resolved.stat().st_size if file_size_bytes is None else file_size_bytes),
+            format_metadata=format_metadata,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -177,6 +211,20 @@ class SpreadsheetSourceLocation:
     row: int
     column: str | None
     cell_reference: str | None
+    raw_value: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+@dataclass(frozen=True, slots=True)
+class DelimitedSourceLocation:
+    """CSV/TSV record and optional field provenance."""
+
+    source_location_id: str
+    source_file_id: str
+    record_number: int
+    row: int
+    column: str | None
     raw_value: str | None
 
     def to_dict(self) -> dict[str, Any]:

@@ -13,7 +13,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 |---|---|---:|---|---|
 | Excel | `.xlsx` | actual | `implemented` | `excel` |
 | PDF | `.pdf` | actual | `implemented` | `pdf` |
-| Delimitados | `.csv`, `.tsv` | fase 1 | `planned` | `delimited` |
+| Delimitados | `.csv`, `.tsv` | fase 1 | `implemented` | `delimited` |
 | XML UBL | `.xml` | fase 1 | `planned` | `ubl_xml` |
 | Imágenes | `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.webp` | fase 1 | `planned` | `image_document` |
 | JSON | `.json`, `.ndjson`, `.jsonl` | fase 1 | `planned` | `json_records` |
@@ -25,7 +25,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 
 ## Orden de implementación
 
-1. CSV y TSV.
+1. CSV y TSV — implementado.
 2. JSON y NDJSON.
 3. Imágenes documentales reutilizando OCR.
 4. XML UBL.
@@ -36,3 +36,8 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 ## Regla de finalización
 
 Un formato solo pasa a `implemented` cuando cuenta con contrato, fixtures, validación de estructura, procedencia, límites de seguridad, pruebas de éxito/error/regresión y documentación reproducible en Linux y Windows cuando aplique.
+
+
+## CSV y TSV implementados
+
+El adaptador exige un perfil explícito de entidad y registra la configuración efectiva. Soporta UTF-8 y UTF-8 con BOM, delimitadores coma, punto y coma, tabulador y barra vertical, fechas configurables, separador decimal configurable, límites de tamaño/filas/columnas/campo y procedencia por registro y columna. No intenta aceptar codificaciones heredadas ni configuraciones ambiguas de manera silenciosa.
