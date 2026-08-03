@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** formatos de fase 1 y consolidación SQLite implementados; indicadores, alertas y dashboard en desarrollo
+> **Estado:** formatos de fase 1, consolidación SQLite e indicadores configurables implementados; alertas y dashboard en desarrollo
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -548,6 +548,18 @@ PYTHONPATH=src uv run python scripts/consolidate_operations.py
 
 La salida se guarda en `data/processed/faro.db`. El archivo no se versiona; el resultado expone un `logical_content_hash` reproducible entre Linux y Windows.
 
+
+### Indicadores configurables
+
+Faro no obliga a todas las empresas a usar el mismo tablero. `config/indicators.yaml` incluye presets aprobados para distribución, ventas e inventario. La empresa puede seleccionar uno y ajustar parámetros controlados; las fórmulas permanecen en código determinístico.
+
+```bash
+PYTHONPATH=src uv run python scripts/calculate_indicators.py --list-presets
+PYTHONPATH=src uv run python scripts/calculate_indicators.py --preset retail_distribution
+```
+
+Los resultados se guardan en `indicator_run` e `indicator_result` dentro de `faro.db`, con hash de configuración, versión de fórmula y evidencia de registros y ubicaciones fuente.
+
 ## 10. Instalación, ejecución y pruebas
 
 Dependencias del sistema para PDF y OCR en Linux Ubuntu:
@@ -586,6 +598,8 @@ make ingest-ubl XML=data/samples/ubl-invoice.example.xml
 | `make ingest-excel` | Ingerir y validar los cuatro libros Excel con procedencia por celda |
 | `make ingest-delimited SOURCES="..."` | Ingerir uno o varios CSV/TSV mediante perfiles explícitos y procedencia por registro/campo |
 | `make ingest-json SOURCES="..."` | Ingerir JSON/NDJSON versionados con perfiles explícitos, límites y JSON Pointer |
+| `make indicators` | Calcular y persistir el preset activo de indicadores |
+| `make indicators PRESET=sales_monitoring` | Calcular otro preset aprobado |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make extract-image IMAGE=...` | Aplicar OCR, clasificación, extracción y procedencia a una imagen documental |
@@ -685,7 +699,7 @@ PYTHONPATH=src uv run python scripts/extract_image.py \
 | Recuperación de texto PDF/OCR y clasificación documental | `implemented` |
 | Extracción estructurada de campos de factura y cotización | `implemented` |
 | Ingesta y validación tabular | `implemented` |
-| Consolidación y proveniencia | `planned` |
+| Consolidación y proveniencia | `implemented` |
 | Guías de instalación Linux/Windows | `implemented` |
 | Validación CI nativa Linux/Windows | `planned` |
 | Registro central de formatos | `implemented` |
@@ -694,7 +708,8 @@ PYTHONPATH=src uv run python scripts/extract_image.py \
 | Imágenes documentales JPG/PNG/TIFF/WebP | `implemented` |
 | XML UBL 2.1 | `implemented` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
-| Indicadores y alertas | `planned` |
+| Indicadores configurables | `implemented` |
+| Alertas | `planned` |
 | Consultas asistidas por IA | `planned` |
 | Interfaz y Demo Day | `planned` |
 | ERP, CRM, contabilidad e integraciones bancarias | `out of scope` |

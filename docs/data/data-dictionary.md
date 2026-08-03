@@ -1,8 +1,8 @@
 # Diccionario de datos
 
-**Estado:** línea base aprobada para implementación  
-**Versión:** 1.10.0
-**Producto:** Faro  
+**Estado:** línea base aprobada para implementación
+**Versión:** 1.11.0
+**Producto:** Faro
 **Alcance:** modelo lógico canónico para datos sintéticos
 
 ---
@@ -286,7 +286,7 @@ Representa un producto comercializado.
 | `record_status` | `enum` | No | Estado de validación | — | `accepted` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000010` |
 
-**Clasificación:** `synthetic_non_sensitive`.  
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** ventas, inventario, pedidos, facturas, indicadores y alertas.
 
 ---
@@ -308,7 +308,7 @@ Representa un cliente sintético.
 | `record_status` | `enum` | No | Estado de validación | — | `accepted` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000020` |
 
-**Clasificación:** campos de contacto `synthetic_contact`; demás campos `synthetic_non_sensitive`.  
+**Clasificación:** campos de contacto `synthetic_contact`; demás campos `synthetic_non_sensitive`.
 **Consumidores:** ventas, indicadores y trazabilidad.
 
 ---
@@ -330,7 +330,7 @@ Representa un proveedor sintético.
 | `record_status` | `enum` | No | Estado de validación | — | `observed` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000030` |
 
-**Clasificación:** campos de contacto `synthetic_contact`; demás campos `synthetic_non_sensitive`.  
+**Clasificación:** campos de contacto `synthetic_contact`; demás campos `synthetic_non_sensitive`.
 **Consumidores:** pedidos, facturas, normalización, indicadores y alertas.
 
 ---
@@ -354,7 +354,7 @@ Representa una línea de venta.
 | `record_status` | `enum` | No | Estado de validación | — | `accepted` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000100` |
 
-**Clasificación:** `synthetic_non_sensitive`.  
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** indicadores de ventas, inventario, anomalías y preguntas empresariales.
 
 ---
@@ -374,8 +374,8 @@ Representa el inventario de un producto en una fecha.
 | `record_status` | `enum` | No | Estado de validación | — | `accepted` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000200` |
 
-**Clave lógica:** `(snapshot_date, product_id)`.  
-**Clasificación:** `synthetic_non_sensitive`.  
+**Clave lógica:** `(snapshot_date, product_id)`.
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** alertas de inventario, dashboard y preguntas empresariales.
 
 ---
@@ -400,7 +400,7 @@ Representa una línea de pedido a proveedor.
 | `record_status` | `enum` | No | Estado de validación | — | `accepted` |
 | `source_location_id` | `string` | No | FK de procedencia | — | `LOC-000300` |
 
-**Clasificación:** `synthetic_non_sensitive`.  
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** comparación pedido-factura, correos, alertas y dashboard.
 
 ---
@@ -476,8 +476,8 @@ Representa la cabecera de una factura de proveedor.
 | `record_status` | `enum` | No | Estado de validación | `pending_review` |
 | `source_location_id` | `string` | No | Ubicación de la cabecera | `LOC-000400` |
 
-**Regla de duplicado:** proveedor, número de factura y fecha; puede ampliarse mediante decisión.  
-**Clasificación:** `synthetic_non_sensitive`.  
+**Regla de duplicado:** proveedor, número de factura y fecha; puede ampliarse mediante decisión.
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** duplicados, comparación con pedidos, alertas y trazabilidad.
 
 ---
@@ -498,7 +498,7 @@ Representa una línea de factura.
 | `record_status` | `enum` | No | Estado de validación | `pending_review` |
 | `source_location_id` | `string` | No | Página y evidencia | `LOC-000401` |
 
-**Clasificación:** `synthetic_non_sensitive`.  
+**Clasificación:** `synthetic_non_sensitive`.
 **Consumidores:** comparación pedido-factura, normalización, alertas y trazabilidad.
 
 ---
@@ -656,7 +656,7 @@ Registra la decisión humana sobre una propuesta.
 | `reviewed_at` | `datetime` | No | Fecha de decisión | `2026-07-31T09:15:00-05:00` |
 | `comment` | `string` | Sí | Justificación breve | `El empaque corresponde a 250 g` |
 
-**Clasificación:** `technical_metadata`.  
+**Clasificación:** `technical_metadata`.
 **Consumidores:** consolidación, auditoría y dashboard.
 
 ---
@@ -679,7 +679,7 @@ Representa un hallazgo de calidad.
 | `detected_at` | `datetime` | No | Fecha de detección | `2026-07-31T09:20:00-05:00` |
 | `record_status` | `enum` | No | Estado del hallazgo | `observed` |
 
-**Clasificación:** `technical_metadata`.  
+**Clasificación:** `technical_metadata`.
 **Consumidores:** validación, verdad de referencia, dashboard y métricas de detección.
 
 ---
@@ -705,13 +705,32 @@ Registra una transformación aplicada.
 
 ---
 
-## 24. Entidad `indicator_result`
+## 24. Entidad `indicator_run`
+
+Representa una ejecución reproducible de un preset de indicadores.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `run_id` | `string` | No | Identificador estable de ejecución | `KPIRUN-000001` |
+| `preset_id` | `string` | No | Preset seleccionado | `retail_distribution` |
+| `preset_label` | `string` | No | Nombre legible | `Comercializadora o distribuidora` |
+| `config_hash` | `string` | No | Hash de la configuración validada | `sha256...` |
+| `database_logical_hash` | `string` | No | Hash lógico de los datos operativos | `sha256...` |
+| `as_of_date` | `date` | No | Fecha de corte | `2026-07-31` |
+| `calculated_at` | `datetime` | No | Fecha reproducible de cálculo | `2026-07-31T09:00:00+00:00` |
+| `result_count` | `integer` | No | Cantidad de resultados | `18` |
+
+---
+
+## 25. Entidad `indicator_result`
 
 Representa un resultado determinístico de indicador.
 
 | Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
 |---|---|---:|---|---|
-| `indicator_result_id` | `string` | No | Identificador único | `KPI-000001` |
+| `indicator_result_id` | `string` | No | Identificador único y estable para la ejecución | `KPI-000001` |
+| `run_id` | `string` | No | Ejecución determinística del preset | `KPIRUN-000001` |
+| `preset_id` | `string` | No | Preconfiguración seleccionada | `retail_distribution` |
 | `indicator_id` | `string` | No | Indicador configurado | `KPI-SALES-TOTAL` |
 | `period_start` | `date` | Sí | Inicio del periodo | `2026-07-01` |
 | `period_end` | `date` | Sí | Fin del periodo | `2026-07-31` |
@@ -721,14 +740,16 @@ Representa un resultado determinístico de indicador.
 | `unit` | `string` | No | Unidad del resultado | `COP` |
 | `formula_version` | `string` | No | Versión de fórmula | `1.0.0` |
 | `source_record_ids` | `list[string]` | No | Registros utilizados | `["SALL-000001"]` |
-| `calculated_at` | `datetime` | No | Fecha de cálculo | `2026-07-31T09:30:00-05:00` |
+| `source_location_ids` | `list[string]` | No | Ubicaciones de evidencia | `["LOC-000100"]` |
+| `details` | `json` | No | Entradas, fórmula y contexto complementario | `{"sale_count": 15}` |
+| `calculated_at` | `datetime` | No | Fecha de cálculo de la ejecución | `2026-07-31T09:30:00-05:00` |
 
-**Regla:** los modelos generativos no producen `numeric_value`.  
+**Reglas:** los modelos generativos no producen `numeric_value`; la configuración selecciona fórmulas aprobadas y no acepta SQL arbitrario.
 **Consumidores:** dashboard, alertas y respuestas empresariales.
 
 ---
 
-## 25. Entidad `alert`
+## 26. Entidad `alert`
 
 Representa una condición operativa detectada por una regla.
 
@@ -752,7 +773,7 @@ Representa una condición operativa detectada por una regla.
 
 ---
 
-## 26. Entidad `business_answer`
+## 27. Entidad `business_answer`
 
 Representa una respuesta a una pregunta priorizada.
 
@@ -768,12 +789,12 @@ Representa una respuesta a una pregunta priorizada.
 | `provider` | `string` | Sí | Proveedor generativo, si se utilizó | `none` |
 | `created_at` | `datetime` | No | Fecha de respuesta | `2026-07-31T09:40:00-05:00` |
 
-**Regla:** con evidencia insuficiente, `answer_text` debe comunicar la limitación y no inventar cifras.  
+**Regla:** con evidencia insuficiente, `answer_text` debe comunicar la limitación y no inventar cifras.
 **Consumidores:** dashboard, auditoría y Demo Day.
 
 ---
 
-## 27. Entidad `expected_anomaly`
+## 28. Entidad `expected_anomaly`
 
 Representa una anomalía sembrada en la verdad de referencia.
 
@@ -791,7 +812,7 @@ Representa una anomalía sembrada en la verdad de referencia.
 
 ---
 
-## 28. Relaciones principales
+## 29. Relaciones principales
 
 ```text
 customer 1 ─── * sale_line * ─── 1 product
@@ -816,7 +837,7 @@ business_answer * ─── * indicator_result
 
 ---
 
-## 29. Reglas transversales
+## 30. Reglas transversales
 
 1. Todo registro procesado conserva `source_location_id` o una colección equivalente.
 2. Los valores monetarios no utilizan punto flotante binario.

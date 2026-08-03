@@ -118,3 +118,8 @@ persistence:
     ndjson: 70
     csv: 60
     tsv: 60
+indicators:
+  config_path: config/indicators.yaml
+  active_preset_source: config
+  allow_arbitrary_sql: false
+  persist_results: true

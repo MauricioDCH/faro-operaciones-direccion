@@ -24,6 +24,7 @@ class Settings:
     data_dir: Path = Path("data")
     config_path: Path = Path("config/app.example.yaml")
     database_path: Path = Path("data/processed/faro.db")
+    indicator_config_path: Path = Path("config/indicators.yaml")
     consolidation_timestamp: str = "2026-07-31T09:00:00+00:00"
     pdf_extraction_mode: str = "auto"
     ocr_enabled: bool = True
@@ -63,6 +64,9 @@ class Settings:
             ),
             database_path=Path(
                 os.getenv("FARO_DATABASE_PATH", "data/processed/faro.db")
+            ),
+            indicator_config_path=Path(
+                os.getenv("FARO_INDICATOR_CONFIG_PATH", "config/indicators.yaml")
             ),
             consolidation_timestamp=os.getenv(
                 "FARO_CONSOLIDATION_TIMESTAMP", "2026-07-31T09:00:00+00:00"

@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.10.0
+**Versión:** 1.11.0
 **Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -711,8 +711,8 @@ Un error de fuente produce un hallazgo estructurado y no altera el archivo raw. 
 
 ## 20. DC-011 — XML UBL
 
-**Estado:** `implemented`  
-**Ruta canónica:** `data/raw/electronic_documents/*.xml`  
+**Estado:** `implemented`
+**Ruta canónica:** `data/raw/electronic_documents/*.xml`
 **Versión soportada:** UBL `2.1`
 
 ### Documentos admitidos
@@ -944,3 +944,24 @@ Solo se extrae contenido textual y estructural controlado. No se ejecutan macros
 3. Un duplicado equivalente genera una advertencia.
 4. Un desacuerdo genera un error trazable, pero no elimina la observación alternativa.
 5. Una reconstrucción fallida no reemplaza la base válida anterior.
+---
+
+## 23. DC-018 — Configuración y resultados de indicadores
+
+**Configuración:** `config/indicators.yaml`
+**Esquema de configuración:** `1.0.0`
+**Estado:** `implemented`
+
+### Configuración
+
+- la empresa selecciona un `active_preset` o utiliza `--preset`;
+- cada preset contiene indicadores de un catálogo aprobado;
+- solo se aceptan parámetros conocidos, tipados y limitados;
+- no se permite SQL, código ni expresiones arbitrarias;
+- el archivo usa sintaxis JSON compatible con YAML y se valida sin dependencias externas.
+
+### Resultados
+
+Las tablas `indicator_run` e `indicator_result` conservan preset, hash de configuración, hash lógico de la base, fecha de corte, versión de fórmula, valor, unidad, registros y ubicaciones fuente.
+
+El valor numérico se calcula con `Decimal` y lógica determinística. Los resultados derivados no alteran el `logical_content_hash` del almacén operacional.
