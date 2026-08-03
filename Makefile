@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json check-ocr-runtime extract-pdf demo clean
+.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json check-ocr-runtime extract-pdf extract-image demo clean
 
 setup:
 	$(UV) sync --locked
@@ -43,6 +43,10 @@ check-ocr-runtime:
 extract-pdf:
 	@test -n "$(PDF)" || (echo "Usage: make extract-pdf PDF=path/to/document.pdf" && exit 2)
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/extract_pdf.py "$(PDF)"
+
+extract-image:
+	@test -n "$(IMAGE)" || (echo "Usage: make extract-image IMAGE=path/to/document.png" && exit 2)
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/extract_image.py "$(IMAGE)"
 
 demo:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/run_demo.py

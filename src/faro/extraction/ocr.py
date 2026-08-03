@@ -52,7 +52,7 @@ class OcrEngine(Protocol):
     @property
     def runtime_info(self) -> OcrRuntimeInfo: ...
 
-    def extract_png(self, png_bytes: bytes) -> OcrResult: ...
+    def extract_png(self, image_bytes: bytes) -> OcrResult: ...
 
 
 Runner = Callable[..., CompletedProcess[bytes]]
@@ -151,7 +151,7 @@ class TesseractOcrEngine:
             error=error,
         )
 
-    def extract_png(self, png_bytes: bytes) -> OcrResult:
+    def extract_png(self, image_bytes: bytes) -> OcrResult:
         runtime = self.runtime_info
         if not runtime.available or runtime.version is None:
             raise OcrRuntimeError(runtime.error or "OCR runtime is unavailable.")
@@ -167,7 +167,7 @@ class TesseractOcrEngine:
                 str(self.page_segmentation_mode),
                 "tsv",
             ],
-            input=png_bytes,
+            input=image_bytes,
             capture_output=True,
             check=False,
         )

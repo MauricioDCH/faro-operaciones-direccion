@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** Excel, PDF/OCR, CSV/TSV y JSON/NDJSON implementados; expansión multiplataforma y demás adaptadores aprobados
+> **Estado:** Excel, PDF/OCR, CSV/TSV, JSON/NDJSON e imágenes documentales implementados; XML UBL y demás adaptadores en desarrollo
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -207,6 +207,7 @@ Formatos aprobados para implementación por fases:
 - ingerir CSV y TSV mediante perfiles explícitos, con delimitador, codificación, fechas y separador decimal controlados;
 - ingerir JSON y NDJSON versionados con límites, validación tipada y procedencia JSON Pointer;
 - recuperar texto por página mediante extracción nativa u OCR y clasificar facturas y cotizaciones;
+- ingerir JPG, JPEG, PNG, TIFF y WebP de una sola imagen mediante OCR local, límites y validación de firma;
 - extraer campos estructurados y validar líneas y totales de facturas y cotizaciones;
 - importar y validar el lote estructurado producido por el plugin de correo;
 - validar esquemas, tipos, fechas y campos obligatorios;
@@ -514,6 +515,7 @@ R4-FARO-OPERACIONES_DIRECCION/
 | `docs/evaluation/validation-plan.md` | Estrategia y métricas de validación |
 | `docs/evaluation/smart-ranks.md` | Reglas confirmadas de evaluación |
 | `docs/evaluation/ai-usage-log.md` | Registro conciso de decisiones asistidas por IA |
+| `docs/setup/` | Instalación reproducible en Linux y Windows |
 | `docs/demo/demo-script.md` | Guion, evidencia y contingencias del Demo Day |
 | `docs/ai/project-instructions.md` | Copia versionada de las instrucciones del Project |
 | `skills/*/SKILL.md` | Procedimientos repetibles especializados |
@@ -557,6 +559,7 @@ make ingest-delimited SOURCES="--source products=data/raw/tabular/productos.csv"
 make ingest-json SOURCES="--source products=data/raw/imports/structured/productos.json"
 make check
 make extract-pdf PDF=data/raw/facturas/factura_001.pdf
+make extract-image IMAGE=data/raw/document_images/factura.png
 make run
 ```
 
@@ -571,11 +574,12 @@ make run
 | `make ingest-json SOURCES="..."` | Ingerir JSON/NDJSON versionados con perfiles explícitos, límites y JSON Pointer |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
+| `make extract-image IMAGE=...` | Aplicar OCR, clasificación, extracción y procedencia a una imagen documental |
 | `make run` | Iniciar la aplicación local |
 
 Los comandos solo se considerarán disponibles cuando sus objetivos existan, hayan sido ejecutados y estén documentados con sus resultados reales.
 
-La configuración local utilizará `.env`; únicamente `.env.example` podrá versionarse. No se incluirán credenciales en el repositorio. La instalación nativa de Windows y el comando de diagnóstico se implementarán en una rama dedicada antes de declarar compatibilidad completa.
+La configuración local utilizará `.env`; únicamente `.env.example` podrá versionarse. No se incluirán credenciales en el repositorio. Las guías actuales se encuentran en `docs/setup/linux.md` y `docs/setup/windows.md`. La compatibilidad oficial de Windows permanece pendiente de la matriz de CI.
 
 ---
 
@@ -641,6 +645,17 @@ uv run python scripts/ingest_delimited.py `
   --source sales=data/raw/tabular/ventas.csv
 ```
 
+### Resultado actual de imágenes documentales
+
+El adaptador `image_document` acepta archivos JPG, JPEG, PNG, TIFF y WebP de una sola imagen. Verifica firma y extensión, dimensiones, cantidad de píxeles, tamaño, orientación y hash; luego reutiliza Tesseract, clasificación de factura/cotización, extracción estructurada y validación determinística. Los resultados conservan formato detectado, tipo MIME, dimensiones, confianza OCR y regiones de evidencia.
+
+Ejemplo portable:
+
+```bash
+PYTHONPATH=src uv run python scripts/extract_image.py \
+  data/raw/document_images/factura.png
+```
+
 ---
 
 ## 12. Estado del proyecto
@@ -657,11 +672,13 @@ uv run python scripts/ingest_delimited.py `
 | Extracción estructurada de campos de factura y cotización | `implemented` |
 | Ingesta y validación tabular | `implemented` |
 | Consolidación y proveniencia | `planned` |
-| Detección y ejecución multiplataforma Linux/Windows | `planned` |
+| Guías de instalación Linux/Windows | `implemented` |
+| Validación CI nativa Linux/Windows | `planned` |
 | Registro central de formatos | `implemented` |
 | CSV y TSV con perfiles explícitos | `implemented` |
 | JSON y NDJSON versionados | `implemented` |
-| XML UBL e imágenes | `planned` |
+| Imágenes documentales JPG/PNG/TIFF/WebP | `implemented` |
+| XML UBL | `planned` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |

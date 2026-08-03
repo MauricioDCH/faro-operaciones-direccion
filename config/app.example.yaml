@@ -29,14 +29,14 @@ ingestion:
     - .json
     - .ndjson
     - .jsonl
-  phase_1_extensions:
-    - .xml
     - .jpg
     - .jpeg
     - .png
     - .tif
     - .tiff
     - .webp
+  phase_1_extensions:
+    - .xml
   limits:
     max_file_size_mb: 25
     max_archive_members: 100
@@ -72,3 +72,17 @@ ingestion:
       - sales
       - inventory
       - orders
+
+  image_documents:
+    max_file_size_mb: 25
+    max_width: 12000
+    max_height: 12000
+    max_pixels: 40000000
+    min_width: 64
+    min_height: 64
+    single_frame_only: true
+    formats:
+      - jpeg
+      - png
+      - tiff
+      - webp

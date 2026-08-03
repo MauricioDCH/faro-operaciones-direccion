@@ -40,6 +40,12 @@ class Settings:
     json_max_depth: int = 20
     json_max_fields: int = 200
     json_max_field_characters: int = 100_000
+    image_max_file_size_mb: int = 25
+    image_max_width: int = 12_000
+    image_max_height: int = 12_000
+    image_max_pixels: int = 40_000_000
+    image_min_width: int = 64
+    image_min_height: int = 64
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -84,6 +90,14 @@ class Settings:
             json_max_field_characters=int(
                 os.getenv("JSON_MAX_FIELD_CHARACTERS", "100000")
             ),
+            image_max_file_size_mb=int(
+                os.getenv("IMAGE_MAX_FILE_SIZE_MB", "25")
+            ),
+            image_max_width=int(os.getenv("IMAGE_MAX_WIDTH", "12000")),
+            image_max_height=int(os.getenv("IMAGE_MAX_HEIGHT", "12000")),
+            image_max_pixels=int(os.getenv("IMAGE_MAX_PIXELS", "40000000")),
+            image_min_width=int(os.getenv("IMAGE_MIN_WIDTH", "64")),
+            image_min_height=int(os.getenv("IMAGE_MIN_HEIGHT", "64")),
         )
         settings.validate()
         return settings
@@ -125,3 +139,15 @@ class Settings:
             raise ValueError("JSON_MAX_FIELDS must be positive.")
         if self.json_max_field_characters < 1:
             raise ValueError("JSON_MAX_FIELD_CHARACTERS must be positive.")
+        if not 1 <= self.image_max_file_size_mb <= 1024:
+            raise ValueError("IMAGE_MAX_FILE_SIZE_MB must be between 1 and 1024.")
+        if self.image_max_width < 1 or self.image_max_height < 1:
+            raise ValueError("IMAGE_MAX_WIDTH and IMAGE_MAX_HEIGHT must be positive.")
+        if self.image_max_pixels < 1:
+            raise ValueError("IMAGE_MAX_PIXELS must be positive.")
+        if self.image_min_width < 1 or self.image_min_height < 1:
+            raise ValueError("IMAGE_MIN_WIDTH and IMAGE_MIN_HEIGHT must be positive.")
+        if self.image_min_width > self.image_max_width:
+            raise ValueError("IMAGE_MIN_WIDTH cannot exceed IMAGE_MAX_WIDTH.")
+        if self.image_min_height > self.image_max_height:
+            raise ValueError("IMAGE_MIN_HEIGHT cannot exceed IMAGE_MAX_HEIGHT.")
