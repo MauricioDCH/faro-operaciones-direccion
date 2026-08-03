@@ -135,3 +135,44 @@ La consolidación mantiene dos capas:
 La prioridad de fuentes y los conflictos se resuelven en `normalization`; `persistence` solo ejecuta la escritura transaccional. La base temporal pasa `PRAGMA integrity_check` antes de reemplazar `faro.db`.
 
 El hash de reproducibilidad es lógico y se calcula sobre filas ordenadas. No se exige igualdad binaria entre sistemas operativos.
+
+## Dashboard gerencial y actualización incremental
+
+La interfaz aplica dos capas de presentación:
+
+1. **vista gerencial:** estado, prioridades, explicación y acción recomendada en español;
+2. **detalle técnico:** identificadores, reglas, fechas lógicas y procedencia bajo demanda.
+
+La configuración empresarial se carga en cada solicitud. Un archivo inválido no detiene FastAPI: activa un perfil seguro integrado y expone la causa únicamente en detalle técnico.
+
+### Frontera de importación
+
+`src/faro/imports/` separa la carga interactiva de la base operacional:
+
+- `service.py`: validación, ingesta de una fuente, candidata y reemplazo;
+- `storage.py`: historial de trabajos en `faro_imports.db`;
+- `models.py`: estados y resultados de importación.
+
+El servicio no relee los archivos históricos. Recupera de SQLite las observaciones, ubicaciones, hallazgos de origen y resultados de extracción existentes; añade la fuente nueva y vuelve a ejecutar la selección canónica.
+
+### Garantía de seguridad operacional
+
+```text
+archivo subido
+    ↓
+validación temporal
+    ↓
+ingesta de una sola fuente
+    ↓
+base candidata
+    ↓
+indicadores + alertas
+    ↓
+integrity_check
+    ↓
+archivo raw + copia .bak
+    ↓
+reemplazo atómico de faro.db
+```
+
+Cualquier excepción previa al último paso conserva la base activa. La aplicación no promete ausencia absoluta de fallas; promete no activar resultados incompletos y conservar la última versión válida.

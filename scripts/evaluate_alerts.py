@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from faro.alerts import AlertConfigError, ConfigurableAlertService, load_alert_configuration
+from faro.company.config import CompanyConfigError, load_company_configuration
 from faro.indicators import load_indicator_configuration
 from faro.indicators.catalog import IndicatorConfigError
 from faro.settings import Settings
@@ -19,6 +20,7 @@ def main() -> None:
     parser.add_argument("--alert-config", type=Path)
     parser.add_argument("--indicator-config", type=Path)
     parser.add_argument("--preset")
+    parser.add_argument("--company-config", type=Path)
     parser.add_argument("--as-of-date", type=date.fromisoformat)
     parser.add_argument("--no-persist", action="store_true")
     parser.add_argument("--list-presets", action="store_true")
@@ -45,6 +47,7 @@ def main() -> None:
                 )
             )
             return
+        company = load_company_configuration(args.company_config or settings.company_config_path)
         indicator_configuration = load_indicator_configuration(
             args.indicator_config or settings.indicator_config_path
         )
@@ -52,11 +55,11 @@ def main() -> None:
             database_path=args.database or settings.database_path,
             alert_configuration=alert_configuration,
             indicator_configuration=indicator_configuration,
-            preset_id=args.preset,
+            preset_id=args.preset or company.alert_preset,
             as_of_date=args.as_of_date,
             persist=not args.no_persist,
         )
-    except (AlertConfigError, IndicatorConfigError, ValueError) as exc:
+    except (AlertConfigError, CompanyConfigError, IndicatorConfigError, ValueError) as exc:
         print(json.dumps({"status": "failed", "error": str(exc)}, ensure_ascii=False, indent=2))
         raise SystemExit(2) from exc
     print(json.dumps(run.to_dict(), ensure_ascii=False, indent=2))

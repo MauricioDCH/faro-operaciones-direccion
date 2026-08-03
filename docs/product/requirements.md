@@ -56,6 +56,10 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-028 | Procesar lotes ZIP controlados. | Solo se aceptan miembros permitidos, con límites, manifiesto, hashes y protección contra rutas inseguras y expansión excesiva. | `planned` |
 | FR-029 | Ingerir documentos administrativos DOCX y ODT controlados. | El contenido se extrae sin ejecutar macros y conserva sección, párrafo y evidencia. | `planned` |
 | FR-030 | Reconstruir un almacén operacional SQLite local y atómico. | La base pasa `integrity_check`, conserva la versión anterior ante fallos y produce un hash lógico estable con las mismas entradas. | `implemented` |
+| FR-031 | Presentar un dashboard gerencial en lenguaje sencillo. | La vista prioriza estado general, acciones recomendadas e interpretaciones; los identificadores y reglas técnicas permanecen bajo demanda. | `implemented` |
+| FR-032 | Permitir cargas incrementales desde el dashboard. | El usuario carga un archivo soportado, selecciona su contenido cuando aplica y Faro actualiza la base sin releer todas las fuentes históricas. | `implemented` |
+| FR-033 | Recalcular indicadores y alertas después de una carga correcta. | La base candidata contiene resultados coherentes con el preset empresarial antes de convertirse en la base activa. | `implemented` |
+| FR-034 | Conservar la última base válida cuando una carga falla. | Un error de formato, validación, referencia, cálculo o integridad no modifica `faro.db`; la interfaz informa que los datos anteriores siguen disponibles. | `implemented` |
 
 ---
 
@@ -87,6 +91,9 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | QR-022 | Ejecutar CI en Linux y Windows. | La matriz de CI aprueba las pruebas que no requieren dependencias opcionales y diagnostica OCR por plataforma. | `planned` |
 | QR-023 | Validar el contenido real y no solo la extensión. | Cada adaptador verifica firma, estructura o esquema antes de aceptar la fuente. | `planned` |
 | QR-024 | Aplicar límites de seguridad a archivos y lotes. | Tamaño, filas, páginas, registros, miembros, profundidad y recursos están acotados y probados. | `planned` |
+| QR-025 | Degradar el dashboard sin interrumpir el servicio. | Una configuración empresarial inválida activa un perfil seguro y una base ausente o ilegible produce una vista explicativa. | `implemented` |
+| QR-026 | Actualizar mediante una base candidata y reemplazo atómico. | El proceso crea copia de seguridad, ejecuta `integrity_check` y usa reemplazo atómico solo después de completar indicadores y alertas. | `implemented` |
+| QR-027 | Evitar procesamiento duplicado. | El hash SHA-256 de una fuente ya registrada produce un resultado `duplicate` sin cambios en la base operacional. | `implemented` |
 
 ---
 
@@ -118,10 +125,10 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | Importación del lote | FR-018, QR-014 |
 | Contingencia | FR-019, QR-011 |
 | Validación y normalización | FR-003, FR-004, FR-010 |
-| Consolidación | FR-005, FR-010, FR-030, QR-007, QR-008 |
+| Consolidación | FR-005, FR-010, FR-030, FR-032, FR-033, FR-034, QR-007, QR-008, QR-026, QR-027 |
 | Indicadores y alertas | FR-006, FR-007, FR-009 |
 | Preguntas empresariales | FR-008, FR-009, QR-010 |
-| Dashboard | FR-013, QR-012 |
+| Dashboard | FR-013, FR-031, QR-012, QR-025 |
 | Núcleo sin servicios externos | FR-014, QR-011 |
 | IA local desacoplada | FR-015 |
 | Reproducibilidad | QR-001, QR-002, QR-004, QR-005, QR-006 |

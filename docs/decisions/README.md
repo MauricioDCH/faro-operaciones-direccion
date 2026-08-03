@@ -54,6 +54,7 @@ Debe crearse un ADR cuando un cambio afecte:
 | [`0005-select-secure-stdlib-ubl-parser.md`](0005-select-secure-stdlib-ubl-parser.md) | Parser UBL seguro basado en biblioteca estándar | `accepted` |
 | [`0006-select-sqlite-unified-operational-store.md`](0006-select-sqlite-unified-operational-store.md) | SQLite como almacén operacional unificado | `accepted` |
 | [`0007-configurable-alert-presets.md`](0007-configurable-alert-presets.md) | Presets configurables de alertas determinísticas | `accepted` |
+| [`0008-safe-incremental-dashboard-updates.md`](0008-safe-incremental-dashboard-updates.md) | Actualizaciones incrementales seguras desde el dashboard | `accepted` |
 
 ## Reglas de mantenimiento
 
