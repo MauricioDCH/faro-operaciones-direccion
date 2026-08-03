@@ -68,7 +68,7 @@ Los campos con baja confianza, OCR ilegible, clasificación incierta o evidencia
 - `persistence`: repositorios y límites transaccionales.
 - `provenance`: archivos, páginas, regiones, transformaciones y ejecuciones.
 - `indicators`: catálogo cerrado, presets configurables y cálculos determinísticos con `Decimal`.
-- `alerts`: condiciones explícitas y severidad.
+- `alerts`: presets validados, operadores cerrados, evaluación determinística, persistencia y evidencia.
 - `ai`: interpretación restringida por evidencia.
 - `api` y `ui`: mecanismos de entrega.
 
@@ -107,6 +107,13 @@ Las imágenes intermedias son artefactos derivados y no sustituyen al PDF raw.
 ## Configuración de indicadores
 
 La empresa selecciona un preset versionado desde `config/indicators.yaml`. El archivo habilita indicadores y parámetros aprobados, pero no contiene SQL ni fórmulas ejecutables. El motor valida la configuración, calcula sobre SQLite, persiste resultados derivados y conserva evidencia. Un nuevo tipo de indicador requiere implementación, versión de fórmula y pruebas.
+
+
+## Configuración de alertas
+
+La empresa selecciona un preset versionado desde `config/alerts.yaml`. Cada regla consume resultados de indicadores o hallazgos de calidad, aplica una agregación y un operador aprobados y persiste la evaluación completa. No se acepta SQL, Python ni expresiones arbitrarias.
+
+El motor conserva tres estados: `triggered`, `clear` y `not_evaluated`. Solo `triggered` materializa una fila en `alert`. Los canales externos permanecen desacoplados; la implementación actual registra `delivery_status=not_configured`.
 
 ## Seguridad y privacidad
 

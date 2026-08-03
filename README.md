@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** formatos de fase 1, consolidación SQLite e indicadores configurables implementados; alertas y dashboard en desarrollo
+> **Estado:** formatos de fase 1, consolidación SQLite, indicadores y alertas configurables implementados; dashboard en desarrollo
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -560,6 +560,17 @@ PYTHONPATH=src uv run python scripts/calculate_indicators.py --preset retail_dis
 
 Los resultados se guardan en `indicator_run` e `indicator_result` dentro de `faro.db`, con hash de configuración, versión de fórmula y evidencia de registros y ubicaciones fuente.
 
+### Alertas configurables
+
+`config/alerts.yaml` permite seleccionar presets para distribución, ventas, inventario y calidad, además de una plantilla personalizable. Las reglas solo consumen indicadores y hallazgos aprobados; no aceptan SQL ni código arbitrario.
+
+```bash
+PYTHONPATH=src uv run python scripts/evaluate_alerts.py --list-presets
+PYTHONPATH=src uv run python scripts/evaluate_alerts.py --preset retail_distribution
+```
+
+Cada regla persiste su valor observado, operador, umbral, severidad, estado y evidencia. Las evaluaciones quedan en `alert_run` y `alert_evaluation`; las condiciones activadas se materializan en `alert`. Los canales externos de notificación permanecen planificados.
+
 ## 10. Instalación, ejecución y pruebas
 
 Dependencias del sistema para PDF y OCR en Linux Ubuntu:
@@ -600,6 +611,8 @@ make ingest-ubl XML=data/samples/ubl-invoice.example.xml
 | `make ingest-json SOURCES="..."` | Ingerir JSON/NDJSON versionados con perfiles explícitos, límites y JSON Pointer |
 | `make indicators` | Calcular y persistir el preset activo de indicadores |
 | `make indicators PRESET=sales_monitoring` | Calcular otro preset aprobado |
+| `make alerts` | Evaluar y persistir el preset activo de alertas |
+| `make alerts ALERT_PRESET=inventory_control` | Evaluar otro preset de alertas aprobado |
 | `make check` | Compilar y ejecutar las pruebas unitarias y de integración |
 | `make extract-pdf PDF=...` | Recuperar texto, método, clasificación y procedencia de un PDF |
 | `make extract-image IMAGE=...` | Aplicar OCR, clasificación, extracción y procedencia a una imagen documental |
@@ -709,7 +722,7 @@ PYTHONPATH=src uv run python scripts/extract_image.py \
 | XML UBL 2.1 | `implemented` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores configurables | `implemented` |
-| Alertas | `planned` |
+| Alertas configurables | `implemented` |
 | Consultas asistidas por IA | `planned` |
 | Interfaz y Demo Day | `planned` |
 | ERP, CRM, contabilidad e integraciones bancarias | `out of scope` |

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import closing
+
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
@@ -56,7 +58,7 @@ class OperationalIndicatorService:
         if not database_path.is_file():
             raise IndicatorConfigError(f"Operational database does not exist: {database_path}")
         preset = configuration.select(preset_id)
-        with sqlite3.connect(database_path) as connection:
+        with closing(sqlite3.connect(database_path)) as connection:
             connection.row_factory = sqlite3.Row
             self._validate_database(connection)
             metadata = dict(connection.execute("SELECT key, value FROM metadata"))

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import closing
+
 import json
 from pathlib import Path
 import sqlite3
@@ -43,7 +45,7 @@ CREATE INDEX IF NOT EXISTS idx_indicator_result_run ON indicator_result(run_id, 
 
 
 def persist_indicator_run(database_path: Path, run: IndicatorRun) -> None:
-    with sqlite3.connect(database_path) as connection:
+    with closing(sqlite3.connect(database_path)) as connection:
         connection.execute("PRAGMA foreign_keys = ON")
         connection.executescript(INDICATOR_DDL)
         with connection:

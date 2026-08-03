@@ -3,7 +3,7 @@
 **Estado:** línea base aprobada para implementación  
 **Producto:** Faro  
 **Reto:** R4 — Operaciones / Dirección  
-**Versión del alcance:** 1.4
+**Versión del alcance:** 1.5
 
 ---
 
@@ -210,7 +210,7 @@ Los modelos generativos no deben calcular estos valores.
 
 ### MUST-009 — Alertas trazables
 
-Faro debe producir entre cuatro y seis reglas prioritarias. Cada alerta debe mostrar identificador, tipo, severidad, regla, entradas, valor observado, umbral, fuentes, registros relacionados, fecha y estado de revisión.
+Faro debe incluir un preset predeterminado con entre cuatro y seis reglas prioritarias y permitir presets reducidos o personalizados mediante fuentes, operadores y umbrales aprobados. Cada evaluación debe conservar regla, valor observado, operador, umbral, estado y procedencia; solo una condición activada materializa una alerta. La configuración no admite SQL ni código arbitrario.
 
 ---
 

@@ -1,8 +1,8 @@
 # Casos de uso
 
-**Estado:** línea base aprobada para implementación  
-**Producto:** Faro  
-**Versión:** 1.4
+**Estado:** línea base aprobada para implementación
+**Producto:** Faro
+**Versión:** 1.5
 
 Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
@@ -10,7 +10,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-001 — Procesar fuentes operativas
 
-**Actor:** administrador.  
+**Actor:** administrador.
 **Objetivo:** incorporar libros de Excel, facturas y cotizaciones PDF, y lotes estructurados producidos por plugins.
 
 **Flujo:**
@@ -29,7 +29,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-002 — Revisar la calidad de los datos
 
-**Actor:** administrador o auxiliar administrativo.  
+**Actor:** administrador o auxiliar administrativo.
 **Objetivo:** identificar errores antes de calcular indicadores.
 
 **Flujo:**
@@ -48,7 +48,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-003 — Revisar una extracción incierta
 
-**Actor:** administrador o auxiliar administrativo.  
+**Actor:** administrador o auxiliar administrativo.
 **Objetivo:** validar propuestas asistidas por IA.
 
 **Flujo:**
@@ -67,7 +67,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-004 — Consultar el dashboard
 
-**Actor:** propietario o administrador.  
+**Actor:** propietario o administrador.
 **Objetivo:** obtener una vista concisa del estado operativo.
 
 **Flujo:**
@@ -86,7 +86,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-005 — Detectar riesgo de inventario
 
-**Actor:** responsable de inventario.  
+**Actor:** responsable de inventario.
 **Objetivo:** identificar productos por debajo del umbral aprobado.
 
 **Flujo:**
@@ -131,7 +131,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-007 — Formular una pregunta empresarial
 
-**Actor:** propietario o administrador.  
+**Actor:** propietario o administrador.
 **Objetivo:** obtener una respuesta verificable.
 
 **Flujo:**
@@ -150,7 +150,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-008 — Rastrear un resultado
 
-**Actor:** cualquier usuario del MVP.  
+**Actor:** cualquier usuario del MVP.
 **Objetivo:** verificar el origen de un indicador, alerta o respuesta.
 
 **Flujo:**
@@ -169,7 +169,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-009 — Continuar sin plugin
 
-**Actor:** administrador o presentador del Demo Day.  
+**Actor:** administrador o presentador del Demo Day.
 **Objetivo:** ejecutar el flujo principal cuando Gmail, el plugin o internet no estén disponibles.
 
 **Flujo:**
@@ -188,7 +188,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-010 — Consultar correos mediante plugin de IA
 
-**Actor:** administrador.  
+**Actor:** administrador.
 **Sistemas externos:** ChatGPT o Claude; Gmail sintético.
 
 **Precondiciones:**
@@ -222,7 +222,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-011 — Importar el lote del plugin
 
-**Actor:** administrador.  
+**Actor:** administrador.
 **Objetivo:** incorporar a Faro los eventos extraídos de Gmail por la IA.
 
 **Flujo:**
@@ -243,7 +243,7 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 
 ## UC-012 — Procesar un documento PDF escaneado
 
-**Actor:** administrador o auxiliar administrativo.  
+**Actor:** administrador o auxiliar administrativo.
 **Objetivo:** extraer información verificable de una factura o cotización escaneada.
 
 **Precondiciones:**
@@ -276,3 +276,31 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 **Resultado:** la factura o cotización queda estructurada con procedencia verificable, o se informa por qué no pudo aceptarse.
 
 **Requisitos:** FR-002, FR-020, FR-021, FR-022, QR-017, QR-018.
+
+---
+
+## UC-013 — Seleccionar y evaluar un preset de alertas
+
+**Actor:** propietario o administrador.
+**Objetivo:** adaptar los umbrales de seguimiento a las prioridades de la empresa sin modificar código.
+
+**Flujo:**
+
+1. El usuario consulta los presets disponibles.
+2. Selecciona distribución, ventas, inventario, calidad o una copia del ejemplo personalizable.
+3. Faro valida fuentes, agregaciones, operadores, umbrales, unidades y severidades.
+4. Faro calcula el preset de indicadores requerido.
+5. Faro evalúa todas las reglas y registra estados `triggered`, `clear` o `not_evaluated`.
+6. Las condiciones activadas se guardan como alertas con evidencia.
+7. El usuario revisa el valor observado, umbral, registros y ubicaciones fuente.
+
+**Flujos alternativos:**
+
+- una regla con SQL, código o campos desconocidos se rechaza;
+- una fuente ausente o ambigua queda `not_evaluated`;
+- una condición clara no crea una alerta, pero conserva su evaluación;
+- la falta de canal externo deja `delivery_status=not_configured`.
+
+**Resultado:** la empresa obtiene alertas reproducibles y adaptadas a su operación.
+
+**Requisitos:** FR-006, FR-007, FR-009, QR-007.

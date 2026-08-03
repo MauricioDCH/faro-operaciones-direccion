@@ -5,7 +5,7 @@
 **Origen:** R4 — Operaciones / Dirección, conservado como referencia histórica  
 **Dirección actual:** producto independiente para uso local en pymes  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.13
+**Versión:** 1.14
 
 ---
 
@@ -32,7 +32,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-004 | Normalizar identificadores, fechas, unidades y nombres mediante reglas aprobadas. | Cada correspondencia conserva trazabilidad y las asociaciones inciertas requieren revisión humana. | `planned` |
 | FR-005 | Consolidar los registros válidos en un modelo operativo común. | SQLite contiene solo registros canónicos aceptados y cada uno conserva observaciones y procedencia hasta la fuente. | `implemented` |
 | FR-006 | Calcular indicadores operativos mediante lógica determinística y presets configurables. | El catálogo, los parámetros, las fórmulas, los casos límite, la procedencia y los resultados esperados están cubiertos por pruebas. | `implemented` |
-| FR-007 | Generar alertas trazables mediante reglas explícitas y configurables. | Cada alerta presenta regla, entradas, valor observado, umbral y procedencia. | `planned` |
+| FR-007 | Generar alertas trazables mediante reglas explícitas y configurables. | Cada preset valida sus fuentes, operadores y umbrales; las evaluaciones y alertas persistidas conservan valor observado, regla, severidad y procedencia. | `implemented` |
 | FR-008 | Responder preguntas empresariales mediante evidencia recuperada. | Las respuestas numéricas citan resultados estructurados y se rechazan cuando la evidencia es insuficiente. | `planned` |
 | FR-009 | Mostrar la evidencia de indicadores, alertas y respuestas. | El usuario puede navegar hasta el libro, hoja, página, mensaje o registro correspondiente. | `planned` |
 | FR-010 | Registrar las transformaciones aplicadas. | Cada selección canónica registra regla, ubicación, hash de entrada, hash de salida y fecha configurada. | `implemented` |
@@ -145,6 +145,8 @@ Las decisiones se documentan en `docs/decisions/`.
 | Casos de uso | `docs/product/use-cases.md` |
 | Flujo del plugin de correo | `docs/integrations/plugin-email-workflow.md` |
 | Decisión de OCR | `docs/decisions/0001-support-scanned-pdf-ocr.md` |
+| Presets de alertas | `docs/product/alert-presets.md` |
+| Decisión de alertas configurables | `docs/decisions/0007-configurable-alert-presets.md` |
 | Selección de pila PDF/OCR | `docs/decisions/0002-select-local-pdf-ocr-stack.md` |
 | Soporte Linux y Windows | `docs/decisions/0003-support-linux-and-windows.md` |
 | Expansión de formatos | `docs/decisions/0004-expand-input-formats.md` |

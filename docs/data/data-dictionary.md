@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.11.0
+**Versión:** 1.12.0
 **Producto:** Faro
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -749,31 +749,83 @@ Representa un resultado determinístico de indicador.
 
 ---
 
-## 26. Entidad `alert`
+## 26. Entidad `alert_run`
 
-Representa una condición operativa detectada por una regla.
+Representa una evaluación reproducible de un preset de alertas.
 
 | Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
 |---|---|---:|---|---|
-| `alert_id` | `string` | No | Identificador único | `ALT-000001` |
-| `rule_id` | `string` | No | Regla activada | `RULE-LOW-STOCK-001` |
-| `alert_type` | `string` | No | Tipo de alerta | `low_inventory` |
-| `severity` | `enum` | No | Severidad | `warning` |
-| `title` | `string` | No | Título breve | `Inventario bajo` |
-| `description` | `string` | No | Explicación basada en datos | `El producto está por debajo del punto de reorden.` |
-| `observed_value` | `decimal(18,4)` | Sí | Valor observado | `20.0000` |
-| `threshold_value` | `decimal(18,4)` | Sí | Umbral aplicado | `30.0000` |
-| `unit` | `string` | Sí | Unidad | `unit` |
-| `related_record_ids` | `list[string]` | No | Registros que sustentan la alerta | `["PRD-0001"]` |
-| `source_location_ids` | `list[string]` | No | Evidencias | `["LOC-000200"]` |
-| `generated_at` | `datetime` | No | Fecha de generación | `2026-07-31T09:35:00-05:00` |
-| `review_status` | `enum` | No | Estado de revisión | `pending` |
-
-**Consumidores:** dashboard, trazabilidad, Demo Day y preguntas empresariales.
+| `run_id` | `string` | No | Identificador estable de la ejecución | `ALTRUN-000001` |
+| `preset_id` | `string` | No | Preset de alertas seleccionado | `retail_distribution` |
+| `alert_config_hash` | `string` | No | Hash de la configuración validada | `sha256...` |
+| `indicator_run_id` | `string` | No | Ejecución de indicadores utilizada | `KPIRUN-000001` |
+| `database_logical_hash` | `string` | No | Hash lógico de los datos | `sha256...` |
+| `as_of_date` | `date` | No | Fecha de corte | `2026-07-31` |
+| `evaluated_at` | `datetime` | No | Fecha reproducible de evaluación | `2026-07-31T09:00:00+00:00` |
+| `evaluation_count` | `integer` | No | Reglas evaluadas | `6` |
+| `alert_count` | `integer` | No | Condiciones activadas | `3` |
 
 ---
 
-## 27. Entidad `business_answer`
+## 27. Entidad `alert_evaluation`
+
+Conserva el resultado de cada regla, incluso cuando queda clara o no puede evaluarse.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `evaluation_id` | `string` | No | Identificador estable | `ALTEVAL-000001` |
+| `run_id` | `string` | No | FK a `alert_run` | `ALTRUN-000001` |
+| `rule_id` | `string` | No | Regla versionada | `ALERT-SALES-DROP-001` |
+| `source_type` | `enum` | No | `indicator` o `quality_finding` | `indicator` |
+| `source_id` | `string` | No | Indicador o hallazgo observado | `sales_change` |
+| `aggregation` | `enum` | No | Agregación aprobada | `single` |
+| `status` | `enum` | No | `triggered`, `clear` o `not_evaluated` | `triggered` |
+| `observed_value` | `decimal` | Sí | Valor agregado | `-18.5000` |
+| `operator` | `enum` | No | Operador aprobado | `less_than` |
+| `threshold_value` | `decimal` | No | Umbral configurado | `-15.0000` |
+| `unit` | `string` | No | Unidad esperada | `percent` |
+| `severity` | `enum` | No | Severidad configurada | `critical` |
+| `indicator_result_ids` | `list[string]` | No | Resultados utilizados | `["KPI-000001"]` |
+| `finding_ids` | `list[string]` | No | Hallazgos utilizados | `[]` |
+| `source_record_ids` | `list[string]` | No | Registros de evidencia | `["SALL-000001"]` |
+| `source_location_ids` | `list[string]` | No | Ubicaciones de evidencia | `["LOC-000100"]` |
+| `reason` | `string` | Sí | Motivo de no evaluación | `null` |
+
+---
+
+## 28. Entidad `alert`
+
+Representa una condición activada por una evaluación determinística.
+
+| Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
+|---|---|---:|---|---|
+| `alert_id` | `string` | No | Identificador único y estable | `ALT-000001` |
+| `evaluation_id` | `string` | No | Evaluación que activó la alerta | `ALTEVAL-000001` |
+| `run_id` | `string` | No | Ejecución del preset | `ALTRUN-000001` |
+| `rule_id` | `string` | No | Regla activada | `ALERT-LOW-INVENTORY-001` |
+| `alert_type` | `string` | No | Fuente observada | `low_inventory` |
+| `severity` | `enum` | No | Severidad | `warning` |
+| `title` | `string` | No | Título breve | `Productos con inventario bajo` |
+| `description` | `string` | No | Explicación determinística | `Valor observado: 2 product...` |
+| `observed_value` | `decimal` | No | Valor observado | `2` |
+| `operator` | `enum` | No | Operador aplicado | `greater_than` |
+| `threshold_value` | `decimal` | No | Umbral aplicado | `0` |
+| `unit` | `string` | No | Unidad | `product` |
+| `indicator_result_ids` | `list[string]` | No | Resultados utilizados | `["KPI-000001"]` |
+| `finding_ids` | `list[string]` | No | Hallazgos utilizados | `[]` |
+| `related_record_ids` | `list[string]` | No | Registros que sustentan la alerta | `["PRD-0001"]` |
+| `source_location_ids` | `list[string]` | No | Evidencias | `["LOC-000200"]` |
+| `generated_at` | `datetime` | No | Fecha reproducible | `2026-07-31T09:00:00+00:00` |
+| `review_status` | `enum` | No | Estado de revisión | `pending` |
+| `delivery_status` | `enum` | No | Estado del canal | `not_configured` |
+| `cooldown_minutes` | `integer` | No | Parámetro para futura entrega | `1440` |
+
+**Reglas:** la configuración no acepta SQL o código; solo las evaluaciones `triggered` producen alertas.
+**Consumidores:** dashboard, trazabilidad y preguntas empresariales.
+
+---
+
+## 29. Entidad `business_answer`
 
 Representa una respuesta a una pregunta priorizada.
 
@@ -794,7 +846,7 @@ Representa una respuesta a una pregunta priorizada.
 
 ---
 
-## 28. Entidad `expected_anomaly`
+## 30. Entidad `expected_anomaly`
 
 Representa una anomalía sembrada en la verdad de referencia.
 
@@ -812,7 +864,7 @@ Representa una anomalía sembrada en la verdad de referencia.
 
 ---
 
-## 29. Relaciones principales
+## 31. Relaciones principales
 
 ```text
 customer 1 ─── * sale_line * ─── 1 product
@@ -831,13 +883,15 @@ source_file 1 ─── * source_location
 source_location 1 ─── * quality_finding
 source_location 1 ─── * transformation_event
 indicator_result * ─── * source records
+alert_run 1 ─── * alert_evaluation
+alert_evaluation 0..1 ─── 1 alert
 alert * ─── * source_location
 business_answer * ─── * indicator_result
 ```
 
 ---
 
-## 30. Reglas transversales
+## 32. Reglas transversales
 
 1. Todo registro procesado conserva `source_location_id` o una colección equivalente.
 2. Los valores monetarios no utilizan punto flotante binario.

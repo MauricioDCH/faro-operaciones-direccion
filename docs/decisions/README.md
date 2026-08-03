@@ -53,6 +53,7 @@ Debe crearse un ADR cuando un cambio afecte:
 | [`0004-expand-input-formats.md`](0004-expand-input-formats.md) | Expansión por fases de formatos de entrada | `accepted` |
 | [`0005-select-secure-stdlib-ubl-parser.md`](0005-select-secure-stdlib-ubl-parser.md) | Parser UBL seguro basado en biblioteca estándar | `accepted` |
 | [`0006-select-sqlite-unified-operational-store.md`](0006-select-sqlite-unified-operational-store.md) | SQLite como almacén operacional unificado | `accepted` |
+| [`0007-configurable-alert-presets.md`](0007-configurable-alert-presets.md) | Presets configurables de alertas determinísticas | `accepted` |
 
 ## Reglas de mantenimiento
 
