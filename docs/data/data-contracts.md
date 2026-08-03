@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.11.0
+**Versión:** 1.12.0
 **Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -965,3 +965,46 @@ Solo se extrae contenido textual y estructural controlado. No se ejecutan macros
 Las tablas `indicator_run` e `indicator_result` conservan preset, hash de configuración, hash lógico de la base, fecha de corte, versión de fórmula, valor, unidad, registros y ubicaciones fuente.
 
 El valor numérico se calcula con `Decimal` y lógica determinística. Los resultados derivados no alteran el `logical_content_hash` del almacén operacional.
+
+---
+
+## 24. DC-019 — Configuración y resultados de alertas
+
+**Configuración canónica:** `config/alerts.yaml`
+**Versión:** `1.0.0`
+
+### Garantías de configuración
+
+- `active_preset` referencia un preset existente;
+- cada `rule_id` es único en todo el archivo;
+- `source.type` solo acepta `indicator` o `quality_finding`;
+- los indicadores deben existir en el catálogo aprobado;
+- los operadores y agregaciones pertenecen a listas cerradas;
+- el umbral es decimal finito;
+- severidad y tiempo de enfriamiento tienen valores controlados;
+- no se acepta SQL, Python ni campos desconocidos.
+
+### Salidas
+
+- `alert_run`: ejecución reproducible del preset;
+- `alert_evaluation`: resultado de cada regla, activada o no;
+- `alert`: condición activada con evidencia.
+
+### Estados
+
+- `triggered`: la condición se cumple;
+- `clear`: la condición no se cumple;
+- `not_evaluated`: no existe un valor único y verificable para evaluar.
+
+### Procedencia mínima
+
+Cada evaluación conserva, según corresponda:
+
+- `indicator_result_ids`;
+- `finding_ids`;
+- `source_record_ids`;
+- `source_location_ids`;
+- valor observado, operador, umbral y unidad;
+- hash de configuración y ejecución de indicadores utilizada.
+
+Los canales de entrega permanecen fuera del contrato actual; una alerta persistida usa `delivery_status=not_configured`.

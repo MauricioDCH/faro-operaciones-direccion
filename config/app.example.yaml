@@ -105,7 +105,7 @@ ingestion:
 persistence:
   engine: sqlite
   database_path: data/processed/faro.db
-  schema_version: "1.0.0"
+  schema_version: "1.1.0"
   atomic_replace: true
   logical_hash: true
   include_samples: true
@@ -123,3 +123,17 @@ indicators:
   active_preset_source: config
   allow_arbitrary_sql: false
   persist_results: true
+
+alerts:
+  config_path: config/alerts.yaml
+  active_preset_source: config
+  allow_arbitrary_sql: false
+  allow_arbitrary_code: false
+  persist_evaluations: true
+  notification_channels:
+    implemented:
+      - dashboard_store
+    planned:
+      - email
+      - desktop
+      - messaging

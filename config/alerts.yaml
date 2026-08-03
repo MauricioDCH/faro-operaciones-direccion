@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0.0",
+  "status": "implemented",
+  "active_preset": "retail_distribution",
+  "presets": {
+    "retail_distribution": {
+      "label": "Comercializadora o distribuidora",
+      "description": "Alertas equilibradas para ventas, inventario, compras y calidad.",
+      "indicator_preset": "retail_distribution",
+      "rules": [
+        {
+          "rule_id": "ALERT-LOW-INVENTORY-001",
+          "name": "Productos con inventario bajo",
+          "description": "Existen productos por debajo del punto de reorden.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "low_inventory", "aggregation": "count"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "product"},
+          "severity": "warning",
+          "cooldown_minutes": 1440
+        },
+        {
+          "rule_id": "ALERT-SALES-DROP-001",
+          "name": "Caída relevante de ventas",
+          "description": "La variación mensual de ventas superó el descenso permitido.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "sales_change", "aggregation": "single"},
+          "condition": {"operator": "less_than", "threshold": -15, "unit": "percent"},
+          "severity": "critical",
+          "cooldown_minutes": 1440
+        },
+        {
+          "rule_id": "ALERT-ORDER-INVOICE-001",
+          "name": "Diferencias entre pedidos y facturas",
+          "description": "Se detectaron diferencias entre pedidos y facturas.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "order_invoice_mismatch", "aggregation": "single"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "error",
+          "cooldown_minutes": 1440
+        },
+        {
+          "rule_id": "ALERT-DATA-ERRORS-001",
+          "name": "Volumen alto de errores de calidad",
+          "description": "La cantidad de errores de calidad alcanzó el umbral configurado.",
+          "enabled": true,
+          "source": {
+            "type": "indicator",
+            "id": "data_quality_summary",
+            "aggregation": "single",
+            "dimension": "severity",
+            "dimension_value": "error"
+          },
+          "condition": {"operator": "greater_or_equal", "threshold": 5, "unit": "finding"},
+          "severity": "error",
+          "cooldown_minutes": 720
+        },
+        {
+          "rule_id": "ALERT-SOURCE-CONFLICT-001",
+          "name": "Conflictos entre fuentes",
+          "description": "Dos o más fuentes contienen valores diferentes para el mismo registro lógico.",
+          "enabled": true,
+          "source": {"type": "quality_finding", "id": "cross_source_conflict", "match_field": "code", "aggregation": "count"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "warning",
+          "cooldown_minutes": 720
+        },
+        {
+          "rule_id": "ALERT-STALE-SALES-001",
+          "name": "Ventas desactualizadas",
+          "description": "La información de ventas supera la antigüedad permitida.",
+          "enabled": true,
+          "source": {
+            "type": "indicator",
+            "id": "data_freshness",
+            "aggregation": "single",
+            "dimension": "entity",
+            "dimension_value": "sales"
+          },
+          "condition": {"operator": "greater_than", "threshold": 2, "unit": "day"},
+          "severity": "warning",
+          "cooldown_minutes": 1440
+        }
+      ]
+    },
+    "sales_monitoring": {
+      "label": "Seguimiento comercial",
+      "description": "Alertas para ventas, tendencia y calidad de la información comercial.",
+      "indicator_preset": "sales_monitoring",
+      "rules": [
+        {
+          "rule_id": "ALERT-SALES-TARGET-001",
+          "name": "Ventas por debajo del objetivo",
+          "description": "Las ventas del último mes disponible están por debajo del objetivo empresarial.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "sales_total", "aggregation": "single"},
+          "condition": {"operator": "less_than", "threshold": 1000000, "unit": "COP"},
+          "severity": "warning",
+          "cooldown_minutes": 1440
+        },
+        {
+          "rule_id": "ALERT-SALES-DROP-002",
+          "name": "Disminución mensual de ventas",
+          "description": "La variación mensual es inferior al umbral comercial.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "sales_change", "aggregation": "single"},
+          "condition": {"operator": "less_than", "threshold": -10, "unit": "percent"},
+          "severity": "error",
+          "cooldown_minutes": 1440
+        },
+        {
+          "rule_id": "ALERT-SALES-DATA-ERRORS-001",
+          "name": "Errores en datos comerciales",
+          "description": "Existen errores de calidad que pueden afectar el reporte comercial.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "data_quality_summary", "aggregation": "single", "dimension": "severity", "dimension_value": "error"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "warning",
+          "cooldown_minutes": 720
+        }
+      ]
+    },
+    "inventory_control": {
+      "label": "Control de inventario y compras",
+      "description": "Alertas para reposición, pedidos y frescura del inventario.",
+      "indicator_preset": "inventory_control",
+      "rules": [
+        {
+          "rule_id": "ALERT-LOW-INVENTORY-002",
+          "name": "Reposición requerida",
+          "description": "Hay productos en o por debajo del punto de reorden.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "low_inventory", "aggregation": "count"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "product"},
+          "severity": "critical",
+          "cooldown_minutes": 720
+        },
+        {
+          "rule_id": "ALERT-ORDER-INVOICE-002",
+          "name": "Diferencias de abastecimiento",
+          "description": "Existen diferencias entre lo pedido y lo facturado.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "order_invoice_mismatch", "aggregation": "single"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "error",
+          "cooldown_minutes": 720
+        },
+        {
+          "rule_id": "ALERT-STALE-INVENTORY-001",
+          "name": "Inventario desactualizado",
+          "description": "La última fotografía de inventario supera la antigüedad permitida.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "data_freshness", "aggregation": "single", "dimension": "entity", "dimension_value": "inventory"},
+          "condition": {"operator": "greater_than", "threshold": 1, "unit": "day"},
+          "severity": "warning",
+          "cooldown_minutes": 1440
+        }
+      ]
+    },
+    "data_quality": {
+      "label": "Calidad y confiabilidad",
+      "description": "Alertas para errores, conflictos y fuentes operativas desactualizadas.",
+      "indicator_preset": "retail_distribution",
+      "rules": [
+        {
+          "rule_id": "ALERT-ANY-DATA-ERROR-001",
+          "name": "Errores de calidad pendientes",
+          "description": "Existe al menos un error de calidad en la consolidación.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "data_quality_summary", "aggregation": "single", "dimension": "severity", "dimension_value": "error"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "error",
+          "cooldown_minutes": 360
+        },
+        {
+          "rule_id": "ALERT-SOURCE-CONFLICT-002",
+          "name": "Conflictos de consolidación",
+          "description": "Existen observaciones incompatibles entre fuentes.",
+          "enabled": true,
+          "source": {"type": "quality_finding", "id": "cross_source_conflict", "match_field": "code", "aggregation": "count"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "warning",
+          "cooldown_minutes": 360
+        },
+        {
+          "rule_id": "ALERT-INVALID-DATE-001",
+          "name": "Fechas inválidas",
+          "description": "Se detectaron fechas que no pudieron convertirse de forma segura.",
+          "enabled": true,
+          "source": {"type": "quality_finding", "id": "invalid_date", "match_field": "code", "aggregation": "count"},
+          "condition": {"operator": "greater_than", "threshold": 0, "unit": "finding"},
+          "severity": "warning",
+          "cooldown_minutes": 360
+        }
+      ]
+    },
+    "custom_example": {
+      "label": "Ejemplo personalizable",
+      "description": "Plantilla mínima para copiar y ajustar parámetros aprobados.",
+      "indicator_preset": "sales_monitoring",
+      "rules": [
+        {
+          "rule_id": "ALERT-CUSTOM-SALES-DROP-001",
+          "name": "Cambio de ventas definido por la empresa",
+          "description": "Ejemplo de regla que la empresa puede copiar y parametrizar.",
+          "enabled": true,
+          "source": {"type": "indicator", "id": "sales_change", "aggregation": "single"},
+          "condition": {"operator": "less_than", "threshold": -5, "unit": "percent"},
+          "severity": "info",
+          "cooldown_minutes": 1440
+        }
+      ]
+    }
+  }
+}

@@ -137,6 +137,15 @@ class SettingsTests(unittest.TestCase):
             settings = Settings.from_environment()
         self.assertEqual(str(settings.indicator_config_path), "config/company-indicators.yaml")
 
+    def test_loads_alert_config_path(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {"FARO_ALERT_CONFIG_PATH": "config/company-alerts.yaml"},
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(str(settings.alert_config_path), "config/company-alerts.yaml")
+
     def test_rejects_invalid_consolidation_timestamp(self) -> None:
         with patch.dict(
             "os.environ",

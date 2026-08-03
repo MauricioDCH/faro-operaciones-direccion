@@ -1,6 +1,6 @@
 """SQLite schema for Faro's local operational store."""
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 
 DDL = r"""
 PRAGMA foreign_keys = ON;
@@ -321,6 +321,73 @@ CREATE TABLE indicator_result (
     details_json TEXT NOT NULL
 );
 CREATE INDEX idx_indicator_result_run ON indicator_result(run_id, indicator_id);
+
+CREATE TABLE alert_run (
+    run_id TEXT PRIMARY KEY,
+    preset_id TEXT NOT NULL,
+    preset_label TEXT NOT NULL,
+    alert_config_hash TEXT NOT NULL,
+    indicator_run_id TEXT NOT NULL REFERENCES indicator_run(run_id),
+    indicator_preset_id TEXT NOT NULL,
+    database_logical_hash TEXT NOT NULL,
+    as_of_date TEXT NOT NULL,
+    evaluated_at TEXT NOT NULL,
+    evaluation_count INTEGER NOT NULL,
+    alert_count INTEGER NOT NULL
+);
+
+CREATE TABLE alert_evaluation (
+    evaluation_id TEXT PRIMARY KEY,
+    run_id TEXT NOT NULL REFERENCES alert_run(run_id) ON DELETE CASCADE,
+    preset_id TEXT NOT NULL,
+    rule_id TEXT NOT NULL,
+    rule_name TEXT NOT NULL,
+    source_type TEXT NOT NULL,
+    source_id TEXT NOT NULL,
+    aggregation TEXT NOT NULL,
+    status TEXT NOT NULL,
+    observed_value TEXT,
+    operator TEXT NOT NULL,
+    threshold_value TEXT NOT NULL,
+    unit TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    period_start TEXT,
+    period_end TEXT,
+    dimension TEXT,
+    dimension_value TEXT,
+    indicator_result_ids_json TEXT NOT NULL,
+    finding_ids_json TEXT NOT NULL,
+    source_record_ids_json TEXT NOT NULL,
+    source_location_ids_json TEXT NOT NULL,
+    reason TEXT,
+    details_json TEXT NOT NULL
+);
+CREATE INDEX idx_alert_evaluation_run ON alert_evaluation(run_id, status, severity);
+
+CREATE TABLE alert (
+    alert_id TEXT PRIMARY KEY,
+    evaluation_id TEXT NOT NULL REFERENCES alert_evaluation(evaluation_id) ON DELETE CASCADE,
+    run_id TEXT NOT NULL REFERENCES alert_run(run_id) ON DELETE CASCADE,
+    preset_id TEXT NOT NULL,
+    rule_id TEXT NOT NULL,
+    alert_type TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    observed_value TEXT NOT NULL,
+    operator TEXT NOT NULL,
+    threshold_value TEXT NOT NULL,
+    unit TEXT NOT NULL,
+    indicator_result_ids_json TEXT NOT NULL,
+    finding_ids_json TEXT NOT NULL,
+    related_record_ids_json TEXT NOT NULL,
+    source_location_ids_json TEXT NOT NULL,
+    generated_at TEXT NOT NULL,
+    review_status TEXT NOT NULL,
+    delivery_status TEXT NOT NULL,
+    cooldown_minutes INTEGER NOT NULL
+);
+CREATE INDEX idx_alert_run ON alert(run_id, severity, review_status);
 
 CREATE VIEW v_entity_counts AS
 SELECT 'product' AS entity_type, COUNT(*) AS record_count FROM product

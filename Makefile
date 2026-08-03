@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json ingest-ubl consolidate indicators check-ocr-runtime extract-pdf extract-image demo clean
+.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json ingest-ubl consolidate indicators alerts check-ocr-runtime extract-pdf extract-image demo clean
 
 setup:
 	$(UV) sync --locked
@@ -46,6 +46,9 @@ consolidate:
 
 indicators:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/calculate_indicators.py $(if $(PRESET),--preset $(PRESET),)
+
+alerts:
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/evaluate_alerts.py $(if $(ALERT_PRESET),--preset $(ALERT_PRESET),)
 
 check-ocr-runtime:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/check_ocr_runtime.py
