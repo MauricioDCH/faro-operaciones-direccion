@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AttachedDocument xmlns="urn:oasis:names:specification:ubl:schema:xsd:AttachedDocument-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:ID>AD-001</cbc:ID>
+  <cac:Attachment><cac:ExternalReference><cbc:Description>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"&gt;
+  &lt;cbc:UBLVersionID&gt;2.1&lt;/cbc:UBLVersionID&gt;
+  &lt;cbc:CustomizationID&gt;DIAN 2.1&lt;/cbc:CustomizationID&gt;
+  &lt;cbc:ProfileID&gt;DIAN 2.1: Factura Electrónica de Venta&lt;/cbc:ProfileID&gt;
+  &lt;cbc:ID&gt;FV-UBL-001&lt;/cbc:ID&gt;
+  &lt;cbc:IssueDate&gt;2026-08-02&lt;/cbc:IssueDate&gt;
+  &lt;cbc:DocumentCurrencyCode&gt;COP&lt;/cbc:DocumentCurrencyCode&gt;
+  &lt;cac:OrderReference&gt;&lt;cbc:ID&gt;ORD-000001&lt;/cbc:ID&gt;&lt;/cac:OrderReference&gt;
+  
+  &lt;cac:AccountingSupplierParty&gt;
+    &lt;cac:Party&gt;
+      &lt;cac:PartyIdentification&gt;&lt;cbc:ID&gt;SUP-0001&lt;/cbc:ID&gt;&lt;/cac:PartyIdentification&gt;
+      &lt;cac:PartyName&gt;&lt;cbc:Name&gt;Proveedor UBL SAS&lt;/cbc:Name&gt;&lt;/cac:PartyName&gt;
+      &lt;cac:PartyTaxScheme&gt;
+        &lt;cbc:RegistrationName&gt;Proveedor UBL SAS&lt;/cbc:RegistrationName&gt;
+        &lt;cbc:CompanyID&gt;900123456&lt;/cbc:CompanyID&gt;
+        &lt;cac:TaxScheme&gt;&lt;cbc:ID&gt;01&lt;/cbc:ID&gt;&lt;cbc:Name&gt;IVA&lt;/cbc:Name&gt;&lt;/cac:TaxScheme&gt;
+      &lt;/cac:PartyTaxScheme&gt;
+      &lt;cac:PartyLegalEntity&gt;&lt;cbc:RegistrationName&gt;Proveedor UBL SAS&lt;/cbc:RegistrationName&gt;&lt;/cac:PartyLegalEntity&gt;
+      &lt;cac:Contact&gt;&lt;cbc:ElectronicMail&gt;proveedor@example.test&lt;/cbc:ElectronicMail&gt;&lt;/cac:Contact&gt;
+    &lt;/cac:Party&gt;
+  &lt;/cac:AccountingSupplierParty&gt;
+  &lt;cac:AccountingCustomerParty&gt;
+    &lt;cac:Party&gt;
+      &lt;cac:PartyIdentification&gt;&lt;cbc:ID&gt;CUS-0001&lt;/cbc:ID&gt;&lt;/cac:PartyIdentification&gt;
+      &lt;cac:PartyName&gt;&lt;cbc:Name&gt;Cliente UBL SAS&lt;/cbc:Name&gt;&lt;/cac:PartyName&gt;
+      &lt;cac:PartyTaxScheme&gt;&lt;cbc:CompanyID&gt;800987654&lt;/cbc:CompanyID&gt;&lt;cac:TaxScheme&gt;&lt;cbc:ID&gt;01&lt;/cbc:ID&gt;&lt;/cac:TaxScheme&gt;&lt;/cac:PartyTaxScheme&gt;
+    &lt;/cac:Party&gt;
+  &lt;/cac:AccountingCustomerParty&gt;
+  &lt;cac:TaxTotal&gt;
+    &lt;cbc:TaxAmount currencyID="COP"&gt;19000.00&lt;/cbc:TaxAmount&gt;
+    &lt;cac:TaxSubtotal&gt;
+      &lt;cbc:TaxableAmount currencyID="COP"&gt;100000.00&lt;/cbc:TaxableAmount&gt;
+      &lt;cbc:TaxAmount currencyID="COP"&gt;19000.00&lt;/cbc:TaxAmount&gt;
+      &lt;cac:TaxCategory&gt;&lt;cbc:Percent&gt;19.00&lt;/cbc:Percent&gt;&lt;cac:TaxScheme&gt;&lt;cbc:ID&gt;01&lt;/cbc:ID&gt;&lt;cbc:Name&gt;IVA&lt;/cbc:Name&gt;&lt;/cac:TaxScheme&gt;&lt;/cac:TaxCategory&gt;
+    &lt;/cac:TaxSubtotal&gt;
+  &lt;/cac:TaxTotal&gt;
+  &lt;cac:LegalMonetaryTotal&gt;
+    &lt;cbc:LineExtensionAmount currencyID="COP"&gt;100000.00&lt;/cbc:LineExtensionAmount&gt;
+    &lt;cbc:TaxExclusiveAmount currencyID="COP"&gt;100000.00&lt;/cbc:TaxExclusiveAmount&gt;
+    &lt;cbc:TaxInclusiveAmount currencyID="COP"&gt;119000.00&lt;/cbc:TaxInclusiveAmount&gt;
+    &lt;cbc:PayableAmount currencyID="COP"&gt;119000.00&lt;/cbc:PayableAmount&gt;
+  &lt;/cac:LegalMonetaryTotal&gt;
+  &lt;cac:InvoiceLine&gt;
+    &lt;cbc:ID&gt;1&lt;/cbc:ID&gt;
+    &lt;cbc:InvoicedQuantity unitCode="EA"&gt;10&lt;/cbc:InvoicedQuantity&gt;
+    &lt;cbc:LineExtensionAmount currencyID="COP"&gt;100000.00&lt;/cbc:LineExtensionAmount&gt;
+    &lt;cac:Item&gt;
+      &lt;cbc:Description&gt;Café molido 500 g&lt;/cbc:Description&gt;
+      &lt;cbc:Name&gt;Café molido 500 g&lt;/cbc:Name&gt;
+      &lt;cac:SellersItemIdentification&gt;&lt;cbc:ID&gt;PRD-0001&lt;/cbc:ID&gt;&lt;/cac:SellersItemIdentification&gt;
+    &lt;/cac:Item&gt;
+    &lt;cac:Price&gt;&lt;cbc:PriceAmount currencyID="COP"&gt;10000.00&lt;/cbc:PriceAmount&gt;&lt;/cac:Price&gt;
+  &lt;/cac:InvoiceLine&gt;
+&lt;/Invoice&gt;
+</cbc:Description></cac:ExternalReference></cac:Attachment>
+</AttachedDocument>

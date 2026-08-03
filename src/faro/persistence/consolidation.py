@@ -115,7 +115,14 @@ class UnifiedConsolidationService:
         observations: list[RecordObservation] = []
         findings: list[IngestionFinding] = []
         extraction_results = []
-        adapters: dict[str, int] = {}
+        adapters: dict[str, int] = {
+            "delimited": 0,
+            "image": 0,
+            "json": 0,
+            "pdf": 0,
+            "ubl_xml": 0,
+            "xlsx": 0,
+        }
         raw_unchanged = True
 
         excel = ExcelIngestionService(ingested_at=self.ingested_at).ingest(raw)

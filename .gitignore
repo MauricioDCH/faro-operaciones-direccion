@@ -46,3 +46,9 @@ faro_synthetic_baseline_patch.zipfaro-*-inputs.tar.gz
 data/processed/*.db
 data/processed/*.db-*
 faro-*-inputs.tar.gz
+
+# Versioned synthetic UBL fixtures
+!data/
+!data/samples/
+!data/samples/ubl-invoice.example.xml
+!data/samples/ubl-attached-document.example.xml
