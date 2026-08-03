@@ -52,3 +52,4 @@ faro-*-inputs.tar.gz
 !data/samples/
 !data/samples/ubl-invoice.example.xml
 !data/samples/ubl-attached-document.example.xml
+project-instructions-MM.md
