@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 import os
 from pathlib import Path
 
@@ -22,6 +23,8 @@ class Settings:
 
     data_dir: Path = Path("data")
     config_path: Path = Path("config/app.example.yaml")
+    database_path: Path = Path("data/processed/faro.db")
+    consolidation_timestamp: str = "2026-07-31T09:00:00+00:00"
     pdf_extraction_mode: str = "auto"
     ocr_enabled: bool = True
     ocr_command: str = "tesseract"
@@ -57,6 +60,12 @@ class Settings:
             data_dir=Path(os.getenv("FARO_DATA_DIR", "data")),
             config_path=Path(
                 os.getenv("FARO_CONFIG_PATH", "config/app.example.yaml")
+            ),
+            database_path=Path(
+                os.getenv("FARO_DATABASE_PATH", "data/processed/faro.db")
+            ),
+            consolidation_timestamp=os.getenv(
+                "FARO_CONSOLIDATION_TIMESTAMP", "2026-07-31T09:00:00+00:00"
             ),
             pdf_extraction_mode=os.getenv("PDF_EXTRACTION_MODE", "auto"),
             ocr_enabled=_parse_bool(os.getenv("OCR_ENABLED", "true")),
@@ -111,6 +120,10 @@ class Settings:
         return settings
 
     def validate(self) -> None:
+        try:
+            datetime.fromisoformat(self.consolidation_timestamp)
+        except ValueError as exc:
+            raise ValueError("FARO_CONSOLIDATION_TIMESTAMP must be ISO 8601.") from exc
         if self.pdf_extraction_mode not in {"auto", "native_only", "ocr_only"}:
             raise ValueError(
                 "PDF_EXTRACTION_MODE must be auto, native_only, or ocr_only."

@@ -5,7 +5,7 @@
 **Origen:** R4 — Operaciones / Dirección, conservado como referencia histórica  
 **Dirección actual:** producto independiente para uso local en pymes  
 **Segmento inicial:** micro o pequeña empresa comercializadora o distribuidora de Medellín  
-**Versión:** 1.11
+**Versión:** 1.12
 
 ---
 
@@ -30,12 +30,12 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-002 | Extraer los campos aprobados de facturas y cotizaciones PDF sintéticas. | Los documentos nativos, escaneados y mixtos producen campos con archivo, página, método, evidencia y confianza cuando corresponda. | `implemented` |
 | FR-003 | Validar hojas, esquemas, campos obligatorios, tipos, fechas, rangos, duplicados e integridad referencial. | La ingesta tabular detecta las anomalías Excel sembradas y las pruebas verifican estructura, tipos, reglas y relaciones. | `implemented` |
 | FR-004 | Normalizar identificadores, fechas, unidades y nombres mediante reglas aprobadas. | Cada correspondencia conserva trazabilidad y las asociaciones inciertas requieren revisión humana. | `planned` |
-| FR-005 | Consolidar los registros válidos en un modelo operativo común. | Cada registro puede rastrearse hasta el archivo o referencia de origen. | `planned` |
+| FR-005 | Consolidar los registros válidos en un modelo operativo común. | SQLite contiene solo registros canónicos aceptados y cada uno conserva observaciones y procedencia hasta la fuente. | `implemented` |
 | FR-006 | Calcular indicadores operativos mediante lógica determinística. | Fórmulas, casos límite y resultados esperados están cubiertos por pruebas. | `planned` |
 | FR-007 | Generar alertas trazables mediante reglas explícitas y configurables. | Cada alerta presenta regla, entradas, valor observado, umbral y procedencia. | `planned` |
 | FR-008 | Responder preguntas empresariales mediante evidencia recuperada. | Las respuestas numéricas citan resultados estructurados y se rechazan cuando la evidencia es insuficiente. | `planned` |
 | FR-009 | Mostrar la evidencia de indicadores, alertas y respuestas. | El usuario puede navegar hasta el libro, hoja, página, mensaje o registro correspondiente. | `planned` |
-| FR-010 | Registrar las transformaciones aplicadas. | Cada transformación incluye origen, regla, fecha, entrada y resultado. | `planned` |
+| FR-010 | Registrar las transformaciones aplicadas. | Cada selección canónica registra regla, ubicación, hash de entrada, hash de salida y fecha configurada. | `implemented` |
 | FR-011 | Registrar metadatos de confianza para resultados asistidos por IA. | Se conservan plataforma, plugin, prompt, método, modelo visible, confianza, evidencia y revisión. | `planned` |
 | FR-012 | Permitir revisión humana de propuestas inciertas. | El usuario puede aceptar, corregir o rechazar sin alterar las fuentes. | `planned` |
 | FR-013 | Proporcionar un dashboard operativo conciso. | Una interfaz permite consultar ingesta, importaciones, calidad, indicadores, alertas, evidencia y revisiones. | `planned` |
@@ -55,6 +55,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | FR-027 | Importar mensajes exportados en EML y MBOX. | Se conservan cabeceras, cuerpo, adjuntos, Message-ID y ubicación dentro del buzón sin modificar la fuente. | `planned` |
 | FR-028 | Procesar lotes ZIP controlados. | Solo se aceptan miembros permitidos, con límites, manifiesto, hashes y protección contra rutas inseguras y expansión excesiva. | `planned` |
 | FR-029 | Ingerir documentos administrativos DOCX y ODT controlados. | El contenido se extrae sin ejecutar macros y conserva sección, párrafo y evidencia. | `planned` |
+| FR-030 | Reconstruir un almacén operacional SQLite local y atómico. | La base pasa `integrity_check`, conserva la versión anterior ante fallos y produce un hash lógico estable con las mismas entradas. | `implemented` |
 
 ---
 
@@ -117,7 +118,7 @@ Un requisito solo puede marcarse como `implemented` cuando cumple su evidencia, 
 | Importación del lote | FR-018, QR-014 |
 | Contingencia | FR-019, QR-011 |
 | Validación y normalización | FR-003, FR-004, FR-010 |
-| Consolidación | FR-005, QR-007, QR-008 |
+| Consolidación | FR-005, FR-010, FR-030, QR-007, QR-008 |
 | Indicadores y alertas | FR-006, FR-007, FR-009 |
 | Preguntas empresariales | FR-008, FR-009, QR-010 |
 | Dashboard | FR-013, QR-012 |

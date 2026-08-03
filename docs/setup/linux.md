@@ -40,3 +40,11 @@ PYTHONPATH=src uv run python scripts/ingest_ubl_xml.py data/samples/ubl-invoice.
 ```
 
 En PowerShell establezca `$env:PYTHONPATH = "src"` y utilice separadores de ruta de Windows. Los límites se configuran con `UBL_MAX_FILE_SIZE_MB`, `UBL_MAX_ELEMENTS`, `UBL_MAX_DEPTH` y `UBL_MAX_TEXT_CHARACTERS`.
+
+## Consolidación SQLite
+
+```bash
+PYTHONPATH=src uv run python scripts/consolidate_operations.py
+```
+
+La base se genera en `data/processed/faro.db`. El comando reconstruye un archivo temporal, verifica integridad y reemplaza la base anterior únicamente cuando la ejecución termina correctamente.

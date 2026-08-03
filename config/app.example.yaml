@@ -100,3 +100,21 @@ ingestion:
     max_text_characters: 5000000
     allow_dtd: false
     allow_external_entities: false
+
+
+persistence:
+  engine: sqlite
+  database_path: data/processed/faro.db
+  schema_version: "1.0.0"
+  atomic_replace: true
+  logical_hash: true
+  include_samples: true
+  source_priority:
+    ubl_xml: 100
+    xlsx: 90
+    pdf: 85
+    image: 80
+    json: 70
+    ndjson: 70
+    csv: 60
+    tsv: 60

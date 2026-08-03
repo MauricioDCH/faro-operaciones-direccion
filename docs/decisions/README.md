@@ -49,6 +49,10 @@ Debe crearse un ADR cuando un cambio afecte:
 |---|---|---|
 | [`0001-support-scanned-pdf-ocr.md`](0001-support-scanned-pdf-ocr.md) | Soporte OCR para documentos PDF escaneados | `accepted` |
 | [`0002-select-local-pdf-ocr-stack.md`](0002-select-local-pdf-ocr-stack.md) | Selección de la pila local para PDF y OCR | `accepted` |
+| [`0003-support-linux-and-windows.md`](0003-support-linux-and-windows.md) | Soporte oficial para Linux y Windows | `accepted` |
+| [`0004-expand-input-formats.md`](0004-expand-input-formats.md) | Expansión por fases de formatos de entrada | `accepted` |
+| [`0005-select-secure-stdlib-ubl-parser.md`](0005-select-secure-stdlib-ubl-parser.md) | Parser UBL seguro basado en biblioteca estándar | `accepted` |
+| [`0006-select-sqlite-unified-operational-store.md`](0006-select-sqlite-unified-operational-store.md) | SQLite como almacén operacional unificado | `accepted` |
 
 ## Reglas de mantenimiento
 

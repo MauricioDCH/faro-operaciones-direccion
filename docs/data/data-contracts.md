@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.9.0
+**Versión:** 1.10.0
 **Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -113,6 +113,7 @@ Las tablas deben comenzar en `A1`, tener una sola fila de encabezados y no conte
 | DC-014 | Correo exportado | `imports/email/*.{eml,mbox}` | no aplica | `email_message`, `extraction_result` |
 | DC-015 | Lote comprimido | `imports/batches/*.zip` | manifiesto | fuentes contenidas permitidas |
 | DC-016 | Documento administrativo | `documents/*.{docx,odt}` | no aplica | `document`, `document_page`, `extraction_result` |
+| DC-017 | Almacén operacional unificado | `data/processed/faro.db` | no aplica | entidades canónicas, observaciones, procedencia, hallazgos y transformaciones |
 
 ---
 
@@ -131,7 +132,7 @@ Garantías de la implementación:
 - compara el hash SHA-256 antes y después de la ingesta;
 - produce hallazgos estructurados con código, regla, severidad y ubicación.
 
-La salida técnica de esta etapa es `ExcelIngestionBatch`, compuesto por `TabularRecord`, `SpreadsheetSourceLocation` e `IngestionFinding`. La consolidación persistente continúa en `planned`.
+La salida técnica de esta etapa es `ExcelIngestionBatch`, compuesto por `TabularRecord`, `SpreadsheetSourceLocation` e `IngestionFinding`. Los registros aceptados pueden ingresar al almacén operacional DC-017.
 
 ---
 
@@ -889,3 +890,57 @@ Solo se extrae contenido textual y estructural controlado. No se ejecutan macros
 5. Los límites de tamaño y recursos son obligatorios.
 6. Los errores son estructurados y localizables.
 7. Las capacidades `planned` no se aceptan como implementadas.
+
+---
+
+## 22. DC-017 — Almacén operacional unificado
+
+**Ruta:** `data/processed/faro.db`
+**Motor:** SQLite
+**Versión del esquema:** `1.0.0`
+
+### Garantías
+
+- se construye en un archivo temporal y se reemplaza de forma atómica;
+- solo observaciones `accepted` pueden poblar tablas canónicas;
+- observaciones rechazadas o pendientes permanecen fuera de las tablas operativas;
+- cada registro canónico conserva `source_file_id` y `source_location_id`;
+- cada observación conserva formato, prioridad, payload y hash;
+- cada selección canónica genera `transformation_event`;
+- los conflictos entre fuentes producen `quality_finding`;
+- se ejecutan claves foráneas e `integrity_check`;
+- el archivo SQLite no se versiona; se reconstruye desde fuentes inmutables;
+- la reproducibilidad se compara mediante `logical_content_hash`.
+
+### Tablas de auditoría
+
+- `metadata`;
+- `source_file`;
+- `source_location`;
+- `record_observation`;
+- `quality_finding`;
+- `transformation_event`;
+- `extraction_result`.
+
+### Tablas canónicas
+
+- `product`;
+- `customer`;
+- `supplier`;
+- `sale_line`;
+- `inventory_snapshot`;
+- `purchase_order_line`;
+- `document`;
+- `document_page`;
+- `invoice`;
+- `invoice_line`;
+- `quotation`;
+- `quotation_line`.
+
+### Reglas de consolidación
+
+1. La clave de negocio identifica observaciones equivalentes.
+2. Se elige la observación aceptada con mayor prioridad de fuente.
+3. Un duplicado equivalente genera una advertencia.
+4. Un desacuerdo genera un error trazable, pero no elimina la observación alternativa.
+5. Una reconstrucción fallida no reemplaza la base válida anterior.
