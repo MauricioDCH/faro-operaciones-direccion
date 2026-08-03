@@ -6,6 +6,22 @@ from importlib import import_module
 from typing import Any
 
 _EXPORTS = {
+    "UblFormatError": (
+        "faro.ingestion.ubl_xml",
+        "UblFormatError",
+    ),
+    "UblIngestionResult": (
+        "faro.ingestion.ubl_xml",
+        "UblIngestionResult",
+    ),
+    "UblLimits": (
+        "faro.ingestion.ubl_xml",
+        "UblLimits",
+    ),
+    "UblXmlIngestionService": (
+        "faro.ingestion.ubl_xml",
+        "UblXmlIngestionService",
+    ),
     "ImageDocumentIngestionService": (
         "faro.ingestion.image_document",
         "ImageDocumentIngestionService",

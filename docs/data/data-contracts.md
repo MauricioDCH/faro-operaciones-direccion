@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.8.0
+**Versión:** 1.9.0
 **Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -11,7 +11,7 @@
 
 Este documento define los contratos de entrada y las garantías mínimas de salida de Faro.
 
-La versión actual implementa Excel, PDF, CSV/TSV, JSON/NDJSON e imágenes documentales. La expansión aprobada conserva como planificados XML UBL, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
+La versión actual implementa Excel, PDF, CSV/TSV, JSON/NDJSON, imágenes documentales y XML UBL 2.1. La expansión aprobada conserva como planificados correo exportado, archivos comprimidos y documentos ofimáticos controlados.
 
 ---
 
@@ -710,9 +710,47 @@ Un error de fuente produce un hallazgo estructurado y no altera el archivo raw. 
 
 ## 20. DC-011 — XML UBL
 
-**Estado:** `planned`
+**Estado:** `implemented`  
+**Ruta canónica:** `data/raw/electronic_documents/*.xml`  
+**Versión soportada:** UBL `2.1`
 
-El adaptador valida XML de manera segura, identifica versión y tipo documental, y conserva XPath para cada campo. No ejecuta DTD externas ni entidades externas. La validación de totales y relaciones permanece determinística.
+### Documentos admitidos
+
+- `Invoice` como raíz;
+- `AttachedDocument` con un único `Invoice` embebido como XML escapado, elemento XML o contenido base64 XML.
+
+Notas crédito, notas débito, respuestas de aplicación y otros documentos UBL permanecen fuera del alcance.
+
+### Seguridad y límites
+
+- rechazo de `DOCTYPE` y declaraciones `ENTITY`;
+- ausencia de resolución de entidades o recursos externos;
+- límites configurables de tamaño, elementos, profundidad y texto;
+- raíz y `UBLVersionID` obligatorios y permitidos;
+- contenido real validado, no solo extensión `.xml`;
+- hash SHA-256 antes y después.
+
+### Mapeo canónico
+
+La factura produce `document`, `invoice` e `invoice_line`. Se extraen número, fecha, moneda, referencia de pedido, proveedor, cliente, líneas, impuestos, subtotal y total pagadero. Los identificadores externos se conservan como aparecen y su homologación con catálogos internos queda a cargo de normalización.
+
+### Procedencia
+
+Cada campo conserva `source_file_id`, `source_location_id`, XPath lógico, nombre canónico y valor raw. En `AttachedDocument`, el XPath incluye la ubicación del contenedor y el segmento `embedded-document`.
+
+### Validación determinística
+
+- campos obligatorios;
+- fechas ISO;
+- decimales finitos;
+- cantidad positiva;
+- total por línea;
+- suma de líneas frente a subtotal;
+- subtotal más impuestos frente al total;
+- coherencia entre `DocumentCurrencyCode` y `currencyID`;
+- moneda `COP` para los campos monetarios canónicos actuales.
+
+La validación jurídica, firma digital, CUFE, consulta DIAN y XSD oficial completo están fuera del alcance.
 
 
 ## 21. DC-012 — Imágenes documentales

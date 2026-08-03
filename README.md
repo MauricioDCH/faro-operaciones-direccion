@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** Excel, PDF/OCR, CSV/TSV, JSON/NDJSON e imágenes documentales implementados; XML UBL y demás adaptadores en desarrollo
+> **Estado:** Excel, PDF/OCR, CSV/TSV, JSON/NDJSON, imágenes documentales y XML UBL 2.1 implementados; adaptadores de fase 2 en desarrollo
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -196,7 +196,7 @@ Este segmento maneja productos, ventas, inventarios, compras, pedidos y proveedo
 Formatos aprobados para implementación por fases:
 
 - CSV y TSV;
-- XML UBL;
+- XML UBL 2.1 (`Invoice` y `AttachedDocument`);
 - JPG, JPEG, PNG, TIFF y WebP;
 - JSON y NDJSON versionados;
 - EML, MBOX, ZIP, DOCX y ODT en una fase posterior.
@@ -563,6 +563,10 @@ make extract-image IMAGE=data/raw/document_images/factura.png
 make run
 ```
 
+```bash
+make ingest-ubl XML=data/samples/ubl-invoice.example.xml
+```
+
 | Comando | Propósito |
 |---|---|
 | `make setup` | Crear el entorno e instalar dependencias bloqueadas |
@@ -678,7 +682,7 @@ PYTHONPATH=src uv run python scripts/extract_image.py \
 | CSV y TSV con perfiles explícitos | `implemented` |
 | JSON y NDJSON versionados | `implemented` |
 | Imágenes documentales JPG/PNG/TIFF/WebP | `implemented` |
-| XML UBL | `planned` |
+| XML UBL 2.1 | `implemented` |
 | EML/MBOX, ZIP y DOCX/ODT | `planned` |
 | Indicadores y alertas | `planned` |
 | Consultas asistidas por IA | `planned` |

@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json check-ocr-runtime extract-pdf extract-image demo clean
+.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json ingest-ubl check-ocr-runtime extract-pdf extract-image demo clean
 
 setup:
 	$(UV) sync --locked
@@ -36,6 +36,10 @@ ingest-delimited:
 ingest-json:
 	@test -n "$(SOURCES)" || (echo "Usage: make ingest-json SOURCES='--source products=products.json --source sales=sales.ndjson'" && exit 2)
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/ingest_json_records.py $(SOURCES)
+
+ingest-ubl:
+	@test -n "$(XML)" || (echo "Usage: make ingest-ubl XML=path/to/invoice.xml" && exit 2)
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/ingest_ubl_xml.py "$(XML)"
 
 check-ocr-runtime:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/check_ocr_runtime.py

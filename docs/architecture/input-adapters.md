@@ -81,3 +81,11 @@ La implementación utiliza únicamente `json`, `pathlib` y otras APIs estándar 
 El adaptador aplica límites antes del OCR, verifica SHA-256 antes y después y reutiliza `TesseractOcrEngine`, `DocumentClassifier` y `StructuredDocumentExtractor`. La salida usa `DocumentExtraction`, `DocumentPage`, `SourceFile`, `SourceLocation`, `ExtractionResult` y `QualityFinding`.
 
 El MVP acepta solo imágenes de un frame y orientación estándar. Esta restricción evita rotaciones o selección de páginas implícitas que puedan alterar evidencia. La ejecución usa rutas `pathlib` y comandos Python equivalentes en Linux y Windows.
+
+## Adaptador `ubl_xml` implementado
+
+`src/faro/ingestion/ubl_xml.py` procesa UBL 2.1 sin OCR. El parser local rechaza DTD y entidades antes de construir el árbol, aplica límites de recursos y solo admite `Invoice` o `AttachedDocument` con una factura embebida.
+
+El mapeo utiliza nombres locales para tolerar prefijos XML distintos sin ignorar la raíz, versión ni estructura requerida. Cada valor extraído conserva un XPath lógico determinístico. Las reglas monetarias se ejecutan con `Decimal` y los resultados con inconsistencias quedan `pending_review`.
+
+La implementación usa la biblioteca estándar de Python y `pathlib`, por lo que no requiere una dependencia XML nativa distinta en Linux o Windows. La selección queda registrada en `docs/decisions/0005-select-secure-stdlib-ubl-parser.md`.

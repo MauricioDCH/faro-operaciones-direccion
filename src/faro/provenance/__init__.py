@@ -7,6 +7,7 @@ from faro.provenance.models import (
     SourceFile,
     SourceLocation,
     SpreadsheetSourceLocation,
+    XmlSourceLocation,
     sha256_file,
     stable_delimited_location_id,
     stable_document_id,
@@ -14,6 +15,7 @@ from faro.provenance.models import (
     stable_page_id,
     stable_source_id,
     stable_spreadsheet_location_id,
+    stable_xml_location_id,
 )
 
 __all__ = [
@@ -23,6 +25,7 @@ __all__ = [
     "SourceFile",
     "SourceLocation",
     "SpreadsheetSourceLocation",
+    "XmlSourceLocation",
     "sha256_file",
     "stable_delimited_location_id",
     "stable_document_id",
@@ -30,4 +33,5 @@ __all__ = [
     "stable_page_id",
     "stable_source_id",
     "stable_spreadsheet_location_id",
+    "stable_xml_location_id",
 ]
