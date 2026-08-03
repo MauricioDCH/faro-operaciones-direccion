@@ -1,1 +1,1 @@
-"""Ui module boundary."""
+"""Read-only dashboard UI for Faro."""

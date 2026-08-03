@@ -137,3 +137,27 @@ alerts:
       - email
       - desktop
       - messaging
+
+dashboard:
+  host: 127.0.0.1
+  port: 8080
+  mode: read_only
+  theme: faro-professional-dark
+  sections:
+    - executive_summary
+    - indicators
+    - alerts
+    - data_quality
+    - source_coverage
+
+imports:
+  mode: incremental_atomic
+  staging_dir: data/inbox
+  archive_dir: data/raw/uploads
+  job_database_path: data/processed/faro_imports.db
+  max_file_size_mb: 25
+  duplicate_detection: sha256
+  backup_before_swap: true
+  recompute_after_success:
+    - indicators
+    - alerts

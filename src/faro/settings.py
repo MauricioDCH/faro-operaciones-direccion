@@ -26,6 +26,14 @@ class Settings:
     database_path: Path = Path("data/processed/faro.db")
     indicator_config_path: Path = Path("config/indicators.yaml")
     alert_config_path: Path = Path("config/alerts.yaml")
+    company_config_path: Path = Path("config/company.yaml")
+    dashboard_host: str = "127.0.0.1"
+    dashboard_port: int = 8080
+    dashboard_title: str = "Faro · Panel operativo"
+    import_database_path: Path = Path("data/processed/faro_imports.db")
+    import_staging_dir: Path = Path("data/inbox")
+    import_archive_dir: Path = Path("data/raw/uploads")
+    import_max_file_size_mb: int = 25
     consolidation_timestamp: str = "2026-07-31T09:00:00+00:00"
     pdf_extraction_mode: str = "auto"
     ocr_enabled: bool = True
@@ -72,6 +80,16 @@ class Settings:
             alert_config_path=Path(
                 os.getenv("FARO_ALERT_CONFIG_PATH", "config/alerts.yaml")
             ),
+            company_config_path=Path(
+                os.getenv("FARO_COMPANY_CONFIG_PATH", "config/company.yaml")
+            ),
+            dashboard_host=os.getenv("FARO_DASHBOARD_HOST", "127.0.0.1"),
+            dashboard_port=int(os.getenv("FARO_DASHBOARD_PORT", "8080")),
+            dashboard_title=os.getenv("FARO_DASHBOARD_TITLE", "Faro · Panel operativo"),
+            import_database_path=Path(os.getenv("FARO_IMPORT_DATABASE_PATH", "data/processed/faro_imports.db")),
+            import_staging_dir=Path(os.getenv("FARO_IMPORT_STAGING_DIR", "data/inbox")),
+            import_archive_dir=Path(os.getenv("FARO_IMPORT_ARCHIVE_DIR", "data/raw/uploads")),
+            import_max_file_size_mb=int(os.getenv("FARO_IMPORT_MAX_FILE_SIZE_MB", "25")),
             consolidation_timestamp=os.getenv(
                 "FARO_CONSOLIDATION_TIMESTAMP", "2026-07-31T09:00:00+00:00"
             ),
@@ -180,6 +198,14 @@ class Settings:
             raise ValueError("IMAGE_MIN_WIDTH cannot exceed IMAGE_MAX_WIDTH.")
         if self.image_min_height > self.image_max_height:
             raise ValueError("IMAGE_MIN_HEIGHT cannot exceed IMAGE_MAX_HEIGHT.")
+        if not 1 <= self.dashboard_port <= 65535:
+            raise ValueError("FARO_DASHBOARD_PORT must be between 1 and 65535.")
+        if not self.dashboard_host.strip():
+            raise ValueError("FARO_DASHBOARD_HOST must not be blank.")
+        if not self.dashboard_title.strip():
+            raise ValueError("FARO_DASHBOARD_TITLE must not be blank.")
+        if not 1 <= self.import_max_file_size_mb <= 1024:
+            raise ValueError("FARO_IMPORT_MAX_FILE_SIZE_MB must be between 1 and 1024.")
         if not 1 <= self.ubl_max_file_size_mb <= 1024:
             raise ValueError("UBL_MAX_FILE_SIZE_MB must be between 1 and 1024.")
         if self.ubl_max_elements < 1:

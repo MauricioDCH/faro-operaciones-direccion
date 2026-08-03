@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% block content %}
+<header id="inicio" class="hero">
+  <div>
+    <p class="eyebrow">Resumen para tomar decisiones</p>
+    <h2>{{ company.dashboard.title }}</h2>
+    <p class="subtitle">Lo importante de tu negocio, explicado de forma sencilla.</p>
+  </div>
+  <div class="hero-actions">
+    <button class="button primary" type="button" data-open-import>
+      Actualizar información
+    </button>
+    <button class="button ghost" type="button" data-toggle-technical>
+      Mostrar detalles técnicos
+    </button>
+  </div>
+</header>
+
+{% if company.fallback_active %}
+<div class="notice warning" role="status">
+  <strong>Faro inició con una configuración segura.</strong>
+  <span>El archivo de empresa tiene un problema, pero el panel sigue disponible.</span>
+  <details class="technical"><summary>Ver detalle</summary><code>{{ company.fallback_reason }}</code></details>
+</div>
+{% endif %}
+
+{% if import_status %}
+<div class="notice {{ 'success' if import_status in ['completed', 'duplicate'] else 'warning' }}" role="status">
+  {% if import_status == 'completed' %}
+  <strong>Información actualizada.</strong><span>Faro validó el archivo y renovó los indicadores y alertas.</span>
+  {% elif import_status == 'duplicate' %}
+  <strong>Archivo ya procesado.</strong><span>No se hicieron cambios porque la información ya estaba registrada.</span>
+  {% elif import_status == 'rejected' %}
+  <strong>Archivo no aceptado.</strong><span>La información anterior sigue intacta. Revisa el mensaje de la carga.</span>
+  {% else %}
+  <strong>No se pudo actualizar.</strong><span>La base anterior sigue intacta y disponible.</span>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if not snapshot.available %}
+<section class="empty-state panel">
+  <div class="empty-icon">!</div>
+  <div>
+    <h3>La información no está disponible por ahora</h3>
+    <p>{{ snapshot.error_message }}</p>
+    <p>No se borró ni reemplazó la base anterior.</p>
+  </div>
+</section>
+{% else %}
+<section class="business-status {{ snapshot.status.tone }}">
+  <div>
+    <p class="eyebrow">Estado general</p>
+    <h3>{{ snapshot.status.label }}</h3>
+    <p>{{ snapshot.status.summary }}</p>
+  </div>
+  <a class="button soft" href="#que-revisar">Ver qué debo hacer</a>
+</section>
+
+{% if company.section_enabled('summary') %}
+<section class="cards-grid" aria-label="Resumen del negocio">
+  {% for card in snapshot.summary_cards %}
+  <article class="metric-card {{ card.tone }}">
+    <p>{{ card.label }}</p>
+    <strong>{{ card.value }}</strong>
+    <span>{{ card.hint }}</span>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if company.section_enabled('actions') %}
+<section id="que-revisar" class="panel decision-panel">
+  <div class="panel-head responsive">
+    <div>
+      <p class="eyebrow">Prioridades</p>
+      <h3>Qué revisar hoy</h3>
+      <p class="muted">Empieza por la primera tarjeta y avanza en orden.</p>
+    </div>
+    <div class="filter-pills" data-alert-filters>
+      <button type="button" class="active" data-severity="all">Todas</button>
+      <button type="button" data-severity="critical">Urgentes</button>
+      <button type="button" data-severity="error">Importantes</button>
+      <button type="button" data-severity="warning">Por revisar</button>
+    </div>
+  </div>
+  {% if snapshot.action_cards %}
+  <div class="decision-list">
+    {% for alert in snapshot.action_cards %}
+    <article class="decision-card {{ alert.severity }}" data-alert-card data-severity="{{ alert.severity }}">
+      <div class="decision-order">{{ loop.index }}</div>
+      <div class="decision-main">
+        <div class="decision-title-row">
+          <span class="severity-badge {{ alert.severity }}">{{ alert.severity_label }}</span>
+          <h4>{{ alert.title }}</h4>
+          <strong class="decision-value">{{ alert.value_text }}</strong>
+        </div>
+        <p class="decision-explanation">{{ alert.simple_description }}</p>
+        <div class="recommended-action">
+          <span>Acción recomendada</span>
+          <strong>{{ alert.action_title }}</strong>
+          <p>{{ alert.action_text }}</p>
+        </div>
+        <details>
+          <summary>¿Por qué Faro muestra esto?</summary>
+          <p>{{ alert.rule_text }}</p>
+          <p>Se relaciona con {{ alert.related_record_ids|length }} registros y {{ alert.source_location_ids|length }} ubicaciones de origen.</p>
+        </details>
+        {% if company.dashboard.show_source_evidence %}
+        <details class="technical">
+          <summary>Ver evidencia técnica</summary>
+          <dl class="technical-grid">
+            <div><dt>Identificador</dt><dd>{{ alert.alert_id }}</dd></div>
+            <div><dt>Estado de revisión</dt><dd>{{ alert.review_label }}</dd></div>
+            <div><dt>Entrega</dt><dd>{{ alert.delivery_label }}</dd></div>
+            <div><dt>Fecha lógica</dt><dd>{{ alert.generated_at }}</dd></div>
+          </dl>
+        </details>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="good-empty">
+    <strong>No hay situaciones activas.</strong>
+    <p>Con la información disponible, no hay acciones urgentes pendientes.</p>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if company.section_enabled('indicators') %}
+<section id="indicadores" class="panel">
+  <div class="panel-head responsive">
+    <div>
+      <p class="eyebrow">Resultados</p>
+      <h3>Cómo va el negocio</h3>
+      <p class="muted">Cada dato incluye una explicación sencilla.</p>
+    </div>
+    <label class="search-box">
+      <span class="sr-only">Buscar indicador</span>
+      <input type="search" placeholder="Buscar un dato…" data-indicator-search />
+    </label>
+  </div>
+  <div class="indicator-grid">
+    {% for item in snapshot.indicators %}
+    <article class="indicator-card {{ item.tone }}" data-indicator-card data-search="{{ item.title }} {{ item.dimension_label }} {{ item.meaning }}">
+      <div class="indicator-head">
+        <div>
+          <span class="indicator-context">{{ item.dimension_label }}</span>
+          <h4>{{ item.title }}</h4>
+        </div>
+        <strong>{{ item.value_text }}</strong>
+      </div>
+      <p>{{ item.interpretation }}</p>
+      <details>
+        <summary>¿Qué significa?</summary>
+        <p>{{ item.meaning }}</p>
+        {% if item.period_start %}<p>Periodo analizado: {{ item.period_start }} a {{ item.period_end }}.</p>{% endif %}
+      </details>
+      <details class="technical">
+        <summary>Ver evidencia técnica</summary>
+        <p>{{ item.source_record_ids|length }} registros y {{ item.source_location_ids|length }} ubicaciones respaldan este resultado.</p>
+        <code>{{ item.indicator_id }}</code>
+      </details>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if company.section_enabled('top_products') %}
+<section class="panel-grid two-col">
+  <article class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">Ventas</p><h3>Productos que más venden</h3></div>
+      <span class="chip">5 principales</span>
+    </div>
+    <div class="stack-list">
+      {% for product in snapshot.top_products %}
+      <div class="bar-row">
+        <div class="bar-label multi">
+          <div><strong>{{ product.product_name }}</strong><small>{{ product.quantity_text }}</small></div>
+          <strong>{{ product.sales_text }}</strong>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width: {{ product.sales_bar }}%"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+
+  {% if company.section_enabled('quality') %}
+  <article class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">Confianza</p><h3>¿Qué tan confiables son los datos?</h3></div>
+    </div>
+    <p class="muted">Los errores pueden cambiar un reporte. Las advertencias conviene revisarlas, pero no siempre impiden trabajar.</p>
+    <div class="quality-grid">
+      {% for item in snapshot.quality_summary %}
+      <div class="quality-card {{ item.severity }}">
+        <span>{{ item.label }}</span><strong>{{ item.total }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if company.section_enabled('data_update') %}
+<section id="actualizar-datos" class="panel update-panel">
+  <div class="update-copy">
+    <p class="eyebrow">Actualización segura</p>
+    <h3>Agregar o actualizar información</h3>
+    <p>Sube un archivo nuevo. Faro lo valida por separado y solo reemplaza la base cuando todo termina correctamente.</p>
+    <ul class="plain-checks">
+      <li>No necesitas ejecutar comandos.</li>
+      <li>Un archivo repetido no se procesa dos veces.</li>
+      <li>Si algo falla, la información anterior sigue funcionando.</li>
+      <li>Después de una carga correcta, indicadores y alertas se renuevan automáticamente.</li>
+    </ul>
+    <button class="button primary" type="button" data-open-import>Seleccionar archivo</button>
+  </div>
+  <div class="import-history">
+    <h4>Últimas actualizaciones</h4>
+    {% if recent_imports %}
+    <div class="history-list">
+      {% for job in recent_imports %}
+      <article class="history-item {{ job.status }}">
+        <div><strong>{{ job.file_name }}</strong><span>{{ job.created_at[:16]|replace('T', ' ') }}</span></div>
+        <div class="history-status">
+          {% if job.status == 'completed' %}Actualizada
+          {% elif job.status == 'duplicate' %}Ya existía
+          {% elif job.status == 'processing' %}Procesando
+          {% elif job.status == 'rejected' %}No aceptada
+          {% else %}Sin cambios{% endif %}
+        </div>
+        <p>{{ job.message }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">Todavía no hay cargas realizadas desde el panel.</p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if company.section_enabled('sources') %}
+<section id="fuentes" class="panel">
+  <div class="panel-head">
+    <div><p class="eyebrow">Procedencia</p><h3>Información que recibió Faro</h3></div>
+  </div>
+  <div class="source-grid">
+    {% for item in snapshot.source_summary %}
+    <article class="source-card"><strong>{{ item.source_files }}</strong><span>{{ item.label }}</span></article>
+    {% endfor %}
+  </div>
+  <details class="technical">
+    <summary>Ver conteo interno de registros</summary>
+    <div class="entity-grid">
+      {% for item in snapshot.entity_counts %}
+      <div><span>{{ item.label }}</span><strong>{{ item.record_count }}</strong></div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+{% endif %}
+
+<dialog class="import-dialog" data-import-dialog>
+  <form method="dialog" class="dialog-close-form"><button aria-label="Cerrar">×</button></form>
+  <form action="/data/import" method="post" enctype="multipart/form-data" class="import-form" data-import-form>
+    <div>
+      <p class="eyebrow">Actualización segura</p>
+      <h3>Subir información</h3>
+      <p>Faro hará una copia de seguridad y validará el archivo antes de tocar la base activa.</p>
+    </div>
+    <label>
+      <span>Archivo</span>
+      <input type="file" name="file" required accept=".xlsx,.csv,.tsv,.json,.ndjson,.jsonl,.pdf,.jpg,.jpeg,.png,.tif,.tiff,.webp,.xml" data-import-file />
+      <small>Máximo {{ settings.import_max_file_size_mb if settings is defined else 25 }} MB.</small>
+    </label>
+    <label data-profile-field>
+      <span>¿Qué información contiene?</span>
+      <select name="profile_id" data-profile-select>
+        <option value="">Selecciona una opción</option>
+        <optgroup label="Archivos de filas" data-row-options>
+          <option value="products">Productos</option>
+          <option value="customers">Clientes</option>
+          <option value="suppliers">Proveedores</option>
+          <option value="sales">Ventas</option>
+          <option value="inventory">Inventario</option>
+          <option value="orders">Pedidos</option>
+        </optgroup>
+        <optgroup label="Libros de Excel" data-xlsx-options>
+          <option value="catalogs">Catálogos: productos, clientes y proveedores</option>
+          <option value="sales">Libro de ventas</option>
+          <option value="inventory">Libro de inventario</option>
+          <option value="orders">Libro de pedidos</option>
+        </optgroup>
+      </select>
+      <small data-profile-help>Para documentos PDF, imágenes y XML no necesitas elegir.</small>
+    </label>
+    <fieldset>
+      <legend>Cómo usar la información</legend>
+      <label class="radio-card"><input type="radio" name="mode" value="upsert" checked /><span><strong>Actualizar</strong>Los registros nuevos reemplazan versiones anteriores del mismo dato.</span></label>
+      <label class="radio-card"><input type="radio" name="mode" value="append" /><span><strong>Agregar</strong>Los registros se suman sin dar prioridad a la nueva fuente.</span></label>
+    </fieldset>
+    <div class="dialog-actions">
+      <button class="button ghost" type="button" data-close-import>Cancelar</button>
+      <button class="button primary" type="submit" data-import-submit>Validar y actualizar</button>
+    </div>
+    <div class="processing-message" hidden data-processing-message>
+      <span class="spinner"></span>
+      <strong>Faro está validando y actualizando.</strong>
+      <p>No cierres esta ventana. La base actual sigue protegida durante el proceso.</p>
+    </div>
+  </form>
+</dialog>
+{% endblock %}

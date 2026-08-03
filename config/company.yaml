@@ -1,0 +1,23 @@
+schema_version: "1.1.0"
+status: implemented
+company_id: empresa-prueba
+display_name: Empresa de Prueba
+business_profile: inventory_control
+locale: es-CO
+currency: COP
+timezone: America/Bogota
+indicator_preset: inventory_control
+alert_preset: inventory_control
+dashboard:
+  title: Panel de Empresa de Prueba
+  theme: professional_dark
+  sections:
+    - summary
+    - actions
+    - alerts
+    - indicators
+    - top_products
+    - quality
+    - sources
+    - data_update
+  show_source_evidence: true

@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATH := src
 
-.PHONY: setup lock test lint check run generate-data validate-data ingest-excel ingest-delimited ingest-json ingest-ubl consolidate indicators alerts check-ocr-runtime extract-pdf extract-image demo clean
+.PHONY: setup lock test lint check run dashboard generate-data validate-data ingest-excel ingest-delimited ingest-json ingest-ubl consolidate indicators alerts check-ocr-runtime extract-pdf extract-image demo clean
 
 setup:
 	$(UV) sync --locked
@@ -19,6 +19,9 @@ check: lint test
 
 run:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python -m faro.main
+
+dashboard:
+	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/run_dashboard.py
 
 generate-data:
 	PYTHONPATH=$(PYTHONPATH) $(UV) run python scripts/generate_synthetic_data.py
