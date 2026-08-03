@@ -128,6 +128,15 @@ class SettingsTests(unittest.TestCase):
             settings.consolidation_timestamp, "2026-08-02T12:00:00-05:00"
         )
 
+    def test_loads_indicator_config_path(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {"FARO_INDICATOR_CONFIG_PATH": "config/company-indicators.yaml"},
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(str(settings.indicator_config_path), "config/company-indicators.yaml")
+
     def test_rejects_invalid_consolidation_timestamp(self) -> None:
         with patch.dict(
             "os.environ",

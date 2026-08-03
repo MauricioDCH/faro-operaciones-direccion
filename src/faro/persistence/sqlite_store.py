@@ -490,7 +490,8 @@ def logical_content_hash(connection: sqlite3.Connection) -> str:
         row[0]
         for row in connection.execute(
             """SELECT name FROM sqlite_master
-               WHERE type='table' AND name NOT IN ('metadata', 'sqlite_sequence')
+               WHERE type='table'
+                 AND name NOT IN ('metadata', 'sqlite_sequence', 'indicator_run', 'indicator_result')
                ORDER BY name"""
         )
     ]

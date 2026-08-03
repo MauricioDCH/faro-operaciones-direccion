@@ -291,6 +291,37 @@ CREATE TABLE transformation_event (
     created_at TEXT NOT NULL
 );
 
+
+CREATE TABLE indicator_run (
+    run_id TEXT PRIMARY KEY,
+    preset_id TEXT NOT NULL,
+    preset_label TEXT NOT NULL,
+    config_hash TEXT NOT NULL,
+    database_logical_hash TEXT NOT NULL,
+    as_of_date TEXT NOT NULL,
+    calculated_at TEXT NOT NULL,
+    result_count INTEGER NOT NULL
+);
+
+CREATE TABLE indicator_result (
+    indicator_result_id TEXT PRIMARY KEY,
+    run_id TEXT NOT NULL REFERENCES indicator_run(run_id) ON DELETE CASCADE,
+    preset_id TEXT NOT NULL,
+    indicator_id TEXT NOT NULL,
+    indicator_name TEXT NOT NULL,
+    period_start TEXT,
+    period_end TEXT,
+    dimension TEXT,
+    dimension_value TEXT,
+    numeric_value TEXT,
+    unit TEXT NOT NULL,
+    formula_version TEXT NOT NULL,
+    source_record_ids_json TEXT NOT NULL,
+    source_location_ids_json TEXT NOT NULL,
+    details_json TEXT NOT NULL
+);
+CREATE INDEX idx_indicator_result_run ON indicator_result(run_id, indicator_id);
+
 CREATE VIEW v_entity_counts AS
 SELECT 'product' AS entity_type, COUNT(*) AS record_count FROM product
 UNION ALL SELECT 'customer', COUNT(*) FROM customer

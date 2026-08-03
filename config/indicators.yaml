@@ -1,3 +1,156 @@
-version: 1
-status: planned
-indicators: []
+{
+  "schema_version": "1.0.0",
+  "status": "implemented",
+  "active_preset": "retail_distribution",
+  "calculated_at_source": "database_metadata",
+  "presets": {
+    "retail_distribution": {
+      "label": "Comercializadora o distribuidora",
+      "description": "Vista operativa equilibrada para ventas, inventario, compras y calidad.",
+      "indicators": [
+        {
+          "indicator_id": "sales_total",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month"
+          }
+        },
+        {
+          "indicator_id": "sales_change",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month"
+          }
+        },
+        {
+          "indicator_id": "top_products",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month",
+            "metric": "revenue",
+            "limit": 5
+          }
+        },
+        {
+          "indicator_id": "low_inventory",
+          "enabled": true,
+          "parameters": {
+            "snapshot": "latest",
+            "include_equal": false
+          }
+        },
+        {
+          "indicator_id": "order_invoice_mismatch",
+          "enabled": true,
+          "parameters": {}
+        },
+        {
+          "indicator_id": "data_quality_summary",
+          "enabled": true,
+          "parameters": {
+            "severities": [
+              "error",
+              "warning"
+            ]
+          }
+        },
+        {
+          "indicator_id": "source_coverage",
+          "enabled": true,
+          "parameters": {}
+        },
+        {
+          "indicator_id": "data_freshness",
+          "enabled": true,
+          "parameters": {
+            "entities": [
+              "sales",
+              "inventory",
+              "orders",
+              "invoices"
+            ]
+          }
+        }
+      ]
+    },
+    "sales_monitoring": {
+      "label": "Seguimiento comercial",
+      "description": "Preset reducido para revisar ingresos, variación y productos líderes.",
+      "indicators": [
+        {
+          "indicator_id": "sales_total",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month"
+          }
+        },
+        {
+          "indicator_id": "sales_change",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month"
+          }
+        },
+        {
+          "indicator_id": "top_products",
+          "enabled": true,
+          "parameters": {
+            "period": "latest_available_month",
+            "metric": "quantity",
+            "limit": 10
+          }
+        },
+        {
+          "indicator_id": "data_quality_summary",
+          "enabled": true,
+          "parameters": {
+            "severities": [
+              "error",
+              "warning"
+            ]
+          }
+        }
+      ]
+    },
+    "inventory_control": {
+      "label": "Control de inventario y compras",
+      "description": "Preset para responsables de inventario y abastecimiento.",
+      "indicators": [
+        {
+          "indicator_id": "low_inventory",
+          "enabled": true,
+          "parameters": {
+            "snapshot": "latest",
+            "include_equal": true
+          }
+        },
+        {
+          "indicator_id": "order_invoice_mismatch",
+          "enabled": true,
+          "parameters": {}
+        },
+        {
+          "indicator_id": "data_quality_summary",
+          "enabled": true,
+          "parameters": {
+            "severities": [
+              "error",
+              "warning"
+            ]
+          }
+        },
+        {
+          "indicator_id": "data_freshness",
+          "enabled": true,
+          "parameters": {
+            "entities": [
+              "inventory",
+              "orders",
+              "invoices"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

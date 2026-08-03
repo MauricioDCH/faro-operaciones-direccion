@@ -67,7 +67,7 @@ Los campos con baja confianza, OCR ilegible, clasificación incierta o evidencia
 - `normalization`: correspondencias controladas y formatos estándar.
 - `persistence`: repositorios y límites transaccionales.
 - `provenance`: archivos, páginas, regiones, transformaciones y ejecuciones.
-- `indicators`: cálculos determinísticos.
+- `indicators`: catálogo cerrado, presets configurables y cálculos determinísticos con `Decimal`.
 - `alerts`: condiciones explícitas y severidad.
 - `ai`: interpretación restringida por evidencia.
 - `api` y `ui`: mecanismos de entrega.
@@ -102,6 +102,11 @@ Los valores iniciales están versionados en `.env.example`. `make check-ocr-runt
 La ruta OCR debe fijar dependencia Python, dependencia del sistema, versión del motor, datos de idioma, resolución, preprocesamiento, fixtures y tolerancias.
 
 Las imágenes intermedias son artefactos derivados y no sustituyen al PDF raw.
+
+
+## Configuración de indicadores
+
+La empresa selecciona un preset versionado desde `config/indicators.yaml`. El archivo habilita indicadores y parámetros aprobados, pero no contiene SQL ni fórmulas ejecutables. El motor valida la configuración, calcula sobre SQLite, persiste resultados derivados y conserva evidencia. Un nuevo tipo de indicador requiere implementación, versión de fórmula y pruebas.
 
 ## Seguridad y privacidad
 
