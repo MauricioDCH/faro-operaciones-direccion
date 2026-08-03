@@ -304,3 +304,43 @@ Los criterios técnicos detallados permanecen en `docs/product/requirements.md`.
 **Resultado:** la empresa obtiene alertas reproducibles y adaptadas a su operación.
 
 **Requisitos:** FR-006, FR-007, FR-009, QR-007.
+
+---
+
+## UC-014 — Actualizar información desde el dashboard
+
+**Actor:** propietario, administrador o auxiliar autorizado.
+**Objetivo:** agregar o reemplazar información sin ejecutar comandos ni reprocesar todas las fuentes históricas.
+
+**Precondiciones:**
+
+- existe una base operacional válida;
+- el dashboard se ejecuta localmente;
+- el archivo utiliza un formato implementado;
+- para archivos tabulares se conoce el tipo de contenido.
+
+**Flujo:**
+
+1. El usuario selecciona **Actualizar información**.
+2. Elige un archivo y, cuando aplica, indica si contiene productos, clientes, proveedores, ventas, inventario o pedidos.
+3. Selecciona **Actualizar** o **Agregar**.
+4. Faro guarda temporalmente el archivo fuera de la base activa.
+5. Faro valida tamaño, nombre, extensión, formato real y duplicidad por hash.
+6. Faro ingiere únicamente la nueva fuente.
+7. Faro combina las nuevas observaciones con las ya almacenadas.
+8. Faro construye una base candidata y recalcula indicadores y alertas.
+9. Faro verifica integridad, crea una copia de seguridad y reemplaza la base activa de forma atómica.
+10. El dashboard muestra el resultado de la carga y los datos renovados.
+
+**Flujos alternativos:**
+
+- un archivo repetido se marca como ya procesado y no genera cambios;
+- un archivo inválido se rechaza con un mensaje sencillo;
+- una referencia inexistente impide activar la candidata;
+- un error durante cálculo o persistencia elimina la candidata;
+- una configuración empresarial inválida usa un perfil seguro integrado;
+- en todos los fallos, la última base válida sigue disponible.
+
+**Resultado:** la información se actualiza desde la interfaz o el usuario recibe una explicación sin pérdida de servicio ni corrupción de la base activa.
+
+**Requisitos:** FR-031, FR-032, FR-033, FR-034, QR-025, QR-026, QR-027.

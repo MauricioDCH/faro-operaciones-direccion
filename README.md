@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** formatos de fase 1, consolidación SQLite, indicadores y alertas configurables implementados; dashboard en desarrollo
+> **Estado:** formatos de fase 1, consolidación SQLite, indicadores, alertas, dashboard gerencial y actualización incremental implementados
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -758,3 +758,64 @@ Una funcionalidad se considerará terminada únicamente cuando cumpla sus criter
 ## Licencia y uso
 
 Este repositorio se originó durante la Maratón de IA de Ruta N y continúa como un producto independiente de aprendizaje y posible aplicación empresarial. Las cifras externas pertenecen a sus respectivas fuentes. La matriz de decisión, las hipótesis, la arquitectura y el alcance representan decisiones del proyecto y deberán validarse durante el desarrollo.
+
+## Dashboard operativo local
+
+Faro incluye un dashboard gerencial en español que prioriza decisiones, no términos técnicos.
+
+### Ejecutar
+
+```bash
+uv sync --locked
+make dashboard
+```
+
+Abre:
+
+```text
+http://127.0.0.1:8080/dashboard
+```
+
+### Qué muestra
+
+- estado general del negocio;
+- situaciones ordenadas por urgencia;
+- explicación sencilla de cada alerta;
+- acción recomendada;
+- indicadores con interpretación;
+- productos con mayor venta;
+- calidad y procedencia de la información;
+- evidencia técnica bajo demanda.
+
+### Actualizar información desde el navegador
+
+El botón **Actualizar información** admite XLSX, CSV, TSV, JSON, NDJSON, PDF, imágenes y XML UBL.
+
+Faro:
+
+1. valida la nueva fuente en una zona temporal;
+2. detecta duplicados mediante SHA-256;
+3. ingiere únicamente el archivo nuevo;
+4. crea una base candidata con las observaciones ya almacenadas;
+5. recalcula indicadores y alertas;
+6. verifica integridad;
+7. crea `faro.db.bak` y activa la candidata de forma atómica.
+
+Una carga fallida no reemplaza la base activa. El usuario no necesita ejecutar de nuevo `make consolidate`, `make indicators` ni `make alerts`.
+
+### Configuración por empresa
+
+`config/company.yaml` es YAML seguro y controla:
+
+- nombre y perfil de la empresa;
+- moneda, idioma y zona horaria;
+- preset de indicadores;
+- preset de alertas;
+- secciones visibles;
+- título y visibilidad de evidencia.
+
+La configuración se vuelve a leer en cada solicitud. Un archivo inválido activa un perfil seguro integrado en lugar de impedir que el dashboard abra.
+
+La configuración no acepta SQL, código, fórmulas arbitrarias ni credenciales.
+
+Consulta `docs/setup/dashboard.md` y `docs/decisions/0008-safe-incremental-dashboard-updates.md`.

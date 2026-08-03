@@ -96,6 +96,52 @@ class SettingsTests(unittest.TestCase):
                 Settings.from_environment()
 
 
+    def test_loads_company_config_path(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {"FARO_COMPANY_CONFIG_PATH": "config/acme-company.yaml"},
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(str(settings.company_config_path), "config/acme-company.yaml")
+
+    def test_loads_dashboard_environment(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "FARO_DASHBOARD_HOST": "0.0.0.0",
+                "FARO_DASHBOARD_PORT": "9090",
+                "FARO_DASHBOARD_TITLE": "Faro Pro",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual("0.0.0.0", settings.dashboard_host)
+        self.assertEqual(9090, settings.dashboard_port)
+        self.assertEqual("Faro Pro", settings.dashboard_title)
+
+    def test_rejects_invalid_dashboard_port(self) -> None:
+        with patch.dict("os.environ", {"FARO_DASHBOARD_PORT": "70000"}, clear=True):
+            with self.assertRaisesRegex(ValueError, "FARO_DASHBOARD_PORT"):
+                Settings.from_environment()
+
+    def test_loads_safe_import_environment(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "FARO_IMPORT_DATABASE_PATH": "custom/imports.db",
+                "FARO_IMPORT_STAGING_DIR": "custom/inbox",
+                "FARO_IMPORT_ARCHIVE_DIR": "custom/uploads",
+                "FARO_IMPORT_MAX_FILE_SIZE_MB": "40",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual("custom/imports.db", str(settings.import_database_path))
+        self.assertEqual("custom/inbox", str(settings.import_staging_dir))
+        self.assertEqual("custom/uploads", str(settings.import_archive_dir))
+        self.assertEqual(40, settings.import_max_file_size_mb)
+
     def test_loads_ubl_limits(self) -> None:
         with patch.dict(
             "os.environ",

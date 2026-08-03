@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Faro: decisiones operativas claras y trazables." />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/app.css') }}" />
+    <script defer src="{{ url_for('static', path='js/app.js') }}"></script>
+  </head>
+  <body>
+    <div class="layout-shell">
+      <aside class="sidebar" aria-label="Navegación principal">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">F</div>
+          <div>
+            <p class="eyebrow">Faro</p>
+            <h1>{{ company.display_name }}</h1>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="#inicio">Inicio</a>
+          <a href="#que-revisar">Qué revisar hoy</a>
+          <a href="#indicadores">Cómo va el negocio</a>
+          <a href="#actualizar-datos">Actualizar datos</a>
+          <a href="#fuentes">Información recibida</a>
+        </nav>
+        <div class="sidebar-note">
+          <p class="note-title">Protección activa</p>
+          <p>Una carga fallida nunca reemplaza la información que ya funciona.</p>
+        </div>
+      </aside>
+      <main class="main-content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </body>
+</html>
