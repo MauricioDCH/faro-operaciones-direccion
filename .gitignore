@@ -42,4 +42,4 @@ data/expected/dataset_manifest.json
 *.log
 
 # Synthetic data
-faro_synthetic_baseline_patch.zip
+faro_synthetic_baseline_patch.zipfaro-*-inputs.tar.gz
