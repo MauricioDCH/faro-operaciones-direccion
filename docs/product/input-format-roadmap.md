@@ -15,7 +15,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 | PDF | `.pdf` | actual | `implemented` | `pdf` |
 | Delimitados | `.csv`, `.tsv` | fase 1 | `implemented` | `delimited` |
 | XML UBL | `.xml` | fase 1 | `planned` | `ubl_xml` |
-| Imágenes | `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.webp` | fase 1 | `planned` | `image_document` |
+| Imágenes | `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.webp` | fase 1 | `implemented` | `image_document` |
 | JSON | `.json`, `.ndjson`, `.jsonl` | fase 1 | `implemented` | `json_records` |
 | Correo exportado | `.eml`, `.mbox` | fase 2 | `planned` | `email_archive` |
 | Lotes comprimidos | `.zip` | fase 2 | `planned` | `archive` |
@@ -27,7 +27,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 
 1. CSV y TSV — implementado.
 2. JSON y NDJSON — implementado.
-3. Imágenes documentales reutilizando OCR.
+3. Imágenes documentales reutilizando OCR — implementado.
 4. XML UBL.
 5. EML y MBOX.
 6. ZIP con manifiesto.
@@ -45,3 +45,8 @@ El adaptador exige un perfil explícito de entidad y registra la configuración 
 ## JSON y NDJSON implementados
 
 El adaptador `json_records` exige un perfil de entidad y una versión compatible. JSON admite objeto único, arreglo y lote versionado. NDJSON procesa un objeto por línea, conserva el número de línea y permite aislar registros inválidos. Se rechazan claves duplicadas, números no finitos, estructuras profundas, campos inesperados y límites excedidos. La procedencia usa JSON Pointer, número de registro, línea cuando corresponde, valor raw, hash y metadatos del perfil.
+
+
+## Imágenes documentales implementadas
+
+El adaptador `image_document` valida la firma real frente a la extensión, tamaño, dimensiones, píxeles, cantidad de frames y orientación. Acepta una sola imagen por archivo en JPG/JPEG, PNG, TIFF o WebP. Reutiliza Tesseract, clasificación documental, extracción estructurada, reglas de totales y procedencia por región. Las imágenes con orientación distinta de 1, múltiples frames o límites excedidos se rechazan de forma explícita en lugar de transformarse silenciosamente.

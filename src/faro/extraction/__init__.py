@@ -1,6 +1,13 @@
 """PDF text recovery, OCR fallback, and document classification."""
 
 from faro.extraction.classifier import ClassificationResult, DocumentClassifier
+from faro.extraction.image import (
+    ImageFormatMismatchError,
+    ImageInspectionError,
+    ImageInspector,
+    ImageLimitError,
+    ImageMetadata,
+)
 from faro.extraction.errors import (
     InvalidPdfError,
     OcrRuntimeError,
@@ -28,6 +35,11 @@ from faro.extraction.structured import StructuredDocumentExtractor, StructuredEx
 __all__ = [
     "ClassificationResult",
     "DocumentClassifier",
+    "ImageFormatMismatchError",
+    "ImageInspectionError",
+    "ImageInspector",
+    "ImageLimitError",
+    "ImageMetadata",
     "InvalidPdfError",
     "NativeTextPolicy",
     "OcrEngine",

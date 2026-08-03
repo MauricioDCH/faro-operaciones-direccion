@@ -15,6 +15,12 @@ class SettingsTests(unittest.TestCase):
                 "OCR_LANGUAGE": "spa",
                 "OCR_RENDER_DPI": "250",
                 "OCR_MIN_CONFIDENCE": "0.80",
+                "IMAGE_MAX_FILE_SIZE_MB": "12",
+                "IMAGE_MAX_WIDTH": "8000",
+                "IMAGE_MAX_HEIGHT": "9000",
+                "IMAGE_MAX_PIXELS": "25000000",
+                "IMAGE_MIN_WIDTH": "80",
+                "IMAGE_MIN_HEIGHT": "90",
             },
             clear=True,
         ):
@@ -22,6 +28,12 @@ class SettingsTests(unittest.TestCase):
         self.assertFalse(settings.ocr_enabled)
         self.assertEqual(settings.ocr_render_dpi, 250)
         self.assertEqual(settings.ocr_min_confidence, 0.80)
+        self.assertEqual(settings.image_max_file_size_mb, 12)
+        self.assertEqual(settings.image_max_width, 8000)
+        self.assertEqual(settings.image_max_height, 9000)
+        self.assertEqual(settings.image_max_pixels, 25000000)
+        self.assertEqual(settings.image_min_width, 80)
+        self.assertEqual(settings.image_min_height, 90)
 
     def test_rejects_invalid_confidence(self) -> None:
         with patch.dict("os.environ", {"OCR_MIN_CONFIDENCE": "1.5"}, clear=True):
@@ -70,6 +82,13 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(15, settings.json_max_depth)
         self.assertEqual(80, settings.json_max_fields)
         self.assertEqual(5000, settings.json_max_field_characters)
+
+    def test_rejects_invalid_image_limit(self) -> None:
+        with patch.dict(
+            "os.environ", {"IMAGE_MIN_WIDTH": "100", "IMAGE_MAX_WIDTH": "50"}, clear=True
+        ):
+            with self.assertRaisesRegex(ValueError, "IMAGE_MIN_WIDTH"):
+                Settings.from_environment()
 
     def test_rejects_invalid_json_limit(self) -> None:
         with patch.dict("os.environ", {"JSON_MAX_DEPTH": "0"}, clear=True):

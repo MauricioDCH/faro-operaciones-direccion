@@ -51,17 +51,26 @@ class FormatRegistryTests(unittest.TestCase):
                 self.assertEqual(expected, capability.format_id)
                 self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
 
-    def test_remaining_phase_one_formats_are_planned(self) -> None:
+    def test_image_formats_are_implemented(self) -> None:
         for path, expected in (
-            ("factura.xml", InputFormat.UBL_XML),
             ("factura.JPG", InputFormat.JPEG),
+            ("factura.png", InputFormat.PNG),
+            ("factura.tiff", InputFormat.TIFF),
+            ("factura.webp", InputFormat.WEBP),
         ):
             with self.subTest(path=path):
                 capability = detect_input_format(path)
                 self.assertIsNotNone(capability)
                 assert capability is not None
                 self.assertEqual(expected, capability.format_id)
-                self.assertEqual(CapabilityStatus.PLANNED, capability.status)
+                self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
+
+    def test_remaining_phase_one_xml_is_planned(self) -> None:
+        capability = detect_input_format("factura.xml")
+        self.assertIsNotNone(capability)
+        assert capability is not None
+        self.assertEqual(InputFormat.UBL_XML, capability.format_id)
+        self.assertEqual(CapabilityStatus.PLANNED, capability.status)
 
     def test_windows_paths_are_detected_without_running_on_windows(self) -> None:
         capability = detect_input_format(
@@ -80,7 +89,7 @@ class FormatRegistryTests(unittest.TestCase):
     def test_unknown_extension_returns_none(self) -> None:
         self.assertIsNone(detect_input_format("source.exe"))
 
-    def test_require_implemented_format_accepts_csv_and_json(self) -> None:
+    def test_require_implemented_format_accepts_csv_json_and_images(self) -> None:
         self.assertEqual(
             InputFormat.CSV,
             require_implemented_format("ventas.csv").format_id,
@@ -88,6 +97,10 @@ class FormatRegistryTests(unittest.TestCase):
         self.assertEqual(
             InputFormat.JSON,
             require_implemented_format("productos.json").format_id,
+        )
+        self.assertEqual(
+            InputFormat.PNG,
+            require_implemented_format("factura.png").format_id,
         )
 
     def test_require_implemented_format_rejects_planned_format(self) -> None:

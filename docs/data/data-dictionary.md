@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.7.0
+**Versión:** 1.8.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -166,7 +166,7 @@ Representa un archivo o artefacto de entrada registrado por Faro.
 | Campo | Tipo | Nulo | Definición y reglas | Clasificación | Ejemplo |
 |---|---|---:|---|---|---|
 | `source_file_id` | `string` | No | Identificador interno único | `technical_metadata` | `SRC-000001` |
-| `file_path` | `string` | No | Ruta relativa del libro, PDF, artefacto de plugin o JSON | `technical_metadata` | `data/raw/sales.xlsx` |
+| `file_path` | `string` | No | Ruta relativa del libro, PDF, imagen, artefacto de plugin o JSON | `technical_metadata` | `data/raw/sales.xlsx` |
 | `file_name` | `string` | No | Nombre base del archivo | `technical_metadata` | `sales.xlsx` |
 | `media_type_declared` | `string` | Sí | Tipo MIME informado por la fuente | `technical_metadata` | `text/csv` |
 | `media_type_detected` | `string` | Sí | Tipo MIME detectado o validado | `technical_metadata` | `text/csv` |
@@ -174,7 +174,7 @@ Representa un archivo o artefacto de entrada registrado por Faro.
 | `format_version` | `string` | Sí | Versión del estándar o perfil | `technical_metadata` | `UBL-2.1` |
 | `ingestion_adapter` | `string` | Sí | Adaptador responsable | `technical_metadata` | `delimited` |
 | `file_size_bytes` | `integer` | Sí | Tamaño raw para límites y auditoría | `technical_metadata` | `18420` |
-| `format_metadata` | `json` | Sí | Metadatos específicos del formato | `technical_metadata` | `{"encoding":"utf-8"}` |
+| `format_metadata` | `json` | Sí | Metadatos específicos: codificación o dimensiones, píxeles, frames y orientación | `technical_metadata` | `{"width":2480,"height":3508,"orientation":1}` |
 | `source_type` | `enum` | No | Tipo de fuente aprobado | `technical_metadata` | `xlsx` |
 | `contract_id` | `string` | No | Contrato aplicado | `technical_metadata` | `DC-004` |
 | `contract_version` | `string` | No | Versión semántica del contrato | `technical_metadata` | `1.0.0` |
@@ -246,6 +246,15 @@ Estas estructuras son salidas técnicas de la ingesta y no reemplazan las entida
 ### 5.2 Resultado técnico de ingesta CSV/TSV
 
 `DelimitedIngestionBatch` reutiliza `TabularRecord` e `IngestionFinding` y agrega los perfiles efectivos por fuente. En ubicaciones delimitadas, `record_number` identifica el registro lógico, `row` la fila física observada, `column` el encabezado canónico y `raw_value` el texto previo a conversión. `source_file.format_metadata` conserva perfil, codificación, BOM, delimitador, separadores numéricos y formato de fecha.
+
+
+### 5.3 Resultado técnico de ingesta JSON/NDJSON
+
+`JsonIngestionBatch` reutiliza los registros canónicos y conserva perfil, versión, número de registro, línea para NDJSON, JSON Pointer, valor raw y valor tipado. Los identificadores de ubicación derivan del hash, registro, línea y pointer.
+
+### 5.4 Resultado técnico de imágenes documentales
+
+`ImageDocumentIngestionService` produce `DocumentExtraction` y una página virtual. `source_file.format_metadata` conserva `width`, `height`, `pixel_count`, `frame_count`, `orientation` y `file_size_bytes`. La evidencia OCR usa `BoundingBox` en coordenadas del archivo original. `document_page_id`, `source_location_id` y `document_id` se derivan del hash y no dependen del sistema operativo.
 
 ---
 
@@ -388,12 +397,12 @@ Representa una línea de pedido a proveedor.
 
 ## 12. Entidad `document`
 
-Representa un PDF de proveedor antes de materializarlo como factura o cotización.
+Representa un PDF o imagen de proveedor antes de materializarlo como factura o cotización.
 
 | Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
 |---|---|---:|---|---|
 | `document_id` | `string` | No | Identificador interno único | `DOC-000001` |
-| `source_file_id` | `string` | No | FK al PDF original | `SRC-000400` |
+| `source_file_id` | `string` | No | FK al PDF o imagen original | `SRC-000400` |
 | `document_type` | `enum` | No | `invoice`, `quotation` o `unsupported` | `invoice` |
 | `page_count` | `integer` | No | Número de páginas, entre 1 y 3 para el MVP | `2` |
 | `classification_method` | `string` | No | Regla, heurística o IA | `llm_classification` |
@@ -407,7 +416,7 @@ Representa un PDF de proveedor antes de materializarlo como factura o cotizació
 
 ## 13. Entidad `document_page`
 
-Representa el resultado de inspección y recuperación de texto de una página.
+Representa el resultado de inspección y recuperación de texto de una página PDF o página virtual de imagen.
 
 | Campo | Tipo | Nulo | Definición y reglas | Ejemplo |
 |---|---|---:|---|---|
@@ -835,7 +844,7 @@ El diccionario se considera listo para implementación cuando:
 8. los cambios posteriores siguen el control de versiones;
 9. `plugin_run`, `email_message` y `extraction_result` permiten reconstruir la ejecución;
 10. el fixture y una ejecución real comparten el mismo modelo;
-11. `document` y `document_page` representan PDF nativos, escaneados y mixtos;
+11. `document` y `document_page` representan PDF nativos, escaneados, mixtos e imágenes documentales;
 12. facturas y cotizaciones tienen entidades separadas;
 13. los campos OCR conservan motor, versión, confianza y procedencia;
 14. JSON y NDJSON conservan perfil, versión, registro y JSON Pointer;

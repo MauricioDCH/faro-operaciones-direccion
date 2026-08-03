@@ -1,7 +1,7 @@
 # Contratos de datos
 
 **Estado:** línea base aprobada para implementación
-**Versión:** 1.7.0
+**Versión:** 1.8.0
 **Producto:** Faro
 **Alcance:** datos sintéticos para desarrollo; fuentes reales solo después de controles de seguridad y privacidad
 
@@ -11,7 +11,7 @@
 
 Este documento define los contratos de entrada y las garantías mínimas de salida de Faro.
 
-La versión actual implementa Excel, PDF, CSV/TSV y JSON/NDJSON. La expansión aprobada conserva como planificados XML UBL, imágenes, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
+La versión actual implementa Excel, PDF, CSV/TSV, JSON/NDJSON e imágenes documentales. La expansión aprobada conserva como planificados XML UBL, correo exportado, archivos comprimidos y documentos ofimáticos controlados.
 
 ---
 
@@ -714,11 +714,48 @@ Un error de fuente produce un hallazgo estructurado y no altera el archivo raw. 
 
 El adaptador valida XML de manera segura, identifica versión y tipo documental, y conserva XPath para cada campo. No ejecuta DTD externas ni entidades externas. La validación de totales y relaciones permanece determinística.
 
+
 ## 21. DC-012 — Imágenes documentales
 
-**Estado:** `planned`
+**Estado:** `implemented`
+**Ruta canónica:** `data/raw/document_images/*.{jpg,jpeg,png,tif,tiff,webp}`
 
-Las imágenes reutilizan inspección, OCR, clasificación y extracción documental. Deben registrar dimensiones, tipo MIME, orientación aplicada, motor OCR, confianza y región de evidencia. No sustituyen el archivo original.
+### Formatos y límites
+
+- JPG/JPEG, PNG, TIFF y WebP;
+- una imagen o frame por archivo;
+- firma binaria coherente con la extensión;
+- orientación estándar `1`;
+- tamaño, ancho, alto y cantidad de píxeles configurables;
+- archivo raw inmutable y hash SHA-256 antes y después.
+
+### Metadatos obligatorios
+
+- `source_type=image`;
+- `detected_format`;
+- `media_type_detected`;
+- ancho, alto, píxeles, frames y orientación;
+- adaptador `image_document`;
+- motor, versión, idioma y confianza OCR;
+- región de evidencia en coordenadas de imagen.
+
+### Procesamiento
+
+Cada archivo produce una página virtual `document_page` con `page_number=1` y `extraction_method=ocr`. Después del OCR se reutilizan clasificación, extracción de factura/cotización, validación de líneas y totales, y revisión humana por baja confianza.
+
+### Rechazos controlados
+
+- firma y extensión inconsistentes;
+- formato desconocido;
+- archivo vacío;
+- dimensiones o píxeles fuera de límites;
+- TIFF con múltiples frames;
+- orientación distinta de `1`;
+- OCR deshabilitado o no disponible;
+- texto vacío o confianza insuficiente.
+
+Ningún rechazo modifica el archivo original ni inventa campos.
+
 
 ## 22. DC-013 — JSON y NDJSON
 

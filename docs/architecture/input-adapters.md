@@ -72,3 +72,12 @@ La detección automática solo se permite cuando el encabezado produce un único
 El adaptador rechaza claves duplicadas, números no finitos, estructuras demasiado profundas, campos inesperados, valores anidados en campos operativos, versiones incompatibles y límites excedidos. Cada campo conserva archivo, número de registro, línea cuando aplica, JSON Pointer, valor original y valor tipado. Los archivos raw se verifican mediante SHA-256 antes y después de la ingesta.
 
 La implementación utiliza únicamente `json`, `pathlib` y otras APIs estándar de Python, por lo que no contiene rutas específicas de Linux o Windows. La compatibilidad oficial de Windows permanece pendiente de la matriz de CI.
+
+
+## Adaptador `image_document` implementado
+
+`src/faro/ingestion/image_document.py` procesa JPG/JPEG, PNG, TIFF y WebP mediante una página virtual. `src/faro/extraction/image.py` inspecciona firmas y cabeceras sin decodificar ni modificar la fuente. La inspección registra formato, tipo MIME, ancho, alto, píxeles, frames, orientación y tamaño.
+
+El adaptador aplica límites antes del OCR, verifica SHA-256 antes y después y reutiliza `TesseractOcrEngine`, `DocumentClassifier` y `StructuredDocumentExtractor`. La salida usa `DocumentExtraction`, `DocumentPage`, `SourceFile`, `SourceLocation`, `ExtractionResult` y `QualityFinding`.
+
+El MVP acepta solo imágenes de un frame y orientación estándar. Esta restricción evita rotaciones o selección de páginas implícitas que puedan alterar evidencia. La ejecución usa rutas `pathlib` y comandos Python equivalentes en Linux y Windows.

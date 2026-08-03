@@ -6,6 +6,10 @@ from importlib import import_module
 from typing import Any
 
 _EXPORTS = {
+    "ImageDocumentIngestionService": (
+        "faro.ingestion.image_document",
+        "ImageDocumentIngestionService",
+    ),
     "CapabilityStatus": (
         "faro.ingestion.formats",
         "CapabilityStatus",
