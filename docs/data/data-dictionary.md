@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.8.0
+**Versión:** 1.9.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -219,6 +219,16 @@ Describe la ubicación exacta de un dato dentro de una fuente.
 | `paragraph` | `integer` | Sí | Párrafo en documento ofimático | `technical_metadata` | `7` |
 
 **Regla:** debe informarse únicamente la ubicación que la fuente permita determinar.
+
+### Ubicación XML UBL
+
+Para `DC-011`, `xml_xpath` es obligatorio en cada campo extraído. `field` contiene el nombre canónico y `raw_value` conserva el texto original. Una factura embebida utiliza una ruta lógica como:
+
+```text
+/AttachedDocument/Attachment/ExternalReference/Description/embedded-document/Invoice/LegalMonetaryTotal/PayableAmount
+```
+
+La ausencia de número de línea físico no se sustituye con un valor inventado.
 
 **Consumidores:** validación, extracción, alertas, respuestas y auditoría.
 

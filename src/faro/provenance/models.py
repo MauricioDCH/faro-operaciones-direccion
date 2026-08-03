@@ -72,6 +72,18 @@ def stable_json_location_id(
     digest = sha256(material.encode("utf-8")).hexdigest()
     return f"LOC-{digest[:16].upper()}"
 
+
+def stable_xml_location_id(
+    file_hash: str,
+    xml_xpath: str,
+    field: str | None,
+) -> str:
+    """Build a deterministic XML field-location identifier."""
+
+    material = "|".join((file_hash, xml_xpath, field or ""))
+    digest = sha256(material.encode("utf-8")).hexdigest()
+    return f"LOC-{digest[:16].upper()}"
+
 def stable_spreadsheet_location_id(
     file_hash: str,
     sheet: str,
@@ -263,6 +275,20 @@ class JsonSourceLocation:
         """Expose the canonical field name used by tabular validators."""
 
         return self.field
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True, slots=True)
+class XmlSourceLocation:
+    """Logical XPath provenance for one XML value."""
+
+    source_location_id: str
+    source_file_id: str
+    xml_xpath: str
+    field: str | None
+    raw_value: str | None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

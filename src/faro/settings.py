@@ -46,6 +46,10 @@ class Settings:
     image_max_pixels: int = 40_000_000
     image_min_width: int = 64
     image_min_height: int = 64
+    ubl_max_file_size_mb: int = 25
+    ubl_max_elements: int = 50_000
+    ubl_max_depth: int = 50
+    ubl_max_text_characters: int = 5_000_000
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -98,6 +102,10 @@ class Settings:
             image_max_pixels=int(os.getenv("IMAGE_MAX_PIXELS", "40000000")),
             image_min_width=int(os.getenv("IMAGE_MIN_WIDTH", "64")),
             image_min_height=int(os.getenv("IMAGE_MIN_HEIGHT", "64")),
+            ubl_max_file_size_mb=int(os.getenv("UBL_MAX_FILE_SIZE_MB", "25")),
+            ubl_max_elements=int(os.getenv("UBL_MAX_ELEMENTS", "50000")),
+            ubl_max_depth=int(os.getenv("UBL_MAX_DEPTH", "50")),
+            ubl_max_text_characters=int(os.getenv("UBL_MAX_TEXT_CHARACTERS", "5000000")),
         )
         settings.validate()
         return settings
@@ -151,3 +159,11 @@ class Settings:
             raise ValueError("IMAGE_MIN_WIDTH cannot exceed IMAGE_MAX_WIDTH.")
         if self.image_min_height > self.image_max_height:
             raise ValueError("IMAGE_MIN_HEIGHT cannot exceed IMAGE_MAX_HEIGHT.")
+        if not 1 <= self.ubl_max_file_size_mb <= 1024:
+            raise ValueError("UBL_MAX_FILE_SIZE_MB must be between 1 and 1024.")
+        if self.ubl_max_elements < 1:
+            raise ValueError("UBL_MAX_ELEMENTS must be positive.")
+        if not 1 <= self.ubl_max_depth <= 100:
+            raise ValueError("UBL_MAX_DEPTH must be between 1 and 100.")
+        if self.ubl_max_text_characters < 1:
+            raise ValueError("UBL_MAX_TEXT_CHARACTERS must be positive.")

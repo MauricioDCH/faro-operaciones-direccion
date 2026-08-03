@@ -42,3 +42,13 @@ No es necesario instalar `make`. Usa directamente los comandos `uv run python ..
 - `OCR language is not installed: spa`: instala los datos de idioma español.
 - `image_format_mismatch`: la extensión no coincide con la firma real.
 - `image_limit_exceeded`: revisa dimensiones, cantidad de píxeles o tamaño.
+
+## XML UBL
+
+El adaptador UBL no necesita paquetes del sistema adicionales. Ejecución portable:
+
+```text
+PYTHONPATH=src uv run python scripts/ingest_ubl_xml.py data/samples/ubl-invoice.example.xml
+```
+
+En PowerShell establezca `$env:PYTHONPATH = "src"` y utilice separadores de ruta de Windows. Los límites se configuran con `UBL_MAX_FILE_SIZE_MB`, `UBL_MAX_ELEMENTS`, `UBL_MAX_DEPTH` y `UBL_MAX_TEXT_CHARACTERS`.

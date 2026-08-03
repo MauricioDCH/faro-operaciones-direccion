@@ -14,7 +14,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 | Excel | `.xlsx` | actual | `implemented` | `excel` |
 | PDF | `.pdf` | actual | `implemented` | `pdf` |
 | Delimitados | `.csv`, `.tsv` | fase 1 | `implemented` | `delimited` |
-| XML UBL | `.xml` | fase 1 | `planned` | `ubl_xml` |
+| XML UBL | `.xml` | fase 1 | `implemented` | `ubl_xml` |
 | Imágenes | `.jpg`, `.jpeg`, `.png`, `.tif`, `.tiff`, `.webp` | fase 1 | `implemented` | `image_document` |
 | JSON | `.json`, `.ndjson`, `.jsonl` | fase 1 | `implemented` | `json_records` |
 | Correo exportado | `.eml`, `.mbox` | fase 2 | `planned` | `email_archive` |
@@ -28,7 +28,7 @@ Ampliar las fuentes aceptadas por Faro sin comprometer exactitud, seguridad, tra
 1. CSV y TSV — implementado.
 2. JSON y NDJSON — implementado.
 3. Imágenes documentales reutilizando OCR — implementado.
-4. XML UBL.
+4. XML UBL — implementado.
 5. EML y MBOX.
 6. ZIP con manifiesto.
 7. DOCX y ODT.
@@ -50,3 +50,7 @@ El adaptador `json_records` exige un perfil de entidad y una versión compatible
 ## Imágenes documentales implementadas
 
 El adaptador `image_document` valida la firma real frente a la extensión, tamaño, dimensiones, píxeles, cantidad de frames y orientación. Acepta una sola imagen por archivo en JPG/JPEG, PNG, TIFF o WebP. Reutiliza Tesseract, clasificación documental, extracción estructurada, reglas de totales y procedencia por región. Las imágenes con orientación distinta de 1, múltiples frames o límites excedidos se rechazan de forma explícita en lugar de transformarse silenciosamente.
+
+## XML UBL implementado
+
+El adaptador `ubl_xml` acepta `Invoice` y `AttachedDocument` UBL 2.1 con una factura embebida. Rechaza DTD, entidades, raíces y versiones no soportadas; aplica límites de tamaño, elementos, profundidad y texto; conserva XPath por campo; valida líneas, impuestos y totales; y comprueba el hash raw antes y después. No sustituye validación tributaria ante la DIAN ni verificación criptográfica.

@@ -65,12 +65,12 @@ class FormatRegistryTests(unittest.TestCase):
                 self.assertEqual(expected, capability.format_id)
                 self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
 
-    def test_remaining_phase_one_xml_is_planned(self) -> None:
+    def test_phase_one_xml_is_implemented(self) -> None:
         capability = detect_input_format("factura.xml")
         self.assertIsNotNone(capability)
         assert capability is not None
         self.assertEqual(InputFormat.UBL_XML, capability.format_id)
-        self.assertEqual(CapabilityStatus.PLANNED, capability.status)
+        self.assertEqual(CapabilityStatus.IMPLEMENTED, capability.status)
 
     def test_windows_paths_are_detected_without_running_on_windows(self) -> None:
         capability = detect_input_format(
@@ -103,9 +103,11 @@ class FormatRegistryTests(unittest.TestCase):
             require_implemented_format("factura.png").format_id,
         )
 
-    def test_require_implemented_format_rejects_planned_format(self) -> None:
-        with self.assertRaisesRegex(NotImplementedError, "ubl_xml is planned"):
-            require_implemented_format("factura.xml")
+    def test_require_implemented_format_accepts_ubl_xml(self) -> None:
+        self.assertEqual(
+            InputFormat.UBL_XML,
+            require_implemented_format("factura.xml").format_id,
+        )
 
     def test_registry_has_unique_identifiers_and_extensions(self) -> None:
         capabilities = all_capabilities()

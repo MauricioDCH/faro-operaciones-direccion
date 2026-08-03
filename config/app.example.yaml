@@ -35,8 +35,8 @@ ingestion:
     - .tif
     - .tiff
     - .webp
-  phase_1_extensions:
     - .xml
+  phase_1_extensions: []
   limits:
     max_file_size_mb: 25
     max_archive_members: 100
@@ -86,3 +86,17 @@ ingestion:
       - png
       - tiff
       - webp
+
+
+  ubl_xml:
+    supported_versions:
+      - "2.1"
+    supported_roots:
+      - Invoice
+      - AttachedDocument
+    max_file_size_mb: 25
+    max_elements: 50000
+    max_depth: 50
+    max_text_characters: 5000000
+    allow_dtd: false
+    allow_external_entities: false

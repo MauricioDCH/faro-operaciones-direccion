@@ -30,3 +30,13 @@ PYTHONPATH=src uv run python scripts/extract_image.py       data/raw/document_im
 ```
 
 El archivo original no se modifica. Faro registra hash, formato detectado, dimensiones, confianza OCR y regiones de evidencia.
+
+## XML UBL
+
+El adaptador UBL no necesita paquetes del sistema adicionales. Ejecución portable:
+
+```text
+PYTHONPATH=src uv run python scripts/ingest_ubl_xml.py data/samples/ubl-invoice.example.xml
+```
+
+En PowerShell establezca `$env:PYTHONPATH = "src"` y utilice separadores de ruta de Windows. Los límites se configuran con `UBL_MAX_FILE_SIZE_MB`, `UBL_MAX_ELEMENTS`, `UBL_MAX_DEPTH` y `UBL_MAX_TEXT_CHARACTERS`.

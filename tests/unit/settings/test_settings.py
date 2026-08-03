@@ -96,5 +96,22 @@ class SettingsTests(unittest.TestCase):
                 Settings.from_environment()
 
 
+    def test_loads_ubl_limits(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "UBL_MAX_FILE_SIZE_MB": "30",
+                "UBL_MAX_ELEMENTS": "60000",
+                "UBL_MAX_DEPTH": "40",
+                "UBL_MAX_TEXT_CHARACTERS": "7000000",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(30, settings.ubl_max_file_size_mb)
+        self.assertEqual(60000, settings.ubl_max_elements)
+        self.assertEqual(40, settings.ubl_max_depth)
+        self.assertEqual(7000000, settings.ubl_max_text_characters)
+
 if __name__ == "__main__":
     unittest.main()
