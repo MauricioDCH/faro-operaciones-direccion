@@ -6,7 +6,7 @@
 > **Segmento inicial:** micro y pequeñas comercializadoras o distribuidoras de Medellín  
 > **Plataformas objetivo:** Linux y Windows 10/11 de 64 bits  
 > **Datos actuales:** 100 % sintéticos; datos reales requieren controles adicionales  
-> **Estado:** Excel, PDF/OCR, CSV/TSV, JSON/NDJSON, imágenes documentales y XML UBL 2.1 implementados; adaptadores de fase 2 en desarrollo
+> **Estado:** formatos de fase 1 y consolidación SQLite implementados; indicadores, alertas y dashboard en desarrollo
 > **Fecha de corte de la investigación:** 31 de julio de 2026
 
 ---
@@ -213,7 +213,7 @@ Formatos aprobados para implementación por fases:
 - validar esquemas, tipos, fechas y campos obligatorios;
 - detectar duplicados e inconsistencias conocidas;
 - normalizar nombres e identificadores;
-- consolidar la información en un modelo común;
+- consolidar observaciones aceptadas en un modelo operacional SQLite común;
 - calcular indicadores operativos;
 - generar alertas mediante reglas determinísticas;
 - mostrar la evidencia que respalda cada alerta;
@@ -537,6 +537,16 @@ En caso de conflicto se aplica este orden:
 No se duplicarán especificaciones completas entre README, instrucciones del Project, Skills, prompts y comentarios de código.
 
 ---
+
+### Consolidación operacional
+
+La base local se reconstruye de forma atómica desde las fuentes implementadas:
+
+```bash
+PYTHONPATH=src uv run python scripts/consolidate_operations.py
+```
+
+La salida se guarda en `data/processed/faro.db`. El archivo no se versiona; el resultado expone un `logical_content_hash` reproducible entre Linux y Windows.
 
 ## 10. Instalación, ejecución y pruebas
 

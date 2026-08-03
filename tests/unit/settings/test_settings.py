@@ -113,5 +113,29 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(40, settings.ubl_max_depth)
         self.assertEqual(7000000, settings.ubl_max_text_characters)
 
+    def test_loads_operational_store_environment(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "FARO_DATABASE_PATH": "custom/store.db",
+                "FARO_CONSOLIDATION_TIMESTAMP": "2026-08-02T12:00:00-05:00",
+            },
+            clear=True,
+        ):
+            settings = Settings.from_environment()
+        self.assertEqual(str(settings.database_path), "custom/store.db")
+        self.assertEqual(
+            settings.consolidation_timestamp, "2026-08-02T12:00:00-05:00"
+        )
+
+    def test_rejects_invalid_consolidation_timestamp(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {"FARO_CONSOLIDATION_TIMESTAMP": "not-a-date"},
+            clear=True,
+        ):
+            with self.assertRaisesRegex(ValueError, "ISO 8601"):
+                Settings.from_environment()
+
 if __name__ == "__main__":
     unittest.main()

@@ -112,3 +112,14 @@ Durante la Maratón se procesan únicamente documentos sintéticos. Los archivos
 Permanecen pendientes decisiones para almacenamiento físico, framework web, UI, proveedor local de IA y una imagen de ejecución que fije las versiones del sistema.
 
 La inclusión de OCR está registrada en `docs/decisions/0001-support-scanned-pdf-ocr.md`. La pila Poppler/Tesseract está registrada en `docs/decisions/0002-select-local-pdf-ocr-stack.md`.
+
+## Persistencia operacional SQLite
+
+La consolidación mantiene dos capas:
+
+1. `record_observation`: conserva cada representación de una entidad y su fuente;
+2. tablas canónicas: contienen únicamente el registro aceptado seleccionado.
+
+La prioridad de fuentes y los conflictos se resuelven en `normalization`; `persistence` solo ejecuta la escritura transaccional. La base temporal pasa `PRAGMA integrity_check` antes de reemplazar `faro.db`.
+
+El hash de reproducibilidad es lógico y se calcula sobre filas ordenadas. No se exige igualdad binaria entre sistemas operativos.

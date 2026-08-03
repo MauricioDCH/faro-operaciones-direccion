@@ -1,7 +1,7 @@
 # Diccionario de datos
 
 **Estado:** línea base aprobada para implementación  
-**Versión:** 1.9.0
+**Versión:** 1.10.0
 **Producto:** Faro  
 **Alcance:** modelo lógico canónico para datos sintéticos
 
@@ -840,7 +840,26 @@ La ubicación `JsonSourceLocation` especializa `source_location` con `record_num
 
 ---
 
-## 31. Criterios de aceptación del diccionario
+
+## 31. Almacén físico SQLite
+
+`data/processed/faro.db` materializa el modelo lógico sin sustituir las fuentes raw.
+
+| Tabla | Propósito |
+|---|---|
+| `source_file` | Archivo, contrato, hash, formato y adaptador |
+| `source_location` | Celda, fila, página, región, JSON Pointer o XPath |
+| `record_observation` | Todas las observaciones con payload y prioridad |
+| tablas canónicas | Registros aceptados seleccionados |
+| `quality_finding` | Errores, advertencias y conflictos |
+| `transformation_event` | Regla y hashes de cada selección canónica |
+| `metadata` | Esquema, digest de entradas y hash lógico |
+
+La fecha de consolidación se configura mediante `FARO_CONSOLIDATION_TIMESTAMP`. El dataset sintético utiliza un valor fijo para garantizar reproducibilidad.
+
+---
+
+## 32. Criterios de aceptación del diccionario
 
 El diccionario se considera listo para implementación cuando:
 
